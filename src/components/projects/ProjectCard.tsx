@@ -1,0 +1,101 @@
+
+import React from 'react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Leaf, MapPin, Calendar, BadgeCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+export interface ProjectCardProps {
+  id: string;
+  title: string;
+  type: string;
+  location: string;
+  startDate: string;
+  status: 'pending' | 'verified' | 'rejected';
+  credits: number;
+  thumbnailUrl?: string;
+}
+
+export const ProjectCard = ({
+  id,
+  title,
+  type,
+  location,
+  startDate,
+  status,
+  credits,
+  thumbnailUrl
+}: ProjectCardProps) => {
+  const getStatusBadge = () => {
+    switch (status) {
+      case 'verified':
+        return (
+          <Badge variant="outline" className="verification-badge verification-badge-verified">
+            <BadgeCheck className="h-3 w-3 mr-1" />
+            Verified
+          </Badge>
+        );
+      case 'pending':
+        return (
+          <Badge variant="outline" className="verification-badge verification-badge-pending">
+            Pending Verification
+          </Badge>
+        );
+      case 'rejected':
+        return (
+          <Badge variant="outline" className="verification-badge verification-badge-rejected">
+            Verification Failed
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg">
+      <div className="relative h-48 overflow-hidden">
+        <img
+          src={thumbnailUrl || 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+        />
+        <div className="absolute top-2 right-2">
+          {getStatusBadge()}
+        </div>
+      </div>
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-lg font-semibold line-clamp-2">{title}</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="pb-3">
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center text-gray-600">
+            <Leaf className="h-4 w-4 mr-2 text-carbonica-green-dark" />
+            <span>{type}</span>
+          </div>
+          <div className="flex items-center text-gray-600">
+            <MapPin className="h-4 w-4 mr-2 text-carbonica-green-dark" />
+            <span>{location}</span>
+          </div>
+          <div className="flex items-center text-gray-600">
+            <Calendar className="h-4 w-4 mr-2 text-carbonica-green-dark" />
+            <span>Started: {startDate}</span>
+          </div>
+        </div>
+        <div className="mt-4 flex items-center">
+          <div className="bg-carbonica-green-light/20 px-3 py-1 rounded-full">
+            <span className="text-carbonica-green-dark font-medium">{credits.toLocaleString()} Credits</span>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Link to={`/projects/${id}`} className="w-full">
+          <Button variant="outline" className="w-full">View Details</Button>
+        </Link>
+      </CardFooter>
+    </Card>
+  );
+};
