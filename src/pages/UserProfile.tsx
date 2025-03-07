@@ -5,12 +5,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button'; // Fixed import error - using Button from button.tsx
+import { Button } from '@/components/ui/button';
 import { BadgeCheck, Award, Leaf, Clock, Share2, Download } from 'lucide-react';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { UserAchievements } from '@/components/badges/UserAchievements';
 import { BadgeDisplay } from '@/components/badges/BadgeDisplay';
 import { SocialShareButton } from '@/components/social/SocialShareButton';
+import { UserBadge } from '@/components/badges/BadgeDisplay';
 
 // Sample user data
 const userData = {
@@ -35,7 +36,7 @@ const userProjects = [
     type: "Forest Conservation",
     location: "Brazil",
     startDate: "Jan 2023",
-    status: "verified", // Fixed type to match expected enum value
+    status: "verified" as "verified" | "pending" | "rejected", // Fixed type with explicit casting
     credits: 25000,
     thumbnailUrl: "/placeholder.svg",
   },
@@ -45,7 +46,7 @@ const userProjects = [
     type: "Biodiversity Conservation",
     location: "Tanzania",
     startDate: "Mar 2023",
-    status: "verified", // Fixed type to match expected enum value
+    status: "verified" as "verified" | "pending" | "rejected", // Fixed type with explicit casting
     credits: 18000,
     thumbnailUrl: "/placeholder.svg",
   },
@@ -55,7 +56,7 @@ const userProjects = [
     type: "Renewable Energy",
     location: "United Kingdom",
     startDate: "Apr 2023",
-    status: "pending", // Fixed type to match expected enum value
+    status: "pending" as "verified" | "pending" | "rejected", // Fixed type with explicit casting
     credits: 12000,
     thumbnailUrl: "/placeholder.svg",
   }
@@ -98,8 +99,43 @@ const creditTransactions = [
   }
 ];
 
+// Sample user badges
+const userBadges: UserBadge[] = [
+  {
+    id: "badge1",
+    title: "Early Adopter",
+    description: "One of the first to join our platform",
+    icon: "star",
+    level: "bronze",
+    earnedAt: "2023-01-15"
+  },
+  {
+    id: "badge2",
+    title: "Carbon Neutralizer",
+    description: "Retired 10,000+ carbon credits",
+    icon: "leaf",
+    level: "silver",
+    earnedAt: "2023-05-20"
+  },
+  {
+    id: "badge3",
+    title: "Project Validator",
+    description: "Successfully validated 5+ projects",
+    icon: "shield",
+    level: "gold",
+    earnedAt: "2023-07-10"
+  }
+];
+
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Create profile share content
+  const profileShareContent = {
+    title: `${userData.name}'s Carbon Offset Profile`,
+    description: `View ${userData.name}'s carbon offset projects and achievements with a total of ${userData.totalCredits.toLocaleString()} carbon credits.`,
+    url: window.location.href
+  };
 
   return (
     <Layout>
@@ -122,7 +158,7 @@ const UserProfile = () => {
               <p className="text-gray-600 text-sm">Member since {userData.joinDate}</p>
             </div>
           </div>
-          <SocialShareButton />
+          <SocialShareButton content={profileShareContent} />
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -217,7 +253,11 @@ const UserProfile = () => {
               </CardFooter>
             </Card>
 
-            <UserAchievements />
+            <UserAchievements 
+              badges={userBadges} 
+              userName={userData.name} 
+              totalCreditsRetired={userData.retiredCredits} 
+            />
           </TabsContent>
 
           <TabsContent value="projects" className="space-y-6">
@@ -285,7 +325,16 @@ const UserProfile = () => {
             <h2 className="text-xl font-bold">Your Achievements</h2>
             <p className="text-gray-600">Showcase your impact and contributions to carbon reduction</p>
             
-            <BadgeDisplay />
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 mt-6">
+              {userBadges.map(badge => (
+                <BadgeDisplay 
+                  key={badge.id}
+                  badge={badge} 
+                  size="md"
+                  showTitle={true}
+                />
+              ))}
+            </div>
             
             <div className="mt-6 flex justify-center">
               <Button variant="outline">
