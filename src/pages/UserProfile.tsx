@@ -1,165 +1,298 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar } from '@/components/ui/avatar';
-import { UserBadge } from '@/components/badges/BadgeDisplay';
-import { UserAchievements } from '@/components/badges/UserAchievements';
-import { Button } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button'; // Fixed import error - using Button from button.tsx
+import { BadgeCheck, Award, Leaf, Clock, Share2, Download } from 'lucide-react';
 import { ProjectCard } from '@/components/projects/ProjectCard';
+import { UserAchievements } from '@/components/badges/UserAchievements';
+import { BadgeDisplay } from '@/components/badges/BadgeDisplay';
+import { SocialShareButton } from '@/components/social/SocialShareButton';
 
-// Mock user data
-const mockUser = {
-  id: "user-1",
-  name: "Alex Thompson",
-  email: "alex@example.com",
-  role: "Carbon Credit Buyer",
-  avatarUrl: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80",
-  joined: "Jan 2023",
-  creditsOwned: 25000,
-  creditsRetired: 15000,
+// Sample user data
+const userData = {
+  id: "user1",
+  name: "Jane Smith",
+  company: "EcoTech Solutions",
+  email: "jane.smith@ecotech.com",
+  role: "Project Developer",
+  avatarUrl: "https://i.pravatar.cc/150?img=5",
+  joinDate: "January 2023",
+  totalCredits: 43000,
+  activeCredits: 28000,
+  retiredCredits: 15000,
+  verifiedProjects: 4
 };
 
-// Mock user badges
-const mockBadges: UserBadge[] = [
+// Sample projects
+const userProjects = [
   {
-    id: "badge-1",
-    title: "First Offset",
-    description: "Completed your first carbon offset",
-    icon: "leaf",
-    level: "bronze",
-    earnedAt: "2023-02-15"
+    id: "1",
+    title: "Amazon Rainforest Conservation",
+    type: "Forest Conservation",
+    location: "Brazil",
+    startDate: "Jan 2023",
+    status: "verified", // Fixed type to match expected enum value
+    credits: 25000,
+    thumbnailUrl: "/placeholder.svg",
   },
   {
-    id: "badge-2",
-    title: "Offset Champion",
-    description: "Retired over 10,000 carbon credits",
-    icon: "trophy",
-    level: "gold",
-    earnedAt: "2023-05-22"
+    id: "2",
+    title: "Serengeti Wildlife Corridor",
+    type: "Biodiversity Conservation",
+    location: "Tanzania",
+    startDate: "Mar 2023",
+    status: "verified", // Fixed type to match expected enum value
+    credits: 18000,
+    thumbnailUrl: "/placeholder.svg",
   },
   {
-    id: "badge-3",
-    title: "Rainforest Supporter",
-    description: "Supported forest conservation projects",
-    icon: "shield",
-    level: "silver",
-    earnedAt: "2023-03-10"
-  },
-  {
-    id: "badge-4",
-    title: "Consistent Supporter",
-    description: "Made carbon offset purchases for 6 consecutive months",
-    icon: "award",
-    level: "platinum",
-    earnedAt: "2023-08-05"
-  },
-  {
-    id: "badge-5",
-    title: "Renewable Pioneer",
-    description: "Supported renewable energy projects",
-    icon: "star",
-    level: "silver",
-    earnedAt: "2023-04-18"
+    id: "3",
+    title: "Wind Power Expansion",
+    type: "Renewable Energy",
+    location: "United Kingdom",
+    startDate: "Apr 2023",
+    status: "pending", // Fixed type to match expected enum value
+    credits: 12000,
+    thumbnailUrl: "/placeholder.svg",
   }
 ];
 
-// Mock owned projects
-const mockOwnedProjects = [
+// Sample credit transactions
+const creditTransactions = [
   {
-    id: "4",
-    title: "Wind Farm Development in Northern Europe",
-    type: "Renewable Energy",
-    location: "Denmark",
-    startDate: "Apr 2023",
-    status: "verified",
-    credits: 35000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1545334894-9c7a7ccefaf8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    id: "tx1",
+    date: "May 15, 2023",
+    type: "Issuance",
+    project: "Amazon Rainforest Conservation",
+    amount: 25000,
+    status: "Completed"
   },
   {
-    id: "5",
-    title: "Mangrove Restoration Initiative",
-    type: "Coastal Conservation",
-    location: "Indonesia",
-    startDate: "May 2023",
-    status: "verified",
-    credits: 18000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1602141407660-4b65c4e5e393?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    id: "tx2",
+    date: "June 2, 2023",
+    type: "Transfer",
+    project: "Amazon Rainforest Conservation",
+    amount: 5000,
+    recipient: "TechGiant Co.",
+    status: "Completed"
+  },
+  {
+    id: "tx3",
+    date: "July 10, 2023",
+    type: "Retirement",
+    project: "Amazon Rainforest Conservation",
+    amount: 5000,
+    status: "Completed"
+  },
+  {
+    id: "tx4",
+    date: "August 5, 2023",
+    type: "Issuance",
+    project: "Serengeti Wildlife Corridor",
+    amount: 18000,
+    status: "Completed"
   }
 ];
 
 const UserProfile = () => {
+  const [activeTab, setActiveTab] = useState("overview");
+
   return (
     <Layout>
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border-2 border-carbonica-green-light">
-              <img src={mockUser.avatarUrl} alt={mockUser.name} />
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={userData.avatarUrl} alt={userData.name} />
+              <AvatarFallback>{userData.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold">{mockUser.name}</h1>
-              <p className="text-gray-600">{mockUser.role} · Joined {mockUser.joined}</p>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold">{userData.name}</h1>
+                <Badge variant="outline" className="bg-carbonica-green-light text-carbonica-green-dark">
+                  <BadgeCheck className="h-3.5 w-3.5 mr-1" />
+                  Verified Developer
+                </Badge>
+              </div>
+              <p className="text-gray-600">{userData.company}</p>
+              <p className="text-gray-600 text-sm">Member since {userData.joinDate}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-carbonica-green-light/20 px-3 py-1.5 rounded-md">
-              <span className="text-xs text-carbonica-green-dark font-medium">
-                Credits Owned: {mockUser.creditsOwned.toLocaleString()}
-              </span>
-            </div>
-            <div className="bg-carbonica-blue-light/20 px-3 py-1.5 rounded-md">
-              <span className="text-xs text-carbonica-blue-dark font-medium">
-                Credits Retired: {mockUser.creditsRetired.toLocaleString()}
-              </span>
-            </div>
-          </div>
+          <SocialShareButton />
         </div>
 
-        <Tabs defaultValue="achievements" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="achievements">Achievements</TabsTrigger>
-            <TabsTrigger value="credits">My Credits</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="projects">My Projects</TabsTrigger>
+            <TabsTrigger value="credits">My Credits</TabsTrigger>
+            <TabsTrigger value="achievements">Achievements</TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="achievements" className="mt-6">
-            <UserAchievements 
-              badges={mockBadges} 
-              userName={mockUser.name} 
-              totalCreditsRetired={mockUser.creditsRetired} 
-            />
-          </TabsContent>
-          
-          <TabsContent value="credits" className="mt-6">
+
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-3">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center">
+                    <Award className="h-4 w-4 mr-2 text-carbonica-blue-medium" />
+                    Total Credits
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{userData.totalCredits.toLocaleString()}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center">
+                    <Leaf className="h-4 w-4 mr-2 text-carbonica-green-medium" />
+                    Active Credits
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{userData.activeCredits.toLocaleString()}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center">
+                    <BadgeCheck className="h-4 w-4 mr-2 text-carbonica-purple-medium" />
+                    Retired Credits
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{userData.retiredCredits.toLocaleString()}</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <h2 className="text-xl font-bold mt-8">Recent Projects</h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {userProjects.slice(0, 3).map((project) => (
+                <ProjectCard 
+                  key={project.id}
+                  id={project.id}
+                  title={project.title}
+                  type={project.type}
+                  location={project.location}
+                  startDate={project.startDate}
+                  status={project.status}
+                  credits={project.credits}
+                  thumbnailUrl={project.thumbnailUrl}
+                />
+              ))}
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle>Your Carbon Credits</CardTitle>
-                <CardDescription>Manage your purchased and retired carbon credits</CardDescription>
+                <CardTitle>Recent Credit Transactions</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12 text-muted-foreground">
-                  <p>Credit management features coming soon</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="projects" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Supported Projects</CardTitle>
-                <CardDescription>Projects you've purchased credits from</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {mockOwnedProjects.map(project => (
-                    <ProjectCard key={project.id} {...project} />
+                <div className="divide-y">
+                  {creditTransactions.slice(0, 3).map(transaction => (
+                    <div key={transaction.id} className="py-3 flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">{transaction.type}: {transaction.amount.toLocaleString()} credits</p>
+                        <p className="text-sm text-gray-600">{transaction.project}</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="outline" className="bg-green-100 text-green-800">
+                          {transaction.status}
+                        </Badge>
+                        <p className="text-sm text-gray-600 mt-1">{transaction.date}</p>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </CardContent>
+              <CardFooter>
+                <Button variant="outline" size="sm" className="ml-auto">
+                  <Clock className="h-4 w-4 mr-2" />
+                  View All Transactions
+                </Button>
+              </CardFooter>
             </Card>
+
+            <UserAchievements />
+          </TabsContent>
+
+          <TabsContent value="projects" className="space-y-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">My Projects</h2>
+              <Button>
+                <Leaf className="h-4 w-4 mr-2" />
+                Register New Project
+              </Button>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {userProjects.map((project) => (
+                <ProjectCard 
+                  key={project.id}
+                  id={project.id}
+                  title={project.title}
+                  type={project.type}
+                  location={project.location}
+                  startDate={project.startDate}
+                  status={project.status}
+                  credits={project.credits}
+                  thumbnailUrl={project.thumbnailUrl}
+                />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="credits" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Carbon Credit Portfolio</CardTitle>
+                <CardDescription>Manage your carbon credits across all projects</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="divide-y">
+                  {creditTransactions.map(transaction => (
+                    <div key={transaction.id} className="py-3 flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">{transaction.type}: {transaction.amount.toLocaleString()} credits</p>
+                        <p className="text-sm text-gray-600">{transaction.project}</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="outline" className="bg-green-100 text-green-800">
+                          {transaction.status}
+                        </Badge>
+                        <p className="text-sm text-gray-600 mt-1">{transaction.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <Button variant="outline">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Transaction History
+                </Button>
+                <Button>
+                  Retire Credits
+                </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="achievements" className="space-y-6">
+            <h2 className="text-xl font-bold">Your Achievements</h2>
+            <p className="text-gray-600">Showcase your impact and contributions to carbon reduction</p>
+            
+            <BadgeDisplay />
+            
+            <div className="mt-6 flex justify-center">
+              <Button variant="outline">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share Achievements
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

@@ -6,8 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Download, ExternalLink, Filter, Leaf, BadgeCheck } from 'lucide-react';
+import { 
+  Search, 
+  Download, 
+  ExternalLink, 
+  Filter, 
+  Leaf, 
+  BadgeCheck,
+  Globe,
+  BookOpen,
+  Code,
+  Webhook
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ApiDocumentation } from '@/components/api/ApiDocumentation';
 
 interface CreditEntry {
   id: string;
@@ -125,6 +138,7 @@ const StatusBadge = ({ status }: { status: CreditEntry['status'] }) => {
 const Registry = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredEntries, setFilteredEntries] = useState<CreditEntry[]>(MOCK_CREDIT_ENTRIES);
+  const [activeTab, setActiveTab] = useState('registry');
 
   const handleSearch = () => {
     const filtered = MOCK_CREDIT_ENTRIES.filter(entry => 
@@ -145,108 +159,135 @@ const Registry = () => {
     <Layout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold">Public Carbon Credit Registry</h1>
+          <h1 className="text-2xl font-bold">Carbon Credit Registry</h1>
           <p className="text-gray-600">Explore and verify all carbon credits in the Carbonica registry</p>
         </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center">
-              <Leaf className="h-5 w-5 mr-2 text-carbonica-green-dark" />
-              Carbon Credit Ledger
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-6 flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-grow">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-                <Input
-                  placeholder="Search by credit ID, project, owner..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex space-x-2">
-                <Button onClick={handleSearch}>
-                  <Search className="h-4 w-4 mr-2" /> Search
-                </Button>
-                {searchTerm && (
-                  <Button variant="outline" onClick={resetFilters}>
-                    Clear
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="registry" className="flex items-center gap-1">
+              <BookOpen className="h-4 w-4" />
+              Public Registry
+            </TabsTrigger>
+            <TabsTrigger value="api" className="flex items-center gap-1">
+              <Code className="h-4 w-4" />
+              API Access
+            </TabsTrigger>
+            <TabsTrigger value="webhooks" className="flex items-center gap-1">
+              <Webhook className="h-4 w-4" />
+              Webhooks
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="registry">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center">
+                  <Leaf className="h-5 w-5 mr-2 text-carbonica-green-dark" />
+                  Carbon Credit Ledger
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6 flex flex-col sm:flex-row gap-4">
+                  <div className="relative flex-grow">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search by credit ID, project, owner..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button onClick={handleSearch}>
+                      <Search className="h-4 w-4 mr-2" /> Search
+                    </Button>
+                    {searchTerm && (
+                      <Button variant="outline" onClick={resetFilters}>
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Credit ID</TableHead>
+                        <TableHead>Project</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Vintage</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Owner</TableHead>
+                        <TableHead>Last Action</TableHead>
+                        <TableHead></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredEntries.map((entry) => (
+                        <TableRow key={entry.id}>
+                          <TableCell className="font-medium">{entry.creditId}</TableCell>
+                          <TableCell>
+                            <Link to={`/projects/${entry.projectId}`} className="text-carbonica-blue-dark hover:underline flex items-center">
+                              {entry.projectName}
+                              <BadgeCheck className="h-4 w-4 ml-1 text-carbonica-green-dark" />
+                            </Link>
+                            <div className="text-xs text-gray-500">{entry.location}</div>
+                          </TableCell>
+                          <TableCell>{entry.quantity.toLocaleString()}</TableCell>
+                          <TableCell>{entry.vintage}</TableCell>
+                          <TableCell>
+                            <StatusBadge status={entry.status} />
+                          </TableCell>
+                          <TableCell>{entry.owner}</TableCell>
+                          <TableCell>{entry.lastActionDate}</TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
+                  <p>Showing {filteredEntries.length} of {MOCK_CREDIT_ENTRIES.length} entries</p>
+                  <Button variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export Data
                   </Button>
-                )}
-              </div>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="rounded-md border overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Credit ID</TableHead>
-                    <TableHead>Project</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Vintage</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Owner</TableHead>
-                    <TableHead>Last Action</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredEntries.map((entry) => (
-                    <TableRow key={entry.id}>
-                      <TableCell className="font-medium">{entry.creditId}</TableCell>
-                      <TableCell>
-                        <Link to={`/projects/${entry.projectId}`} className="text-carbonica-blue-dark hover:underline flex items-center">
-                          {entry.projectName}
-                          <BadgeCheck className="h-4 w-4 ml-1 text-carbonica-green-dark" />
-                        </Link>
-                        <div className="text-xs text-gray-500">{entry.location}</div>
-                      </TableCell>
-                      <TableCell>{entry.quantity.toLocaleString()}</TableCell>
-                      <TableCell>{entry.vintage}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={entry.status} />
-                      </TableCell>
-                      <TableCell>{entry.owner}</TableCell>
-                      <TableCell>{entry.lastActionDate}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm">
-                          <ExternalLink className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <Card className="mt-6">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Blockchain Verification</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  All carbon credit transactions are recorded on the Cardano blockchain for maximum transparency and security.
+                  You can verify any credit by entering its ID in the Cardano blockchain explorer.
+                </p>
+                <Button variant="outline" className="text-carbonica-blue-dark border-carbonica-blue-dark hover:bg-carbonica-blue-light/10">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open Blockchain Explorer
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-            <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-              <p>Showing {filteredEntries.length} of {MOCK_CREDIT_ENTRIES.length} entries</p>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export Data
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          <TabsContent value="api">
+            <ApiDocumentation />
+          </TabsContent>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Blockchain Verification</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 mb-4">
-              All carbon credit transactions are recorded on the Cardano blockchain for maximum transparency and security.
-              You can verify any credit by entering its ID in the Cardano blockchain explorer.
-            </p>
-            <Button variant="outline" className="text-carbonica-blue-dark border-carbonica-blue-dark hover:bg-carbonica-blue-light/10">
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Open Blockchain Explorer
-            </Button>
-          </CardContent>
-        </Card>
+          <TabsContent value="webhooks">
+            <ApiDocumentation />
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );
