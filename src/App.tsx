@@ -11,6 +11,7 @@ import Verification from "./pages/Verification";
 import Registry from "./pages/Registry";
 import Compliance from "./pages/Compliance";
 import NotFound from "./pages/NotFound";
+import UserProfile from "./pages/UserProfile";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/verification" element={<Verification />} />
           <Route path="/registry" element={<Registry />} />
           <Route path="/compliance" element={<Compliance />} />
+          <Route path="/profile" element={<UserProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

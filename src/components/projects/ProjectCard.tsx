@@ -3,8 +3,9 @@ import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Leaf, MapPin, Calendar, BadgeCheck } from 'lucide-react';
+import { Leaf, MapPin, Calendar, BadgeCheck, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SocialShareButton } from '../social/SocialShareButton';
 
 export interface ProjectCardProps {
   id: string;
@@ -53,6 +54,12 @@ export const ProjectCard = ({
     }
   };
 
+  const shareContent = {
+    title: `Carbon Offset Project: ${title}`,
+    description: `Check out this ${type} carbon offset project in ${location} with ${credits.toLocaleString()} verified carbon credits!`,
+    url: `${window.location.origin}/projects/${id}`
+  };
+
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg">
       <div className="relative h-48 overflow-hidden">
@@ -91,10 +98,14 @@ export const ProjectCard = ({
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Link to={`/projects/${id}`} className="w-full">
-          <Button variant="outline" className="w-full">View Details</Button>
+      <CardFooter className="flex gap-2">
+        <Link to={`/projects/${id}`} className="flex-1">
+          <Button variant="outline" className="w-full">
+            <ExternalLink className="h-4 w-4 mr-2" />
+            View Details
+          </Button>
         </Link>
+        <SocialShareButton content={shareContent} className="w-auto" />
       </CardFooter>
     </Card>
   );
