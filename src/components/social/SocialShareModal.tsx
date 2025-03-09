@@ -2,8 +2,23 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Facebook, Twitter, Linkedin, Link, Copy, Check, Mail, MessageCircle, Share2 } from 'lucide-react';
+import { 
+  Facebook, 
+  Twitter, 
+  Linkedin, 
+  Link as LinkIcon, 
+  Copy, 
+  Check, 
+  Mail, 
+  MessageCircle, 
+  Share2,
+  Instagram,
+  Globe,
+  Smartphone
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface SocialShareProps {
   isOpen: boolean;
@@ -29,7 +44,9 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
     email: `mailto:?subject=${encodedTitle}&body=${encodedDesc}%0A%0A${encodedUrl}`,
-    whatsapp: `https://api.whatsapp.com/send?text=${encodedDesc}%20${encodedUrl}`
+    whatsapp: `https://api.whatsapp.com/send?text=${encodedDesc}%20${encodedUrl}`,
+    instagram: `https://www.instagram.com/?url=${encodedUrl}`, // Note: Instagram doesn't support direct sharing via URL
+    telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedDesc}`
   };
   
   const handleCopyLink = () => {
@@ -75,97 +92,121 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
     }
   };
 
+  const socialPlatforms = [
+    { name: 'Twitter', icon: <Twitter className="h-5 w-5 text-sky-500" />, action: () => handleSocialShare('twitter') },
+    { name: 'Facebook', icon: <Facebook className="h-5 w-5 text-blue-600" />, action: () => handleSocialShare('facebook') },
+    { name: 'LinkedIn', icon: <Linkedin className="h-5 w-5 text-blue-700" />, action: () => handleSocialShare('linkedin') },
+    { name: 'Email', icon: <Mail className="h-5 w-5 text-gray-600" />, action: () => handleSocialShare('email') },
+    { name: 'WhatsApp', icon: <MessageCircle className="h-5 w-5 text-green-500" />, action: () => handleSocialShare('whatsapp') },
+    { name: 'Telegram', icon: <Globe className="h-5 w-5 text-blue-400" />, action: () => handleSocialShare('telegram') },
+  ];
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Share</DialogTitle>
+          <DialogTitle>Share this content</DialogTitle>
           <DialogDescription>
-            Share this content with your network
+            Choose how you want to share "{content.title.substring(0, 40)}{content.title.length > 40 ? '...' : ''}"
           </DialogDescription>
         </DialogHeader>
         
-        <div className="py-4">
-          {navigator.share && (
-            <div className="flex justify-center mb-4">
-              <Button 
-                className="w-full bg-gradient-to-r from-carbonica-green-dark to-carbonica-blue-dark text-white hover:opacity-90"
-                onClick={handleNativeShare}
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                Share with device
-              </Button>
-            </div>
-          )}
+        <Tabs defaultValue="social" className="mt-2">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="social">Social</TabsTrigger>
+            <TabsTrigger value="messaging">Messaging</TabsTrigger>
+            <TabsTrigger value="copy">Copy Link</TabsTrigger>
+          </TabsList>
           
-          <div className="flex flex-col space-y-2 mb-4">
-            <h3 className="text-sm font-medium">Share on social media</h3>
-            <div className="grid grid-cols-3 gap-2">
+          <TabsContent value="social" className="mt-4">
+            <div className="grid grid-cols-3 gap-3">
               <Button 
                 variant="outline" 
-                className="flex items-center justify-center gap-2" 
+                className="flex flex-col items-center justify-center p-4 h-auto gap-2" 
                 onClick={() => handleSocialShare('twitter')}
               >
-                <Twitter className="h-5 w-5 text-sky-500" />
-                Twitter
+                <Twitter className="h-6 w-6 text-sky-500" />
+                <span className="text-xs">Twitter</span>
               </Button>
               <Button 
                 variant="outline" 
-                className="flex items-center justify-center gap-2"
+                className="flex flex-col items-center justify-center p-4 h-auto gap-2"
                 onClick={() => handleSocialShare('facebook')}
               >
-                <Facebook className="h-5 w-5 text-blue-600" />
-                Facebook
+                <Facebook className="h-6 w-6 text-blue-600" />
+                <span className="text-xs">Facebook</span>
               </Button>
               <Button 
                 variant="outline" 
-                className="flex items-center justify-center gap-2"
+                className="flex flex-col items-center justify-center p-4 h-auto gap-2"
                 onClick={() => handleSocialShare('linkedin')}
               >
-                <Linkedin className="h-5 w-5 text-blue-700" />
-                LinkedIn
+                <Linkedin className="h-6 w-6 text-blue-700" />
+                <span className="text-xs">LinkedIn</span>
               </Button>
             </div>
-          </div>
+          </TabsContent>
           
-          <div className="flex flex-col space-y-2 mb-4">
-            <h3 className="text-sm font-medium">Or share via</h3>
-            <div className="grid grid-cols-2 gap-2">
+          <TabsContent value="messaging" className="mt-4">
+            <div className="grid grid-cols-3 gap-3">
               <Button 
                 variant="outline" 
-                className="flex items-center justify-center gap-2"
+                className="flex flex-col items-center justify-center p-4 h-auto gap-2"
                 onClick={() => handleSocialShare('email')}
               >
-                <Mail className="h-5 w-5 text-gray-600" />
-                Email
+                <Mail className="h-6 w-6 text-gray-600" />
+                <span className="text-xs">Email</span>
               </Button>
               <Button 
                 variant="outline" 
-                className="flex items-center justify-center gap-2"
+                className="flex flex-col items-center justify-center p-4 h-auto gap-2"
                 onClick={() => handleSocialShare('whatsapp')}
               >
-                <MessageCircle className="h-5 w-5 text-green-500" />
-                WhatsApp
+                <MessageCircle className="h-6 w-6 text-green-500" />
+                <span className="text-xs">WhatsApp</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex flex-col items-center justify-center p-4 h-auto gap-2"
+                onClick={() => handleSocialShare('telegram')}
+              >
+                <Globe className="h-6 w-6 text-blue-400" />
+                <span className="text-xs">Telegram</span>
               </Button>
             </div>
-          </div>
+          </TabsContent>
           
-          <div className="flex flex-col space-y-2">
-            <h3 className="text-sm font-medium">Or copy link</h3>
-            <div className="flex items-center space-x-2">
-              <div className="border rounded-md px-3 py-2 flex-1 bg-muted text-sm truncate">
+          <TabsContent value="copy" className="mt-4">
+            <div className="space-y-4">
+              <div className="p-3 bg-muted rounded-md break-all text-sm">
                 {content.url}
               </div>
               <Button 
-                variant="outline" 
-                size="icon"
+                variant="default" 
+                className="w-full gap-2"
                 onClick={handleCopyLink}
-                className="flex-shrink-0"
               >
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Copied!" : "Copy to clipboard"}
               </Button>
             </div>
+          </TabsContent>
+        </Tabs>
+        
+        {navigator.share && (
+          <div className="mt-4 pt-4 border-t">
+            <Button 
+              className="w-full bg-gradient-to-r from-carbonica-green-dark to-carbonica-blue-dark text-white hover:opacity-90 gap-2"
+              onClick={handleNativeShare}
+            >
+              <Smartphone className="h-4 w-4" />
+              Share using device options
+            </Button>
           </div>
+        )}
+        
+        <div className="mt-2 text-xs text-muted-foreground text-center">
+          Sharing this content helps spread awareness about carbon offset initiatives
         </div>
       </DialogContent>
     </Dialog>
