@@ -10,16 +10,17 @@ import { SocialShareButton } from '@/components/social/SocialShareButton';
 import { Leaf, MapPin, Calendar, BadgeCheck, ArrowLeft, User, FileCheck, Building } from 'lucide-react';
 import { CreditLedger } from './registry/components/CreditLedger';
 import { MOCK_CREDIT_ENTRIES } from './registry/data/mockCreditEntries';
+import { Project } from '@/types/project';
 
 // Mock project data - in a real app, you would fetch this based on the ID
-const MOCK_PROJECTS = [
+const MOCK_PROJECTS: Project[] = [
   {
     id: "1",
     title: "Amazon Rainforest Conservation Initiative",
     type: "Forest Conservation",
     location: "Brazil",
     startDate: "Jan 2023",
-    status: "verified" as const,
+    status: "verified",
     credits: 125000,
     thumbnailUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
     description: "A comprehensive conservation project aimed at protecting and restoring critical areas of the Amazon rainforest. This initiative focuses on preventing deforestation, promoting sustainable land use, and supporting local communities.",
@@ -34,7 +35,7 @@ const MOCK_PROJECTS = [
     type: "Biodiversity Conservation",
     location: "Tanzania",
     startDate: "Mar 2023",
-    status: "verified" as const,
+    status: "verified",
     credits: 85000,
     thumbnailUrl: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
     description: "Protection of critical wildlife corridors in the Serengeti ecosystem, ensuring the safe migration of numerous species and preserving biodiversity in the region.",
@@ -69,20 +70,20 @@ const ProjectDetails = () => {
 
   const getStatusBadge = () => {
     switch (project.status) {
-      case 'verified':
+      case "verified":
         return (
           <Badge variant="outline" className="verification-badge verification-badge-verified">
             <BadgeCheck className="h-3 w-3 mr-1" />
             Verified
           </Badge>
         );
-      case 'pending':
+      case "pending":
         return (
           <Badge variant="outline" className="verification-badge verification-badge-pending">
             Pending Verification
           </Badge>
         );
-      case 'rejected':
+      case "rejected":
         return (
           <Badge variant="outline" className="verification-badge verification-badge-rejected">
             Verification Failed
