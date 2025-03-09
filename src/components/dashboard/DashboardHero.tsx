@@ -26,7 +26,7 @@ export const DashboardHero = () => {
             <Link to="/registry">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-none hover:from-purple-600 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all"
+                className="bg-white text-carbonica-green-dark hover:bg-gray-100 shadow-md hover:shadow-lg transition-all"
               >
                 <Globe className="mr-2 h-5 w-5" />
                 Explore Public Registry
