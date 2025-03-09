@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Leaf, MapPin, Calendar, BadgeCheck, ExternalLink } from 'lucide-react';
+import { Leaf, MapPin, Calendar, BadgeCheck, ExternalLink, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SocialShareButton } from '../social/SocialShareButton';
 
@@ -16,6 +16,7 @@ export interface ProjectCardProps {
   status: 'pending' | 'verified' | 'rejected';
   credits: number;
   thumbnailUrl?: string;
+  description?: string;
 }
 
 export const ProjectCard = ({
@@ -26,7 +27,8 @@ export const ProjectCard = ({
   startDate,
   status,
   credits,
-  thumbnailUrl
+  thumbnailUrl,
+  description
 }: ProjectCardProps) => {
   const getStatusBadge = () => {
     switch (status) {
@@ -100,8 +102,8 @@ export const ProjectCard = ({
       </CardContent>
       <CardFooter className="flex gap-2">
         <Link to={`/projects/${id}`} className="flex-1">
-          <Button variant="outline" className="w-full">
-            <ExternalLink className="h-4 w-4 mr-2" />
+          <Button variant="outline" className="w-full group hover:bg-carbonica-green-dark hover:text-white transition-colors">
+            <Info className="h-4 w-4 mr-2 group-hover:text-white" />
             View Details
           </Button>
         </Link>

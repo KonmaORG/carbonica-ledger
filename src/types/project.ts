@@ -9,4 +9,9 @@ export interface Project {
   status: 'verified' | 'pending' | 'rejected';
   credits: number;
   thumbnailUrl?: string;
+  description?: string;
+  verificationDate?: string;
+  methodology?: string;
+  developer?: string;
+  verifier?: string;
 }
