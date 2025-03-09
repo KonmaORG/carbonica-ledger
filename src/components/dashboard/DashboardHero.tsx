@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { Globe } from 'lucide-react';
 
 export const DashboardHero = () => {
   return (
@@ -23,7 +24,11 @@ export const DashboardHero = () => {
               </Button>
             </Link>
             <Link to="/registry">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-none hover:from-purple-600 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all"
+              >
+                <Globe className="mr-2 h-5 w-5" />
                 Explore Public Registry
               </Button>
             </Link>
