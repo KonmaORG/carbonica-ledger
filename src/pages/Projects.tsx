@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter, Plus, Leaf, Globe, BarChart3 } from 'lucide-react';
 
 // Mock data for projects
 const MOCK_PROJECTS: ProjectCardProps[] = [
@@ -89,14 +89,49 @@ const Projects = () => {
   return (
     <Layout>
       <div className="space-y-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Carbon Offset Projects</h1>
-          <Link to="/projects/register">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Register Project
-            </Button>
-          </Link>
+        <div className="bg-gradient-to-r from-carbonica-green-light/30 to-carbonica-blue-light/30 p-6 rounded-lg shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-carbonica-green-dark mb-2">Carbon Offset Projects</h1>
+              <p className="text-gray-600 max-w-2xl">
+                Explore verified carbon offset projects from around the world. Support initiatives that reduce carbon emissions and contribute to a sustainable future.
+              </p>
+            </div>
+            <Link to="/projects/register" className="mt-4 md:mt-0">
+              <Button className="bg-carbonica-green-dark hover:bg-carbonica-green-dark/90">
+                <Plus className="h-4 w-4 mr-2" />
+                Register Project
+              </Button>
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap gap-4 mt-6">
+            <div className="flex items-center p-3 bg-white/80 rounded-lg shadow-sm">
+              <Globe className="h-5 w-5 text-carbonica-green-dark mr-2" />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Global Impact</p>
+                <p className="text-xl font-semibold">{MOCK_PROJECTS.length} Projects</p>
+              </div>
+            </div>
+            <div className="flex items-center p-3 bg-white/80 rounded-lg shadow-sm">
+              <Leaf className="h-5 w-5 text-carbonica-green-dark mr-2" />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Carbon Credits</p>
+                <p className="text-xl font-semibold">
+                  {MOCK_PROJECTS.reduce((acc, project) => acc + project.credits, 0).toLocaleString()} tons
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center p-3 bg-white/80 rounded-lg shadow-sm">
+              <BarChart3 className="h-5 w-5 text-carbonica-green-dark mr-2" />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Verification Rate</p>
+                <p className="text-xl font-semibold">
+                  {Math.round((MOCK_PROJECTS.filter(p => p.status === 'verified').length / MOCK_PROJECTS.length) * 100)}%
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
