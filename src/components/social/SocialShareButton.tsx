@@ -14,13 +14,17 @@ interface SocialShareButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
+  iconOnly?: boolean;
+  buttonText?: string;
 }
 
 export const SocialShareButton = ({ 
   content, 
   variant = "outline", 
   size = "sm",
-  className
+  className,
+  iconOnly = false,
+  buttonText = "Share"
 }: SocialShareButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
@@ -37,9 +41,10 @@ export const SocialShareButton = ({
         size={size} 
         className={className}
         onClick={() => setIsModalOpen(true)}
+        aria-label="Share content"
       >
-        <Share2 className="h-4 w-4 mr-2" />
-        Share
+        <Share2 className={`h-4 w-4 ${!iconOnly ? 'mr-2' : ''}`} />
+        {!iconOnly && buttonText}
       </Button>
       
       <SocialShareModal 

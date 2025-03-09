@@ -2,7 +2,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Facebook, Twitter, Linkedin, Link, Copy, Check } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Link, Copy, Check, Mail, MessageCircle, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface SocialShareProps {
@@ -27,7 +27,9 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
   const shareLinks = {
     twitter: `https://twitter.com/intent/tweet?text=${encodedDesc}&url=${encodedUrl}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+    email: `mailto:?subject=${encodedTitle}&body=${encodedDesc}%0A%0A${encodedUrl}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodedDesc}%20${encodedUrl}`
   };
   
   const handleCopyLink = () => {
@@ -48,23 +50,60 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
     });
   };
 
+  // Use Web Share API if available
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: content.title,
+          text: content.description,
+          url: content.url,
+        });
+        toast({
+          title: "Shared successfully",
+        });
+      } catch (error) {
+        // User cancelled or share failed
+        console.error("Error sharing:", error);
+      }
+    } else {
+      toast({
+        title: "Native sharing not supported",
+        description: "Please use one of the other sharing options.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Share Your Achievements</DialogTitle>
+          <DialogTitle>Share</DialogTitle>
           <DialogDescription>
-            Share your carbon offset achievements with your network
+            Share this content with your network
           </DialogDescription>
         </DialogHeader>
         
         <div className="py-4">
+          {navigator.share && (
+            <div className="flex justify-center mb-4">
+              <Button 
+                className="w-full bg-gradient-to-r from-carbonica-green-dark to-carbonica-blue-dark text-white hover:opacity-90"
+                onClick={handleNativeShare}
+              >
+                <Share2 className="h-4 w-4 mr-2" />
+                Share with device
+              </Button>
+            </div>
+          )}
+          
           <div className="flex flex-col space-y-2 mb-4">
             <h3 className="text-sm font-medium">Share on social media</h3>
-            <div className="flex space-x-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button 
                 variant="outline" 
-                className="flex-1 flex items-center justify-center gap-2" 
+                className="flex items-center justify-center gap-2" 
                 onClick={() => handleSocialShare('twitter')}
               >
                 <Twitter className="h-5 w-5 text-sky-500" />
@@ -72,7 +111,7 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
               </Button>
               <Button 
                 variant="outline" 
-                className="flex-1 flex items-center justify-center gap-2"
+                className="flex items-center justify-center gap-2"
                 onClick={() => handleSocialShare('facebook')}
               >
                 <Facebook className="h-5 w-5 text-blue-600" />
@@ -80,11 +119,33 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
               </Button>
               <Button 
                 variant="outline" 
-                className="flex-1 flex items-center justify-center gap-2"
+                className="flex items-center justify-center gap-2"
                 onClick={() => handleSocialShare('linkedin')}
               >
                 <Linkedin className="h-5 w-5 text-blue-700" />
                 LinkedIn
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex flex-col space-y-2 mb-4">
+            <h3 className="text-sm font-medium">Or share via</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant="outline" 
+                className="flex items-center justify-center gap-2"
+                onClick={() => handleSocialShare('email')}
+              >
+                <Mail className="h-5 w-5 text-gray-600" />
+                Email
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex items-center justify-center gap-2"
+                onClick={() => handleSocialShare('whatsapp')}
+              >
+                <MessageCircle className="h-5 w-5 text-green-500" />
+                WhatsApp
               </Button>
             </div>
           </div>
@@ -99,6 +160,7 @@ export const SocialShareModal = ({ isOpen, onClose, content }: SocialShareProps)
                 variant="outline" 
                 size="icon"
                 onClick={handleCopyLink}
+                className="flex-shrink-0"
               >
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
