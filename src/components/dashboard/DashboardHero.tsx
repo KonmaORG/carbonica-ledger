@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Globe } from 'lucide-react';
+import { Globe, FileText } from 'lucide-react';
 
 export const DashboardHero = () => {
   return (
@@ -20,6 +20,7 @@ export const DashboardHero = () => {
           <div className="flex flex-wrap gap-4">
             <Link to="/projects/register">
               <Button size="lg" className="bg-white text-carbonica-green-dark hover:bg-gray-100">
+                <FileText className="mr-2 h-5 w-5" />
                 Register a Project
               </Button>
             </Link>
