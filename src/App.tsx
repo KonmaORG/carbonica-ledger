@@ -13,6 +13,7 @@ import Registry from "./pages/Registry";
 import Compliance from "./pages/Compliance";
 import NotFound from "./pages/NotFound";
 import UserProfile from "./pages/UserProfile";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/registry" element={<Registry />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
