@@ -74,15 +74,15 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
 
 const Projects = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [projectType, setProjectType] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
+  const [projectType, setProjectType] = useState<string>('all-types');
+  const [status, setStatus] = useState<string>('all-statuses');
 
   // Filter projects based on search term, project type, and status
   const filteredProjects = MOCK_PROJECTS.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = projectType === '' || project.type === projectType;
-    const matchesStatus = status === '' || project.status === status;
+    const matchesType = projectType === 'all-types' || project.type === projectType;
+    const matchesStatus = status === 'all-statuses' || project.status === status;
     return matchesSearch && matchesType && matchesStatus;
   });
 
@@ -150,7 +150,7 @@ const Projects = () => {
                 <SelectValue placeholder="Project Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all-types">All Types</SelectItem>
                 <SelectItem value="Forest Conservation">Forest Conservation</SelectItem>
                 <SelectItem value="Renewable Energy">Renewable Energy</SelectItem>
                 <SelectItem value="Biodiversity Conservation">Biodiversity Conservation</SelectItem>
@@ -163,7 +163,7 @@ const Projects = () => {
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="all-statuses">All Statuses</SelectItem>
                 <SelectItem value="verified">Verified</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
@@ -183,8 +183,8 @@ const Projects = () => {
             <p className="text-lg text-gray-500">No projects found matching your criteria.</p>
             <Button variant="outline" className="mt-4" onClick={() => {
               setSearchTerm('');
-              setProjectType('');
-              setStatus('');
+              setProjectType('all-types');
+              setStatus('all-statuses');
             }}>
               Clear Filters
             </Button>
