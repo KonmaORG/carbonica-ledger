@@ -1,7 +1,14 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { 
   BarChart, 
   Leaf, 
@@ -10,7 +17,11 @@ import {
   GanttChart, 
   Search, 
   Menu,
-  X
+  X,
+  UserCircle,
+  Settings,
+  LogOut,
+  FileText
 } from 'lucide-react';
 
 export const NavigationMenu = () => {
@@ -42,7 +53,41 @@ export const NavigationMenu = () => {
 
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="outline">Connect Wallet</Button>
-            <Button>Register Project</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <UserCircle className="h-5 w-5" />
+                  <span>My Account</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
+                    <UserCircle className="h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/projects/register" className="flex items-center gap-2 cursor-pointer">
+                    <FileText className="h-4 w-4" />
+                    <span>Register Project</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+                    <Settings className="h-4 w-4" />
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-red-500">
+                  <LogOut className="h-4 w-4" />
+                  <span>Log Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu Button */}
@@ -70,9 +115,10 @@ export const NavigationMenu = () => {
             <MobileNavLink to="/verification" label="Verification" icon={<FileCheck className="h-5 w-5" />} />
             <MobileNavLink to="/registry" label="Public Registry" icon={<Search className="h-5 w-5" />} />
             <MobileNavLink to="/compliance" label="Compliance" icon={<ShieldCheck className="h-5 w-5" />} />
+            <MobileNavLink to="/profile" label="My Profile" icon={<UserCircle className="h-5 w-5" />} />
+            <MobileNavLink to="/projects/register" label="Register Project" icon={<FileText className="h-5 w-5" />} />
             <div className="pt-4 space-y-3">
               <Button variant="outline" className="w-full">Connect Wallet</Button>
-              <Button className="w-full">Register Project</Button>
             </div>
           </nav>
         </div>
