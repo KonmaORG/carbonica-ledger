@@ -8,12 +8,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface WalletConnectionDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const WALLET_URLS = {
+  yoroi: 'https://yoroi-wallet.com',
+  nami: 'https://namiwallet.io'
+};
 
 export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDialogProps) => {
   const { toast } = useToast();
@@ -29,6 +34,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
               description: "MetaMask wallet connected successfully",
             });
           } else {
+            window.open('https://metamask.io/download/', '_blank');
             throw new Error('MetaMask is not installed');
           }
           break;
@@ -41,6 +47,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
               description: "Yoroi wallet connected successfully",
             });
           } else {
+            window.open(WALLET_URLS.yoroi, '_blank');
             throw new Error('Yoroi wallet is not installed');
           }
           break;
@@ -53,6 +60,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
               description: "Nami wallet connected successfully",
             });
           } else {
+            window.open(WALLET_URLS.nami, '_blank');
             throw new Error('Nami wallet is not installed');
           }
           break;
@@ -73,7 +81,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
         <DialogHeader>
           <DialogTitle>Connect Wallet</DialogTitle>
           <DialogDescription>
-            Choose your preferred wallet to connect with your account
+            Choose your preferred wallet to connect with your account. If you don't have the wallet installed, you'll be redirected to download it.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
