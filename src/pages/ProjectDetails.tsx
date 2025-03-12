@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
@@ -12,7 +11,6 @@ import { CreditLedger } from './registry/components/CreditLedger';
 import { MOCK_CREDIT_ENTRIES } from './registry/data/mockCreditEntries';
 import { Project } from '@/types/project';
 
-// Mock project data - in a real app, you would fetch this based on the ID
 const MOCK_PROJECTS: Project[] = [
   {
     id: "1",
@@ -44,14 +42,12 @@ const MOCK_PROJECTS: Project[] = [
     developer: "Wildlife Protection Trust",
     verifier: "EcoVerify International"
   },
-  // Add more mock projects as needed
 ];
 
 const ProjectDetails = () => {
   const { id } = useParams<{ id: string }>();
   const project = MOCK_PROJECTS.find(p => p.id === id);
   
-  // Filter credit entries for this project
   const projectCredits = MOCK_CREDIT_ENTRIES.filter(credit => credit.projectId === id);
 
   if (!project) {

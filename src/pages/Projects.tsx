@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { ProjectCard, ProjectCardProps } from '@/components/projects/ProjectCard';
@@ -8,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Link } from 'react-router-dom';
 import { Search, Filter, Plus, Leaf, Globe, BarChart3 } from 'lucide-react';
 
-// Mock data for projects
 const MOCK_PROJECTS: ProjectCardProps[] = [
   {
     id: "1",
@@ -77,7 +75,6 @@ const Projects = () => {
   const [projectType, setProjectType] = useState<string>('all-types');
   const [status, setStatus] = useState<string>('all-statuses');
 
-  // Filter projects based on search term, project type, and status
   const filteredProjects = MOCK_PROJECTS.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.location.toLowerCase().includes(searchTerm.toLowerCase());
