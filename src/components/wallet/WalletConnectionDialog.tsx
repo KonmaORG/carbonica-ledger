@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 
 interface WalletConnectionDialogProps {
   isOpen: boolean;
@@ -15,10 +16,55 @@ interface WalletConnectionDialogProps {
 }
 
 export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDialogProps) => {
-  const handleWalletConnect = (walletType: string) => {
-    console.log(`Connecting to ${walletType} wallet`);
-    // Here you would implement the actual wallet connection logic
-    onClose();
+  const { toast } = useToast();
+
+  const handleWalletConnect = async (walletType: string) => {
+    try {
+      switch (walletType) {
+        case 'metamask':
+          if (window.ethereum) {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            toast({
+              title: "Success",
+              description: "MetaMask wallet connected successfully",
+            });
+          } else {
+            throw new Error('MetaMask is not installed');
+          }
+          break;
+          
+        case 'yoroi':
+          if (window.cardano?.yoroi) {
+            await window.cardano.yoroi.enable();
+            toast({
+              title: "Success",
+              description: "Yoroi wallet connected successfully",
+            });
+          } else {
+            throw new Error('Yoroi wallet is not installed');
+          }
+          break;
+          
+        case 'nami':
+          if (window.cardano?.nami) {
+            await window.cardano.nami.enable();
+            toast({
+              title: "Success",
+              description: "Nami wallet connected successfully",
+            });
+          } else {
+            throw new Error('Nami wallet is not installed');
+          }
+          break;
+      }
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to connect wallet",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -48,7 +94,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
             className="flex items-center justify-start gap-3 h-14"
             onClick={() => handleWalletConnect('yoroi')}
           >
-            <img src="https://docs.cardano.org/static/c832efd8d8012f6cefca9624435978b4/70e3c/yoroi.png" alt="Yoroi" className="h-8 w-8" />
+            <img src="/lovable-uploads/d36c360f-b4db-4611-a97d-ce6e851e3725.png" alt="Yoroi" className="h-8 w-8" />
             <div className="text-left">
               <div className="font-semibold">Yoroi</div>
               <div className="text-xs text-muted-foreground">Connect to your Yoroi wallet</div>
@@ -60,7 +106,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
             className="flex items-center justify-start gap-3 h-14"
             onClick={() => handleWalletConnect('nami')}
           >
-            <img src="https://namiwallet.io/apple-touch-icon.png" alt="Nami" className="h-8 w-8" />
+            <img src="/lovable-uploads/9a8cc5bd-cc59-40a7-aa4c-69cc1e1f1099.png" alt="Nami" className="h-8 w-8" />
             <div className="text-left">
               <div className="font-semibold">Nami</div>
               <div className="text-xs text-muted-foreground">Connect to your Nami wallet</div>
@@ -71,3 +117,4 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
     </Dialog>
   );
 };
+
