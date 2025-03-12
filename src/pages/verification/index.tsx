@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { VerificationRequestsList } from './components/VerificationRequestsList';
 import { MOCK_VERIFICATION_REQUESTS } from './data/mockVerificationData';
+import { useVerificationFilters } from './hooks/useVerificationFilters';
 
 const VerificationPage = () => {
+  const { activeTab, setActiveTab, filteredRequests } = useVerificationFilters(MOCK_VERIFICATION_REQUESTS);
+
   return (
     <Layout>
       <div className="space-y-8">
@@ -18,7 +21,7 @@ const VerificationPage = () => {
           <Button>Submit New Verification</Button>
         </div>
 
-        <Tabs defaultValue="all">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
           <TabsList className="mb-6">
             <TabsTrigger value="all">All Requests</TabsTrigger>
             <TabsTrigger value="pending">Pending</TabsTrigger>
@@ -28,31 +31,23 @@ const VerificationPage = () => {
           </TabsList>
           
           <TabsContent value="all">
-            <VerificationRequestsList requests={MOCK_VERIFICATION_REQUESTS} />
+            <VerificationRequestsList requests={filteredRequests} />
           </TabsContent>
           
           <TabsContent value="pending">
-            <VerificationRequestsList 
-              requests={MOCK_VERIFICATION_REQUESTS.filter(r => r.status === 'pending')} 
-            />
+            <VerificationRequestsList requests={filteredRequests} />
           </TabsContent>
           
           <TabsContent value="in_review">
-            <VerificationRequestsList 
-              requests={MOCK_VERIFICATION_REQUESTS.filter(r => r.status === 'in_review')} 
-            />
+            <VerificationRequestsList requests={filteredRequests} />
           </TabsContent>
           
           <TabsContent value="approved">
-            <VerificationRequestsList 
-              requests={MOCK_VERIFICATION_REQUESTS.filter(r => r.status === 'approved')} 
-            />
+            <VerificationRequestsList requests={filteredRequests} />
           </TabsContent>
           
           <TabsContent value="rejected">
-            <VerificationRequestsList 
-              requests={MOCK_VERIFICATION_REQUESTS.filter(r => r.status === 'rejected')} 
-            />
+            <VerificationRequestsList requests={filteredRequests} />
           </TabsContent>
         </Tabs>
       </div>
