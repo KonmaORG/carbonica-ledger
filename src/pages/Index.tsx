@@ -1,13 +1,12 @@
 
 import React from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 
 const Index = () => {
   return (
-    <Layout>
+    <div className="container mx-auto px-4 py-8">
       <Dashboard />
-    </Layout>
+    </div>
   );
 };
 
