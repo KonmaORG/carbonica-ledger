@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { WalletConnectionDialog } from '@/components/wallet/WalletConnectionDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,7 @@ import {
 
 export const NavigationMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isWalletDialogOpen, setIsWalletDialogOpen] = React.useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -42,7 +44,6 @@ export const NavigationMenu = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
             <NavLink to="/" label="Dashboard" icon={<BarChart className="h-4 w-4" />} />
             <NavLink to="/projects" label="Projects" icon={<GanttChart className="h-4 w-4" />} />
@@ -52,7 +53,9 @@ export const NavigationMenu = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline">Connect Wallet</Button>
+            <Button variant="outline" onClick={() => setIsWalletDialogOpen(true)}>
+              Connect Wallet
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
@@ -90,7 +93,6 @@ export const NavigationMenu = () => {
             </DropdownMenu>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
@@ -106,7 +108,6 @@ export const NavigationMenu = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 py-4 px-4">
           <nav className="flex flex-col space-y-4">
@@ -123,6 +124,11 @@ export const NavigationMenu = () => {
           </nav>
         </div>
       )}
+
+      <WalletConnectionDialog 
+        isOpen={isWalletDialogOpen}
+        onClose={() => setIsWalletDialogOpen(false)}
+      />
     </header>
   );
 };
