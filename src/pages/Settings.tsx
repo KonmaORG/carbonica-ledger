@@ -1,5 +1,9 @@
 
 import React from 'react';
-import Settings from './settings';
+import SettingsPageContent from './settings/index';
 
-export default Settings;
+const SettingsPage = () => {
+  return <SettingsPageContent />;
+};
+
+export default SettingsPage;

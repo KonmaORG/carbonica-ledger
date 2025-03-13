@@ -1,5 +1,9 @@
 
 import React from 'react';
-import CompliancePage from './compliance';
+import CompliancePageContent from './compliance/index';
+
+const CompliancePage = () => {
+  return <CompliancePageContent />;
+};
 
 export default CompliancePage;
