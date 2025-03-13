@@ -6,7 +6,6 @@ import Image from "next/image";
 import { SUPPORTEDWALLETS } from "./wallets";
 
 import { Wallet } from "@/types/cardano";
-import { handleError } from "@/lib/utils";
 import { useWallet } from "@/context/walletContext";
 import { mkLucid } from "@/lib/lucid";
 import {
@@ -24,7 +23,7 @@ import { Switch } from "../ui/switch";
 
 export default function WalletComponent() {
   const [walletConnection, setWalletConnection] = useWallet();
-  const { lucid, address, isEmulator } = walletConnection;
+  const { lucid, address } = walletConnection;
 
   const [wallets, setWallets] = useState<Wallet[]>(SUPPORTEDWALLETS);
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +44,7 @@ export default function WalletComponent() {
     const updatedWallets = wallets;
     installedWallets.forEach((provider) => {
       const index = updatedWallets.findIndex(
-        (wallet) => wallet.name.toLowerCase() === provider.name.toLowerCase(),
+        (wallet) => wallet.name.toLowerCase() === provider.name.toLowerCase()
       );
       if (index !== -1) {
         updatedWallets[index] = {
@@ -82,7 +81,7 @@ export default function WalletComponent() {
       });
     } catch (error) {
       setConnecting(false);
-      handleError(error);
+      console.log(error);
     }
     setConnecting(false);
   }
@@ -121,18 +120,21 @@ export default function WalletComponent() {
               )}
             </Button>
           </DialogTrigger>
-          <DialogContent className="min-w-[350px]">
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Connect Wallet</DialogTitle>
               <DialogDescription>
-                Choose a wallet to connect to your account.
+                Choose your preferred wallet to connect with your account. If
+                you don't have the wallet installed, you'll be redirected to
+                download it.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex gap-4 py-4 flex-wrap justify-evenly">
+            <div className="grid gap-4 py-4">
               {wallets.map((wallet) => (
                 <Button
                   key={wallet.name}
-                  className="w-fit"
+                  variant="outline"
+                  className="flex items-center justify-start gap-3 h-14"
                   disabled={!wallet.enable}
                   onClick={() => onConnectWallet(wallet)}
                 >
@@ -142,36 +144,15 @@ export default function WalletComponent() {
                     src={wallet.icon}
                     width={20}
                   />
-                  {wallet.name}
+                  <div className="text-left">
+                    <div className="font-semibold">{wallet.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      Connect to your {wallet.name} wallet
+                    </div>
+                  </div>
                 </Button>
               ))}
             </div>
-            <DialogFooter>
-              {/* Emulator Toggle  */}
-              <div className="flex items-center justify-between rounded-lg border p-2 mx-2 w-full">
-                <div className="space-y-0.5">
-                  <Label className="text-base font-semibold">
-                    Emulator Mode
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    This will use Emulator Accounts.
-                  </p>
-                </div>
-                <Switch
-                  id="emulator-toggle"
-                  checked={isEmulator}
-                  onCheckedChange={(checked) => {
-                    setIsOpen(false);
-                    setTimeout(() => {
-                      setWalletConnection({
-                        isEmulator: checked,
-                      });
-                    }, 500);
-                  }}
-                  aria-label="Toggle emulator mode"
-                />
-              </div>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}

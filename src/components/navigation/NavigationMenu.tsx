@@ -28,7 +28,6 @@ import WalletConnector from "../wallet/client";
 
 export const NavigationMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isWalletDialogOpen, setIsWalletDialogOpen] = React.useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -77,12 +76,7 @@ export const NavigationMenu = () => {
 
           <div className="hidden md:flex items-center space-x-4">
             <WalletConnector />
-            <Button
-              variant="outline"
-              onClick={() => setIsWalletDialogOpen(true)}
-            >
-              Connect Wallet
-            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
@@ -183,18 +177,11 @@ export const NavigationMenu = () => {
               icon={<FileText className="h-5 w-5" />}
             />
             <div className="pt-4 space-y-3">
-              <Button variant="outline" className="w-full">
-                Connect Wallet
-              </Button>
+              <WalletConnector />
             </div>
           </nav>
         </div>
       )}
-
-      <WalletConnectionDialog
-        isOpen={isWalletDialogOpen}
-        onClose={() => setIsWalletDialogOpen(false)}
-      />
     </header>
   );
 };
