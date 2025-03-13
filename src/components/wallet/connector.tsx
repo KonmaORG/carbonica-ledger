@@ -36,7 +36,7 @@ export default function WalletComponent() {
     const { cardano } = window;
 
     for (const c in cardano) {
-      const wallet = cardano[c];
+      const wallet = (cardano as any)[c];
 
       if (!wallet.apiVersion) continue;
       installedWallets.push(wallet);
