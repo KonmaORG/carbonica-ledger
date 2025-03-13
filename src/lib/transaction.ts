@@ -37,66 +37,67 @@ export async function submitProject(
   projectTitle: string
 ) {
   const { lucid, address } = walletConnection;
-  if (!lucid) throw new Error("Uninitialized Lucid!");
-  if (!address) throw new Error("Wallet Not Connected!");
+  try {
+    if (!lucid || !address) throw new Error("Wallet Not Connected!");
 
-  const validatorContractAddress = getAddress(ValidatorContract);
-  const mintingValidator: Validator = ValidatorMinter();
+    const validatorContractAddress = getAddress(ValidatorContract);
+    const mintingValidator: Validator = ValidatorMinter();
 
-  const policyID = mintingPolicyToId(mintingValidator);
-  const projectAssetName = projectTitle;
-  const mintedAssets = { [policyID + fromText(projectAssetName)]: 1n };
+    const policyID = mintingPolicyToId(mintingValidator);
+    const projectAssetName = projectTitle;
+    const mintedAssets = { [policyID + fromText(projectAssetName)]: 1n };
 
-  const refutxo = await refUtxo(lucid);
+    const refutxo = await refUtxo(lucid);
 
-  const redeemer = Data.to(0n);
+    const redeemer = Data.to(0n);
 
-  const assestClass: AssetClass = {
-    policyid: "",
-    asset_name: fromText(""),
-  };
+    const assestClass: AssetClass = {
+      policyid: "",
+      asset_name: fromText(""),
+    };
 
-  const datum: KarbonDatum = {
-    developer: [
-      paymentCredentialOf(address).hash,
-      stakeCredentialOf(address).hash ?? "",
-    ],
-    document: fileHash,
-    categories: fromText(category),
-    asset_name: fromText(projectAssetName),
-    fees_amount: 100_000_000n,
-    fees_asset_class: assestClass,
-  };
+    const datum: KarbonDatum = {
+      developer: [
+        paymentCredentialOf(address).hash,
+        stakeCredentialOf(address).hash ?? "",
+      ],
+      document: fileHash,
+      categories: fromText(category),
+      asset_name: fromText(projectAssetName),
+      fees_amount: 100_000_000n,
+      fees_asset_class: assestClass,
+    };
 
-  const tx = await lucid
-    .newTx()
-    .readFrom(refutxo)
-    .pay.ToAddressWithData(
-      validatorContractAddress,
-      { kind: "inline", value: Data.to(datum, KarbonDatum) },
-      { lovelace: 3_000_000n, ...mintedAssets }
-    )
-    .pay.ToAddress(await privateKeytoAddress(SIGNER3), {
-      lovelace: 100_000_000n,
-    })
-    .mintAssets(mintedAssets, redeemer)
-    .attach.MintingPolicy(mintingValidator)
-    .attachMetadata(721, {
-      [policyID]: {
-        [projectAssetName]: {
-          name: projectAssetName,
-          image: "https://avatars.githubusercontent.com/u/106166350",
+    const tx = await lucid
+      .newTx()
+      .readFrom(refutxo)
+      .pay.ToAddressWithData(
+        validatorContractAddress,
+        { kind: "inline", value: Data.to(datum, KarbonDatum) },
+        { lovelace: 3_000_000n, ...mintedAssets }
+      )
+      .pay.ToAddress(await privateKeytoAddress(SIGNER3), {
+        lovelace: 100_000_000n,
+      })
+      .mintAssets(mintedAssets, redeemer)
+      .attach.MintingPolicy(mintingValidator)
+      .attachMetadata(721, {
+        [policyID]: {
+          [projectAssetName]: {
+            name: projectAssetName,
+            image: "https://avatars.githubusercontent.com/u/106166350",
+          },
         },
-      },
-    })
-    .complete();
+      })
+      .complete();
 
-  const txHash = await submit(tx);
+    const txHash = await submit(tx);
 
-  console.log("-----------ProjectLister---------");
-  console.log("txHash: ", txHash);
-  console.log("assetname: ", projectAssetName);
-  console.log("policyID+AssetName: ", mintedAssets);
+    console.log("txHash: ", txHash);
+    return { status: "ok", txHash };
+  } catch (error: any) {
+    return { status: "error", error };
+  }
 }
 
 export async function rejectProject(

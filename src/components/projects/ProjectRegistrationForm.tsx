@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,7 +8,13 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -26,7 +31,6 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
 
 const projectFormSchema = z.object({
   projectName: z.string().min(3, {
@@ -50,11 +54,16 @@ const projectFormSchema = z.object({
   emissionsTarget: z.string().min(1, {
     message: "Emissions reduction target is required.",
   }),
-  description: z.string().min(50, {
-    message: "Description must be at least 50 characters.",
-  }).max(1000, {
-    message: "Description must not exceed 1000 characters."
-  }),
+  description: z
+    .string()
+    .min(50, {
+      message: "Description must be at least 50 characters.",
+    })
+    .max(1000, {
+      message: "Description must not exceed 1000 characters.",
+    }),
+  supportingDocument: z.any(),
+  documentHash: z.string(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -73,10 +82,12 @@ const PROJECT_TYPES = [
   "Sustainable Agriculture",
   "Biodiversity Conservation",
   "Clean Transportation",
-  "Other"
+  "Other",
 ];
 
-export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormProps) {
+export function ProjectRegistrationForm({
+  onSubmit,
+}: ProjectRegistrationFormProps) {
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
@@ -85,16 +96,40 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
   });
 
   const handleFormSubmit = (data: ProjectFormValues) => {
-    toast({
-      title: "Project submitted for registration",
-      description: "Your project has been submitted for validation.",
-    });
     onSubmit(data);
   };
+  const [file, setFile] = React.useState<File | null>(null);
+  const [fileHash, setFileHash] = React.useState<string>("");
+  const [isUploading, setIsUploading] = React.useState(false);
+  const calculateHash = async (file: File): Promise<string> => {
+    const buffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    setIsUploading(true);
+    const uploadedFile = e.target.files[0];
+    setFile(uploadedFile);
+
+    // Calculate hash for the file
+    const hash = await calculateHash(uploadedFile);
+    setFileHash(hash);
+
+    // Update the form values
+    form.setValue("supportingDocument", uploadedFile);
+    form.setValue("documentHash", hash);
+    setIsUploading(false);
+  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -103,7 +138,10 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
               <FormItem>
                 <FormLabel>Project Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g. Rainforest Conservation Initiative" {...field} />
+                  <Input
+                    placeholder="e.g. Rainforest Conservation Initiative"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -116,7 +154,10 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Project Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select project type" />
@@ -276,7 +317,8 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
                 />
               </FormControl>
               <FormDescription>
-                Provide a detailed description of your project, including methodology and expected outcomes.
+                Provide a detailed description of your project, including
+                methodology and expected outcomes.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -288,15 +330,39 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
             <Upload className="h-10 w-10 text-gray-400 mb-2" />
             <h3 className="font-medium">Upload Supporting Documents</h3>
             <p className="text-sm text-gray-500 mb-4">
-              Drag and drop files here or click to browse (Methodology details, baseline studies, etc.)
+              Drag and drop files here or click to browse (Methodology details,
+              baseline studies, etc.)
             </p>
             <div className="w-full max-w-xs">
               <Input
                 type="file"
-                multiple
                 className="cursor-pointer"
-                onChange={(e) => console.log('Files selected:', e.target.files)}
+                onChange={handleFileUpload}
+                disabled={isUploading}
               />
+
+              {isUploading && (
+                <p className="text-sm text-amber-600 mt-2">
+                  Calculating file hash...
+                </p>
+              )}
+              {file && (
+                <div className="mt-4 w-full">
+                  <h4 className="text-sm font-medium mb-2">Uploaded File:</h4>
+                  <div className="text-xs text-left p-2 border rounded-md">
+                    <p>
+                      <span className="font-medium">Name:</span> {file.name}
+                    </p>
+                    <p>
+                      <span className="font-medium">Size:</span>{" "}
+                      {Math.round(file.size / 1024)} KB
+                    </p>
+                    <p className="truncate">
+                      <span className="font-medium">Hash:</span> {fileHash}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
             <p className="text-xs text-gray-400 mt-2">
               Upload PDF, DOCX, or ZIP files up to 50MB each
