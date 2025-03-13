@@ -76,7 +76,7 @@ export function ValidatorMinter(): Validator {
     ]),
   };
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#region Karbon_Emission
 const cet_minter_mint = applyDoubleCborEncoding(cet_minter_cet_minter_mint);
 
@@ -84,6 +84,8 @@ export const CETMINTER: Validator = {
   type: "PlutusV3",
   script: cet_minter_mint,
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //#region Karbon_Crowdfunding
 const IdetificationPID: string =
