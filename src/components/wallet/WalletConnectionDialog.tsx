@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,8 +22,19 @@ const WALLET_URLS = {
 
 export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDialogProps) => {
   const { toast } = useToast();
+  
+  useEffect(() => {
+    console.log('WalletConnectionDialog rendered, isOpen:', isOpen);
+    // Debug available wallets
+    console.log('Available wallets:', {
+      ethereum: window.ethereum ? 'Available' : 'Not available',
+      yoroi: window.cardano?.yoroi ? 'Available' : 'Not available',
+      nami: window.cardano?.nami ? 'Available' : 'Not available'
+    });
+  }, [isOpen]);
 
   const handleWalletConnect = async (walletType: string) => {
+    console.log(`Attempting to connect to ${walletType} wallet`);
     try {
       switch (walletType) {
         case 'metamask':
@@ -67,6 +78,7 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
       }
       onClose();
     } catch (error) {
+      console.error('Wallet connection error:', error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to connect wallet",
@@ -125,4 +137,3 @@ export const WalletConnectionDialog = ({ isOpen, onClose }: WalletConnectionDial
     </Dialog>
   );
 };
-

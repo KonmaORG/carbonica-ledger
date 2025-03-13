@@ -1,14 +1,18 @@
 
 interface Window {
   ethereum?: {
-    request: (args: { method: string }) => Promise<string[]>;
+    isMetaMask?: boolean;
+    request: (args: { method: string; params?: any[] }) => Promise<any>;
   };
+  
   cardano?: {
     yoroi?: {
-      enable: () => Promise<void>;
+      enable: () => Promise<any>;
+      isYoroi?: boolean;
     };
     nami?: {
-      enable: () => Promise<void>;
+      enable: () => Promise<any>;
+      isNami?: boolean;
     };
   };
 }
