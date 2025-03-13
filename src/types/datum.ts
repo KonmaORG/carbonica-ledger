@@ -1,7 +1,8 @@
 import { Constr, Data, WalletApi } from "@lucid-evolution/lucid";
 import { AddressSchema } from "./cardano";
+import { CampaignStateSchema } from "./redeemer";
 
-//#region Datum
+//#region Karbon Ledger
 
 export const AssetClassSchema = Data.Object({
   policyid: Data.Bytes(),
@@ -47,3 +48,38 @@ export const KarbonDatumSchema = Data.Object({
 export type KarbonDatum = Data.Static<typeof KarbonDatumSchema>;
 export const KarbonDatum = KarbonDatumSchema as unknown as KarbonDatum;
 //----------------------------------------------
+
+//#region Karbon Crowdfunding
+
+export const MilestoneArray = Data.Array(Data.Boolean());
+
+export const CampaignDatumSchema = Data.Object({
+  name: Data.Bytes(),
+  goal: Data.Integer(),
+  deadline: Data.Integer(),
+  creator: AddressSchema,
+  milestone: MilestoneArray,
+  state: CampaignStateSchema,
+  fraction: Data.Integer(),
+});
+
+export type CampaignDatum = Data.Static<typeof CampaignDatumSchema>;
+export const CampaignDatum = CampaignDatumSchema as unknown as CampaignDatum;
+
+export const BackerDatumSchema = AddressSchema;
+export type BackerDatum = Data.Static<typeof BackerDatumSchema>;
+export const BackerDatum = BackerDatumSchema as unknown as BackerDatum;
+
+//-----------------------------
+
+export const ConfigDatumSchema_crowdfunding = Data.Object({
+  multisig: MultisigSchema,
+  state_token_script: AddressSchema,
+  platform: Data.Bytes(),
+});
+
+export type ConfigDatum_crowdfunding = Data.Static<
+  typeof ConfigDatumSchema_crowdfunding
+>;
+export const ConfigDatum_crowdfunding =
+  ConfigDatumSchema_crowdfunding as unknown as ConfigDatum_crowdfunding;
