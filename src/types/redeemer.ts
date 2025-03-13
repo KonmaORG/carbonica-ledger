@@ -87,3 +87,28 @@ export const CampaignStateRedeemer = {
   Released: Data.to(new Constr(4, [])),
 };
 // #endregion
+
+//#region Karbon Emission
+
+export const CETDatumSchema = Data.Object({
+  location: Data.Bytes(),
+  cet_qty: Data.Integer(),
+  time: Data.Integer(),
+});
+export type CETDatum = Data.Static<typeof CETDatumSchema>;
+export const CETDatum = CETDatumSchema as unknown as CETDatum;
+
+// ---
+export const BurnRedeemerSchema = Data.Object({
+  cot_policyId: Data.Bytes(),
+});
+export type BurnRedeemer = Data.Static<typeof BurnRedeemerSchema>;
+export const BurnRedeemer = BurnRedeemerSchema as unknown as BurnRedeemer;
+// ---
+export const ConfigSchema = Data.Object({
+  cet_policyid: Data.Bytes(),
+  cot_policyid: Data.Bytes(),
+});
+export type Config = Data.Static<typeof ConfigSchema>;
+export const Config = ConfigSchema as unknown as Config;
+// #endregion
