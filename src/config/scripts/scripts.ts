@@ -17,6 +17,7 @@ import {
   identication_nft_identification_nft_mint_crowdfunding,
   state_token_script_state_token_script_spend,
 } from "./crowdfunding_plutus";
+import { karbonstore_karbonstore_spend } from "./karbon_marketplace";
 
 export const identificationPolicyid: Data = process.env
   .NEXT_PUBLIC_IDENTIFICATION_PID as string;
@@ -125,3 +126,16 @@ export function CrowdfundingValidator(params: any[]): Validator {
     script: applyParamsToScript(crowdfunding_script, params),
   };
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//#region Karbon_Marketplace
+
+const marketplace_identificationNFT_Mint = applyDoubleCborEncoding(
+  karbonstore_karbonstore_spend
+);
+
+export const KarbonStoreValidator: Validator = {
+  type: "PlutusV3",
+  script: identificationNFT_Mint,
+};
