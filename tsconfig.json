@@ -4,7 +4,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noImplicitAny": true,
     "noUnusedParameters": false,
     "skipLibCheck": true,
     "allowJs": true,
