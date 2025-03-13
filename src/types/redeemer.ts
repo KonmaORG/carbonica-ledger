@@ -112,3 +112,29 @@ export const ConfigSchema = Data.Object({
 export type Config = Data.Static<typeof ConfigSchema>;
 export const Config = ConfigSchema as unknown as Config;
 // #endregion
+
+//#region Karbon Marketpalce
+
+export type KarbonStoreRedeemerAction = "Buy" | "Withdraw";
+export const KarbonStoreRedeemerAction = {
+  Buy: {
+    Title: "Buy",
+    Schema: Data.Literal("Buy"),
+    Constr: new Constr(0, []),
+  },
+  Withdraw: {
+    Title: "Withdraw",
+    Schema: Data.Literal("Withdraw"),
+    Constr: new Constr(1, []),
+  },
+};
+export const KarbonStoreRedeemerSchema = Data.Enum([
+  KarbonStoreRedeemerAction.Buy.Schema,
+  KarbonStoreRedeemerAction.Withdraw.Schema,
+]);
+
+export type KarbonStoreRedeemer = Data.Static<typeof KarbonStoreRedeemerSchema>;
+export const KarbonStoreRedeemer =
+  KarbonStoreRedeemerSchema as unknown as KarbonStoreRedeemer;
+
+// #endregion
