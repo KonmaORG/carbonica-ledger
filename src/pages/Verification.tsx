@@ -1,5 +1,9 @@
 
 import React from 'react';
-import VerificationPage from './verification';
+import VerificationPageContent from './verification/index';
+
+const VerificationPage = () => {
+  return <VerificationPageContent />;
+};
 
 export default VerificationPage;
