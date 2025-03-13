@@ -83,3 +83,4 @@ export type ConfigDatum_crowdfunding = Data.Static<
 >;
 export const ConfigDatum_crowdfunding =
   ConfigDatumSchema_crowdfunding as unknown as ConfigDatum_crowdfunding;
+// #endregion
