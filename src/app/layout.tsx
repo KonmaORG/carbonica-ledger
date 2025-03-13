@@ -1,12 +1,15 @@
-import "./global.css"
+import WalletProvider from "@/context/walletProvider";
+import "./global.css";
 export default function RootLayout({
-    children,
-  }: {
-    children: React.ReactNode
-  }) {
-    return (
-      <html lang="en">
-        <body>{children}</body>
-      </html>
-    )
-  }
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <WalletProvider>{children}</WalletProvider>
+      </body>
+    </html>
+  );
+}
