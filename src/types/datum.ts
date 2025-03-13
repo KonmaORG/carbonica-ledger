@@ -89,3 +89,16 @@ export const ConfigDatum_crowdfunding =
 
 //--------------------------------------------------------
 // #endregion
+
+//#region Karbon Marketplace
+
+export const KarbonStoreDatumSchema = Data.Object({
+  owner: Data.Bytes(),
+  amount: Data.Integer(),
+});
+export type KarbonStoreDatum = Data.Static<typeof KarbonStoreDatumSchema>;
+export const KarbonStoreDatum =
+  KarbonStoreDatumSchema as unknown as KarbonStoreDatum;
+
+//--------------------------------------------------------
+// #endregion
