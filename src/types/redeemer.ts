@@ -86,3 +86,4 @@ export const CampaignStateRedeemer = {
   Finished: Data.to(new Constr(3, [])),
   Released: Data.to(new Constr(4, [])),
 };
+// #endregion
