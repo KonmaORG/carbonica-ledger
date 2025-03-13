@@ -12,6 +12,11 @@ import {
 } from "./karbonLedger";
 import { getPolicyId } from "@/lib/utils";
 import { cet_minter_cet_minter_mint } from "./karbonEmission";
+import {
+  crowdfunding_campaign_spend,
+  identication_nft_identification_nft_mint_crowdfunding,
+  state_token_script_state_token_script_spend,
+} from "./crowdfunding_plutus";
 
 export const identificationPolicyid: Data = process.env
   .NEXT_PUBLIC_IDENTIFICATION_PID as string;
@@ -79,3 +84,42 @@ export const CETMINTER: Validator = {
   type: "PlutusV3",
   script: cet_minter_mint,
 };
+
+//#region Karbon_Crowdfunding
+const IdetificationPID: string =
+  "06cab6a81e5f3dcbfdd0a68e57edf77c43682063e8df89c545ec5dfd";
+
+const identificationNFT_Mint_crowdfunding = applyDoubleCborEncoding(
+  identication_nft_identification_nft_mint_crowdfunding
+);
+
+export function IdentificationNFTValidator(params: any[]): Validator {
+  return {
+    type: "PlutusV3",
+    script: applyParamsToScript(identificationNFT_Mint, params),
+  };
+}
+
+// ------------------------------------------------------------------
+const state_token_script = applyDoubleCborEncoding(
+  state_token_script_state_token_script_spend
+);
+
+export function StateTokenValidator(): Validator {
+  return {
+    type: "PlutusV3",
+    script: applyParamsToScript(state_token_script, [IdetificationPID]),
+  };
+}
+
+//   ------------------------------------------------------------------
+const crowdfunding_script = applyDoubleCborEncoding(
+  crowdfunding_campaign_spend
+);
+
+export function CrowdfundingValidator(params: any[]): Validator {
+  return {
+    type: "PlutusV3",
+    script: applyParamsToScript(crowdfunding_script, params),
+  };
+}
