@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Dialog,
@@ -12,7 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { VerificationStatusBadge } from './VerificationStatusBadge';
 import { VerificationRequest } from '../types/verificationTypes';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Check, Clock, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface VerificationDetailsDialogProps {
@@ -27,11 +28,11 @@ export const VerificationDetailsDialog = ({
   onOpenChange,
 }: VerificationDetailsDialogProps) => {
   const { toast } = useToast();
-  const [confirmAction, setConfirmAction] = React.useState<'review' | 'approve' | 'reject' | null>(null);
+  const [confirmAction, setConfirmAction] = React.useState<'approve' | 'reject' | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const handleAction = async (action: 'review' | 'approve' | 'reject') => {
+  const handleAction = async (action: 'approve' | 'reject') => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
   };
@@ -45,7 +46,6 @@ export const VerificationDetailsDialog = ({
 
       // Show success message
       const actionMessages = {
-        review: "Verification request marked for review",
         approve: "Verification request approved successfully",
         reject: "Verification request rejected"
       };
@@ -69,13 +69,11 @@ export const VerificationDetailsDialog = ({
   };
 
   const actionLabels = {
-    review: "Mark as In-Review",
     approve: "Approve Request",
     reject: "Reject Request"
   };
 
   const actionDescriptions = {
-    review: "This will update the verification status to 'In Review' and sign the transaction on-chain.",
     approve: "This will approve the verification request and sign the transaction on-chain.",
     reject: "This will reject the verification request and sign the transaction on-chain."
   };
@@ -162,15 +160,6 @@ export const VerificationDetailsDialog = ({
             <div className="border rounded-md p-4">
               <h3 className="text-sm font-medium mb-3">Validator Actions</h3>
               <div className="flex flex-wrap gap-3">
-                <Button 
-                  variant="outline"
-                  className="bg-amber-50 hover:bg-amber-100"
-                  onClick={() => handleAction('review')}
-                  disabled={request.status === 'in_review'}
-                >
-                  <Clock className="mr-2 h-4 w-4" />
-                  Mark as In-Review
-                </Button>
                 <Button 
                   variant="outline" 
                   className="bg-green-50 hover:bg-green-100"
