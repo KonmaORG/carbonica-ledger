@@ -3,6 +3,7 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { VerificationStatusBadge } from './VerificationStatusBadge';
 import { VerificationRequest } from '../types/verificationTypes';
+import { VerificationTimeline } from './VerificationTimeline';
 
 interface VerificationDetailsContentProps {
   request: VerificationRequest;
