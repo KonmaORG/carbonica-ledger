@@ -1,17 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ArrowRight } from 'lucide-react';
 import { VerificationRequest } from '../types/verificationTypes';
 import { VerificationStatusBadge } from './VerificationStatusBadge';
+import { VerificationDetailsDialog } from './VerificationDetailsDialog';
 
 interface VerificationRequestCardProps {
   request: VerificationRequest;
 }
 
 export const VerificationRequestCard = ({ request }: VerificationRequestCardProps) => {
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
   return (
     <Card className="mb-4 overflow-hidden">
       <CardContent className="p-6">
@@ -55,11 +58,21 @@ export const VerificationRequestCard = ({ request }: VerificationRequestCardProp
         )}
         
         <div className="mt-4 flex justify-end">
-          <Button variant="outline" size="sm">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setDetailsOpen(true)}
+          >
             View Details <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         </div>
       </CardContent>
+
+      <VerificationDetailsDialog 
+        request={request} 
+        open={detailsOpen} 
+        onOpenChange={setDetailsOpen}
+      />
     </Card>
   );
 };
