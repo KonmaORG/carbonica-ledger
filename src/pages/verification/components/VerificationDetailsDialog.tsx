@@ -137,15 +137,9 @@ export const VerificationDetailsDialog = ({
                   <span className="text-green-600 font-medium">Completed</span>
                 </li>
                 <li className="flex items-center justify-between">
-                  <span>Initial Review</span>
-                  <span className={`font-medium ${request.progress >= 30 ? 'text-green-600' : 'text-gray-400'}`}>
-                    {request.progress >= 30 ? 'Completed' : 'Pending'}
-                  </span>
-                </li>
-                <li className="flex items-center justify-between">
                   <span>Technical Verification</span>
-                  <span className={`font-medium ${request.progress >= 60 ? 'text-green-600' : 'text-gray-400'}`}>
-                    {request.progress >= 60 ? 'Completed' : 'Pending'}
+                  <span className={`font-medium ${request.progress >= 50 ? 'text-green-600' : 'text-gray-400'}`}>
+                    {request.progress >= 50 ? 'Completed' : 'Pending'}
                   </span>
                 </li>
                 <li className="flex items-center justify-between">
