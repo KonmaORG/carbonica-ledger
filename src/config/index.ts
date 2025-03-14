@@ -18,9 +18,15 @@ export const SIGNER3 = process.env.NEXT_PUBLIC_SIGNER_3 as string;
 export const IDENTIFICATION_PID: PolicyId = process.env
   .NEXT_PUBLIC_IDENTIFICATION_PID as string;
 export const CATEGORIES = [
-  "forest",
-  "water",
-  "air",
-  "forestration",
-  "algae treatment",
+  // PROJECT_TYPES in projectform
+  "Forest Conservation",
+  "Renewable Energy",
+  "Methane Capture",
+  "Energy Efficiency",
+  "Reforestation",
+  "Wetland Restoration",
+  "Sustainable Agriculture",
+  "Biodiversity Conservation",
+  "Clean Transportation",
+  "Other",
 ];
