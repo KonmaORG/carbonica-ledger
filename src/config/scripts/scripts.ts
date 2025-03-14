@@ -4,43 +4,29 @@ import {
   Data,
   Validator,
 } from "@lucid-evolution/lucid";
-
 import {
-  cet_minter_cet_minter_mint,
-  user_script_user_script_spend,
-} from "./plutus";
-import {
-  config_datum_holder_config_datum_holder_spend,
   identification_nft_identification_nft_mint,
+  config_datum_holder_config_datum_holder_spend,
   validator_contract_validator_contract_mint,
   validator_contract_validator_contract_mint_mint,
 } from "./karbonLedger";
 import { getPolicyId } from "@/lib/utils";
-import { identificationPolicyid } from "..";
+import { cet_minter_cet_minter_mint } from "./karbonEmission";
+import {
+  crowdfunding_campaign_spend,
+  identication_nft_identification_nft_mint_crowdfunding,
+  state_token_script_state_token_script_spend,
+} from "./crowdfunding_plutus";
+import { karbonstore_karbonstore_spend } from "./karbon_marketplace";
 
-const cet_minter_mint = applyDoubleCborEncoding(cet_minter_cet_minter_mint);
+export const identificationPolicyid: Data = process.env
+  .NEXT_PUBLIC_IDENTIFICATION_PID as string;
 
-export const CETMINTER: Validator = {
-  type: "PlutusV3",
-  script: cet_minter_mint,
-};
+//#region Karbon_Ledger
 
-const user_script_spend = applyDoubleCborEncoding(
-  user_script_user_script_spend,
-);
-
-export const USERSCRIPT: (param: any[]) => Validator = (param: any[]) => {
-  return {
-    type: "PlutusV3",
-    script: applyParamsToScript(user_script_spend, param),
-  };
-};
-
-// ----
 //------------------------------------------------------------------
-
 const identificationNFT_Mint = applyDoubleCborEncoding(
-  identification_nft_identification_nft_mint,
+  identification_nft_identification_nft_mint
 );
 
 export function IdentificationNFT_MintValidator(params: any[]): Validator {
@@ -50,8 +36,9 @@ export function IdentificationNFT_MintValidator(params: any[]): Validator {
   };
 }
 
+//------------------------------------------------------------------
 const configdatumholderscript = applyDoubleCborEncoding(
-  config_datum_holder_config_datum_holder_spend,
+  config_datum_holder_config_datum_holder_spend
 );
 
 export function ConfigDatumHolderValidator(): Validator {
@@ -61,30 +48,94 @@ export function ConfigDatumHolderValidator(): Validator {
   };
 }
 
+// --------------------------------------------------------------
 const ValidatorContractScript = applyDoubleCborEncoding(
-  validator_contract_validator_contract_mint,
+  validator_contract_validator_contract_mint
 );
-export function COTMINTER(): Validator {
+export function ValidatorContract(): Validator {
   //config_nft : PolicyId; validator_contract_mint: PolicyId
   const validatorMinterParam = getPolicyId(ValidatorMinter);
   return {
     type: "PlutusV3",
     script: applyParamsToScript(ValidatorContractScript, [
-      identificationPolicyid, //identification pid from karbon-ledger
+      identificationPolicyid,
       validatorMinterParam,
     ]),
   };
 }
 
+// --------------------------------------------------------------
 const ValidatorMinterScript = applyDoubleCborEncoding(
-  validator_contract_validator_contract_mint_mint,
+  validator_contract_validator_contract_mint_mint
 );
 export function ValidatorMinter(): Validator {
   //config_nft : PolicyId;
   return {
     type: "PlutusV3",
     script: applyParamsToScript(ValidatorMinterScript, [
-      identificationPolicyid, //identification pid from karbon-ledger
+      identificationPolicyid,
     ]),
   };
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//#region Karbon_Emission
+const cet_minter_mint = applyDoubleCborEncoding(cet_minter_cet_minter_mint);
+
+export const CETMINTER: Validator = {
+  type: "PlutusV3",
+  script: cet_minter_mint,
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//#region Karbon_Crowdfunding
+const IdetificationPID: string =
+  "06cab6a81e5f3dcbfdd0a68e57edf77c43682063e8df89c545ec5dfd";
+
+const identificationNFT_Mint_crowdfunding = applyDoubleCborEncoding(
+  identication_nft_identification_nft_mint_crowdfunding
+);
+
+export function IdentificationNFTValidator(params: any[]): Validator {
+  return {
+    type: "PlutusV3",
+    script: applyParamsToScript(identificationNFT_Mint, params),
+  };
+}
+
+// ------------------------------------------------------------------
+const state_token_script = applyDoubleCborEncoding(
+  state_token_script_state_token_script_spend
+);
+
+export function StateTokenValidator(): Validator {
+  return {
+    type: "PlutusV3",
+    script: applyParamsToScript(state_token_script, [IdetificationPID]),
+  };
+}
+
+//   ------------------------------------------------------------------
+const crowdfunding_script = applyDoubleCborEncoding(
+  crowdfunding_campaign_spend
+);
+
+export function CrowdfundingValidator(params: any[]): Validator {
+  return {
+    type: "PlutusV3",
+    script: applyParamsToScript(crowdfunding_script, params),
+  };
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//#region Karbon_Marketplace
+
+const marketplace_identificationNFT_Mint = applyDoubleCborEncoding(
+  karbonstore_karbonstore_spend
+);
+
+export const KarbonStoreValidator: Validator = {
+  type: "PlutusV3",
+  script: identificationNFT_Mint,
+};
