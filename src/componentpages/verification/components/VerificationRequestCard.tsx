@@ -15,8 +15,9 @@ interface VerificationRequestCardProps {
 }
 
 export const VerificationRequestCard = ({
-  request: { data, project },
+  request,
 }: VerificationRequestCardProps) => {
+  const { data, project } = request;
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [walletConnection] = useWallet();
   const { lucid } = walletConnection;
@@ -25,7 +26,8 @@ export const VerificationRequestCard = ({
 
   useEffect(() => {
     async function fetchDatum() {
-      if (!lucid) return;
+      console.log(lucid, project);
+      if (!lucid || !project) return;
       const data = await lucid.datumOf(project);
       const datum = Data.castFrom(data, KarbonDatum);
       console.log(datum);
@@ -96,7 +98,7 @@ export const VerificationRequestCard = ({
         )}
       </CardContent>
       <VerificationDetailsDialog
-        request={data}
+        request={{ data, project, datum }}
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
       />

@@ -39,7 +39,7 @@ const ProjectRegister = () => {
     } else {
       toast({
         title: "Project submitted for registration",
-        description: "Your project has been submitted for validation.",
+        description: result.txHash,
       });
       setSubmissionState("success");
     }

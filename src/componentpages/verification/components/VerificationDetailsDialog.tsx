@@ -14,9 +14,13 @@ import { useToast } from "@/hooks/use-toast";
 import { VerificationDetailsContent } from "./VerificationDetailsContent";
 import { ValidatorActions } from "./ValidatorActions";
 import { ConfirmActionDialog } from "./ConfirmActionDialog";
+import { toText, UTxO } from "@lucid-evolution/lucid";
+import { KarbonDatum } from "@/types/datum";
+import { useWallet } from "@/context/walletContext";
+import { acceptProject, rejectProject } from "@/lib/transaction";
 
 interface VerificationDetailsDialogProps {
-  request: VerificationRequest;
+  request: { data: VerificationRequest; project: UTxO; datum: KarbonDatum };
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -26,13 +30,14 @@ export const VerificationDetailsDialog = ({
   open,
   onOpenChange,
 }: VerificationDetailsDialogProps) => {
+  const { data, project, datum } = request;
   const { toast } = useToast();
   const [confirmAction, setConfirmAction] = React.useState<
     "approve" | "reject" | null
   >(null);
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
+  const [walletConnection] = useWallet();
   const handleAction = async (action: "approve" | "reject") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
@@ -43,27 +48,29 @@ export const VerificationDetailsDialog = ({
 
     try {
       // Simulate blockchain transaction
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // call Cardano function to approve or reject verification request based on `confirmAction`
+      let functionCallAction =
+        confirmAction === "approve" ? acceptProject : rejectProject;
+      const result = await functionCallAction(walletConnection, project);
+      if (result.status !== "ok") {
+        throw new Error(result.error);
+      } else {
+        const actionMessages = {
+          approve: "Verification request approved successfully",
+          reject: "Verification request rejected",
+        };
 
-      // Show success message
-      const actionMessages = {
-        approve: "Verification request approved successfully",
-        reject: "Verification request rejected",
-      };
+        toast({
+          title: "Transaction Successful",
+          description: result.txHash,
+        });
 
-      toast({
-        title: "Transaction Successful",
-        description: actionMessages[confirmAction!],
-      });
-
-      setIsConfirmOpen(false);
-      onOpenChange(false);
-    } catch (error) {
+        setIsConfirmOpen(false);
+        onOpenChange(false);
+      }
+    } catch (error: any) {
       toast({
         title: "Transaction Failed",
-        description:
-          "There was an error processing your request. Please try again.",
+        description: error,
         variant: "destructive",
       });
     } finally {
@@ -72,36 +79,40 @@ export const VerificationDetailsDialog = ({
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl">{request.projectName}</DialogTitle>
-            <DialogDescription className="flex items-center justify-between">
-              <span>Verification Request ID: {request.id}</span>
-              <VerificationStatusBadge status={request.status} />
-            </DialogDescription>
-          </DialogHeader>
+    datum && (
+      <>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl">
+                {toText(datum.asset_name)}
+              </DialogTitle>
+              <DialogDescription className="flex items-center justify-between">
+                <span>Verification Request ID: {data.id}</span>
+                <VerificationStatusBadge status={data.status} />
+              </DialogDescription>
+            </DialogHeader>
 
-          <VerificationDetailsContent request={request} />
+            <VerificationDetailsContent request={data} />
 
-          <ValidatorActions request={request} onAction={handleAction} />
+            <ValidatorActions request={data} onAction={handleAction} />
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-      <ConfirmActionDialog
-        action={confirmAction}
-        isOpen={isConfirmOpen}
-        onOpenChange={setIsConfirmOpen}
-        onConfirm={executeAction}
-        isSubmitting={isSubmitting}
-      />
-    </>
+        <ConfirmActionDialog
+          action={confirmAction}
+          isOpen={isConfirmOpen}
+          onOpenChange={setIsConfirmOpen}
+          onConfirm={executeAction}
+          isSubmitting={isSubmitting}
+        />
+      </>
+    )
   );
 };
