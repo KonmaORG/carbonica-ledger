@@ -14,6 +14,7 @@ import {
 } from "@lucid-evolution/lucid";
 import {
   getAddress,
+  handleError,
   multiSignwithPrivateKey,
   privateKeytoAddress,
   refUtxo,
@@ -96,7 +97,7 @@ export async function submitProject(
     console.log("txHash: ", txHash);
     return { status: "ok", txHash };
   } catch (error: any) {
-    return { status: "error", error };
+    return { status: "error", error: handleError(error) };
   }
 }
 
@@ -148,7 +149,7 @@ export async function rejectProject(
     return { status: "ok", txHash };
   } catch (error: any) {
     console.log(error);
-    return { status: "error", error: error.message || "Unknown error occured" };
+    return { status: "error", error: handleError(error) };
   }
 }
 
@@ -224,6 +225,6 @@ export async function acceptProject(
     return { status: "ok", txHash };
   } catch (error: any) {
     console.log(error);
-    return { status: "error", error: error.message || "Unknown error occured" };
+    return { status: "error", error: handleError(error) };
   }
 }

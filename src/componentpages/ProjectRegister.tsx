@@ -33,8 +33,7 @@ const ProjectRegister = () => {
       toast({
         title: "Error submitting project",
         description:
-          result.error.message ||
-          "An error occurred while submitting your project.",
+          result.error || "An error occurred while submitting your project.",
       });
     } else {
       toast({

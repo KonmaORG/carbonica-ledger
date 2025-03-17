@@ -26,11 +26,9 @@ export const VerificationRequestCard = ({
 
   useEffect(() => {
     async function fetchDatum() {
-      console.log(lucid, project);
       if (!lucid || !project) return;
       const data = await lucid.datumOf(project);
       const datum = Data.castFrom(data, KarbonDatum);
-      console.log(datum);
       setDatum(datum);
     }
     fetchDatum();

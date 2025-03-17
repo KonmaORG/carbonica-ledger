@@ -52,7 +52,7 @@ export const VerificationDetailsDialog = ({
         confirmAction === "approve" ? acceptProject : rejectProject;
       const result = await functionCallAction(walletConnection, project);
       if (result.status !== "ok") {
-        throw new Error(result.error);
+        throw result.error;
       } else {
         const actionMessages = {
           approve: "Verification request approved successfully",
@@ -70,7 +70,7 @@ export const VerificationDetailsDialog = ({
     } catch (error: any) {
       toast({
         title: "Transaction Failed",
-        description: error,
+        description: error || "Unknown error occured",
         variant: "destructive",
       });
     } finally {
