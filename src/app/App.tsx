@@ -24,12 +24,12 @@ const App = () => (
         <Routes>
           {/* <Route path="/" element={<Index />} /> */}
           {/* <Route path="/projects" element={<Projects />} /> */}
-          <Route path="/projects/:id" element={<ProjectDetails />} />
-          <Route path="/projects/register" element={<ProjectRegister />} />
+          {/* <Route path="/projects/:id" element={<ProjectDetails />} />
+          <Route path="/projects/register" element={<ProjectRegister />} /> */}
           {/* <Route path="/verification" element={<Verification />} /> */}
           {/* <Route path="/registry" element={<Registry />} /> */}
           {/* <Route path="/compliance" element={<Compliance />} /> */}
-          <Route path="/profile" element={<UserProfile />} />
+          {/* <Route path="/profile" element={<UserProfile />} /> */}
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
