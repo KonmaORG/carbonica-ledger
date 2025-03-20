@@ -13,14 +13,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Save, Download, CreditCard } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export const BillingSettings = () => {
-  const { toast } = useToast();
-
   const handleSave = () => {
-    toast({
-      title: "Settings saved",
+    toast("Settings saved", {
       description: "Your billing information has been updated successfully.",
     });
   };

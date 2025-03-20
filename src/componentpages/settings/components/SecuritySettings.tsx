@@ -13,14 +13,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Save } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export const SecuritySettings = () => {
-  const { toast } = useToast();
-
   const handleSave = () => {
-    toast({
-      title: "Settings saved",
+    toast("Settings saved", {
       description: "Your security settings have been updated successfully.",
     });
   };

@@ -12,14 +12,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export const ProfileSettings = () => {
-  const { toast } = useToast();
-
   const handleSave = () => {
-    toast({
-      title: "Settings saved",
+    toast("Settings saved", {
       description: "Your profile settings have been updated successfully.",
     });
   };

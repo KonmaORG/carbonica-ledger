@@ -12,14 +12,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Save, FileText } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export const ApiSettings = () => {
-  const { toast } = useToast();
-
   const handleSave = () => {
-    toast({
-      title: "Settings saved",
+    toast("Settings saved", {
       description: "Your API settings have been updated successfully.",
     });
   };
