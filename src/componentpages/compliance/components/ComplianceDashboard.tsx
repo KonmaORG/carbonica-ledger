@@ -1,9 +1,8 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, BarChart3, Calendar } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ShieldCheck, BarChart3, Calendar } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 export const ComplianceDashboard = () => {
   return (
@@ -18,7 +17,10 @@ export const ComplianceDashboard = () => {
         <CardContent>
           <div className="flex flex-col items-center py-4">
             <div className="relative w-32 h-32 flex items-center justify-center mb-4">
-              <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 36 36">
+              <svg
+                className="w-32 h-32 transform -rotate-90"
+                viewBox="0 0 36 36"
+              >
                 <circle
                   cx="18"
                   cy="18"
@@ -43,11 +45,12 @@ export const ComplianceDashboard = () => {
                 <span className="text-3xl font-bold">80%</span>
               </div>
             </div>
-            <p className="text-center text-gray-600">Your projects are mostly compliant with required standards</p>
+            <p className="text-center text-gray-600">
+              Your projects are mostly compliant with required standards
+            </p>
           </div>
         </CardContent>
       </Card>
-      
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center">
@@ -88,7 +91,6 @@ export const ComplianceDashboard = () => {
           </div>
         </CardContent>
       </Card>
-      
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center">
@@ -103,7 +105,10 @@ export const ComplianceDashboard = () => {
                 <p className="font-medium">Quarterly Report</p>
                 <p className="text-xs text-gray-500">Q2 2023</p>
               </div>
-              <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+              <Badge
+                variant="outline"
+                className="bg-yellow-100 text-yellow-800 border-yellow-200"
+              >
                 In 7 days
               </Badge>
             </div>
@@ -112,7 +117,10 @@ export const ComplianceDashboard = () => {
                 <p className="font-medium">Verification Renewal</p>
                 <p className="text-xs text-gray-500">Project #2</p>
               </div>
-              <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">
+              <Badge
+                variant="outline"
+                className="bg-red-100 text-red-800 border-red-200"
+              >
                 In 3 days
               </Badge>
             </div>
@@ -121,7 +129,10 @@ export const ComplianceDashboard = () => {
                 <p className="font-medium">Annual Audit</p>
                 <p className="text-xs text-gray-500">All Projects</p>
               </div>
-              <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
+              <Badge
+                variant="outline"
+                className="bg-blue-100 text-blue-800 border-blue-200"
+              >
                 In 45 days
               </Badge>
             </div>
