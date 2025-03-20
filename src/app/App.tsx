@@ -22,8 +22,8 @@ const App = () => (
     <BrowserRouter>
       <RootLayout>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/projects" element={<Projects />} />
+          {/* <Route path="/" element={<Index />} /> */}
+          {/* <Route path="/projects" element={<Projects />} /> */}
           <Route path="/projects/:id" element={<ProjectDetails />} />
           <Route path="/projects/register" element={<ProjectRegister />} />
           {/* <Route path="/verification" element={<Verification />} /> */}
