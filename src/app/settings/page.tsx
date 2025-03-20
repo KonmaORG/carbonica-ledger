@@ -47,7 +47,8 @@ export default function page() {
         </TabsList>
 
         <TabsContent value="profile">
-          <ProfileSettings />
+          {" "}
+          <ProfileSettings />{" "}
         </TabsContent>
 
         <TabsContent value="notifications">
@@ -55,11 +56,13 @@ export default function page() {
         </TabsContent>
 
         <TabsContent value="security">
-          <SecuritySettings />
+          {" "}
+          <SecuritySettings />{" "}
         </TabsContent>
 
         <TabsContent value="api">
-          <ApiSettings />
+          {" "}
+          <ApiSettings />{" "}
         </TabsContent>
 
         <TabsContent value="wallet">

@@ -32,7 +32,7 @@ const App = () => (
           {/* <Route path="/profile" element={<UserProfile />} /> */}
           {/* <Route path="/settings" element={<Settings />} /> */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </RootLayout>
     </BrowserRouter>

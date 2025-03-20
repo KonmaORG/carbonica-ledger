@@ -1,12 +1,18 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Save } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+"use client";
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Save } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const ProfileSettings = () => {
   const { toast } = useToast();
@@ -38,28 +44,29 @@ export const ProfileSettings = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
-            <Input id="email" type="email" defaultValue="john.doe@example.com" />
+            <Input
+              id="email"
+              type="email"
+              defaultValue="john.doe@example.com"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role / Position</Label>
             <Input id="role" defaultValue="Project Manager" />
           </div>
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="bio">Bio</Label>
-          <Textarea 
-            id="bio" 
-            placeholder="Tell us about yourself or your organization..." 
+          <Textarea
+            id="bio"
+            placeholder="Tell us about yourself or your organization..."
             defaultValue="Climate advocate with 10+ years of experience in carbon offset project management."
             className="min-h-[120px]"
           />
         </div>
-        
-        <Button 
-          onClick={handleSave}
-          className="flex items-center gap-2"
-        >
+
+        <Button onClick={handleSave} className="flex items-center gap-2">
           <Save className="h-4 w-4" />
           Save Changes
         </Button>
