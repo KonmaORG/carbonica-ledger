@@ -85,7 +85,7 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
   },
 ];
 
-export default function page() {
+export default function Page() {
   const [searchTerm, setSearchTerm] = useState("");
   const [projectType, setProjectType] = useState<string>("all-types");
   const [status, setStatus] = useState<string>("all-statuses");
