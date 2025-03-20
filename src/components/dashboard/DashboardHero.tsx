@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { Globe, FileText } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Globe, FileText } from "lucide-react";
+import Link from "next/link";
 
 export const DashboardHero = () => {
   return (
@@ -14,19 +13,23 @@ export const DashboardHero = () => {
             Transparent Carbon Offset Registry on Cardano
           </h1>
           <p className="text-lg opacity-90 mb-8 max-w-2xl">
-            A decentralized and immutable ledger for carbon credit issuance, transfers, and retirements, 
-            ensuring transparency and preventing double-counting in the carbon market.
+            A decentralized and immutable ledger for carbon credit issuance,
+            transfers, and retirements, ensuring transparency and preventing
+            double-counting in the carbon market.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link to="/projects/register">
-              <Button size="lg" className="bg-white text-carbonica-green-dark hover:bg-gray-100">
+            <Link href="/projects/register">
+              <Button
+                size="lg"
+                className="bg-white text-carbonica-green-dark hover:bg-gray-100"
+              >
                 <FileText className="mr-2 h-5 w-5" />
                 Register a Project
               </Button>
             </Link>
-            <Link to="/registry">
-              <Button 
-                size="lg" 
+            <Link href="/registry">
+              <Button
+                size="lg"
                 className="bg-white text-carbonica-green-dark hover:bg-gray-100 shadow-md hover:shadow-lg transition-all"
               >
                 <Globe className="mr-2 h-5 w-5" />
