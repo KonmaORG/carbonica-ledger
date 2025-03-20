@@ -30,7 +30,7 @@ const App = () => (
           {/* <Route path="/registry" element={<Registry />} /> */}
           {/* <Route path="/compliance" element={<Compliance />} /> */}
           {/* <Route path="/profile" element={<UserProfile />} /> */}
-          <Route path="/settings" element={<Settings />} />
+          {/* <Route path="/settings" element={<Settings />} /> */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
