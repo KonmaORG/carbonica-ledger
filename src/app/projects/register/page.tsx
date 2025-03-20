@@ -12,7 +12,8 @@ import { ProjectRegistrationForm } from "@/components/projects/ProjectRegistrati
 import { ProjectRegistrationSuccess } from "@/components/projects/ProjectRegistrationSuccess";
 import { submitProject } from "@/lib/transaction";
 import { useWallet } from "@/context/walletContext";
-import { toast } from "@/hooks/use-toast";
+// import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export default function Page() {
   const [WalletConnection] = useWallet();
@@ -31,15 +32,16 @@ export default function Page() {
       data.projectName
     );
     if (result.status !== "ok") {
-      toast({
-        title: "Error submitting project",
-        description:
-          result.error || "An error occurred while submitting your project.",
+      toast.error("Error submitting project", {
+        description: (
+          <span className="text-red-500">
+            {result.error || "An error occurred while submitting your project."}
+          </span>
+        ),
       });
     } else {
-      toast({
-        title: "Project submitted for registration",
-        description: result.txHash,
+      toast.success("Project submitted for registration", {
+        description: <span className="text-green-500">{result.txHash}</span>,
       });
       setSubmissionState("success");
     }
