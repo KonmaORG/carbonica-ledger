@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   Card,
@@ -13,7 +14,7 @@ import { submitProject } from "@/lib/transaction";
 import { useWallet } from "@/context/walletContext";
 import { toast } from "@/hooks/use-toast";
 
-const ProjectRegister = () => {
+export default function Page() {
   const [WalletConnection] = useWallet();
   const [submissionState, setSubmissionState] = useState<"form" | "success">(
     "form"
@@ -96,6 +97,4 @@ const ProjectRegister = () => {
       )}
     </div>
   );
-};
-
-export default ProjectRegister;
+}

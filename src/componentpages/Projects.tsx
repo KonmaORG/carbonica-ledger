@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
-import { ProjectCard, ProjectCardProps } from '@/components/projects/ProjectCard';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Link } from 'react-router-dom';
-import { Search, Filter, Plus, Leaf, Globe, BarChart3 } from 'lucide-react';
+import React, { useState } from "react";
+import { Layout } from "@/components/layout/Layout";
+import {
+  ProjectCard,
+  ProjectCardProps,
+} from "@/components/projects/ProjectCard";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Link } from "react-router-dom";
+import { Search, Filter, Plus, Leaf, Globe, BarChart3 } from "lucide-react";
 
 const MOCK_PROJECTS: ProjectCardProps[] = [
   {
@@ -16,7 +25,8 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Jan 2023",
     status: "verified",
     credits: 125000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "2",
@@ -26,7 +36,8 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Mar 2023",
     status: "verified",
     credits: 85000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "3",
@@ -36,7 +47,8 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Feb 2023",
     status: "pending",
     credits: 62000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "4",
@@ -46,7 +58,8 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Apr 2023",
     status: "verified",
     credits: 45000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1548337138-e87d889cc369?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1548337138-e87d889cc369?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "5",
@@ -56,7 +69,8 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Dec 2022",
     status: "verified",
     credits: 73000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1583373834259-46cc92173cb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1583373834259-46cc92173cb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "6",
@@ -66,20 +80,24 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "May 2023",
     status: "pending",
     credits: 28000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-  }
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+  },
 ];
 
 const Projects = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [projectType, setProjectType] = useState<string>('all-types');
-  const [status, setStatus] = useState<string>('all-statuses');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [projectType, setProjectType] = useState<string>("all-types");
+  const [status, setStatus] = useState<string>("all-statuses");
 
-  const filteredProjects = MOCK_PROJECTS.filter(project => {
-    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredProjects = MOCK_PROJECTS.filter((project) => {
+    const matchesSearch =
+      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = projectType === 'all-types' || project.type === projectType;
-    const matchesStatus = status === 'all-statuses' || project.status === status;
+    const matchesType =
+      projectType === "all-types" || project.type === projectType;
+    const matchesStatus =
+      status === "all-statuses" || project.status === status;
     return matchesSearch && matchesType && matchesStatus;
   });
 
@@ -89,9 +107,13 @@ const Projects = () => {
         <div className="bg-gradient-to-r from-carbonica-green-light/30 to-carbonica-blue-light/30 p-6 rounded-lg shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-carbonica-green-dark mb-2">Carbon Offset Projects</h1>
+              <h1 className="text-3xl font-bold text-carbonica-green-dark mb-2">
+                Carbon Offset Projects
+              </h1>
               <p className="text-gray-600 max-w-2xl">
-                Explore verified carbon offset projects from around the world. Support initiatives that reduce carbon emissions and contribute to a sustainable future.
+                Explore verified carbon offset projects from around the world.
+                Support initiatives that reduce carbon emissions and contribute
+                to a sustainable future.
               </p>
             </div>
             <Link to="/projects/register" className="mt-4 md:mt-0">
@@ -106,25 +128,43 @@ const Projects = () => {
             <div className="flex items-center p-3 bg-white/80 rounded-lg shadow-sm">
               <Globe className="h-5 w-5 text-carbonica-green-dark mr-2" />
               <div>
-                <p className="text-sm font-medium text-gray-700">Global Impact</p>
-                <p className="text-xl font-semibold">{MOCK_PROJECTS.length} Projects</p>
+                <p className="text-sm font-medium text-gray-700">
+                  Global Impact
+                </p>
+                <p className="text-xl font-semibold">
+                  {MOCK_PROJECTS.length} Projects
+                </p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-white/80 rounded-lg shadow-sm">
               <Leaf className="h-5 w-5 text-carbonica-green-dark mr-2" />
               <div>
-                <p className="text-sm font-medium text-gray-700">Carbon Credits</p>
+                <p className="text-sm font-medium text-gray-700">
+                  Carbon Credits
+                </p>
                 <p className="text-xl font-semibold">
-                  {MOCK_PROJECTS.reduce((acc, project) => acc + project.credits, 0).toLocaleString()} tons
+                  {MOCK_PROJECTS.reduce(
+                    (acc, project) => acc + project.credits,
+                    0
+                  ).toLocaleString()}{" "}
+                  tons
                 </p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-white/80 rounded-lg shadow-sm">
               <BarChart3 className="h-5 w-5 text-carbonica-green-dark mr-2" />
               <div>
-                <p className="text-sm font-medium text-gray-700">Verification Rate</p>
+                <p className="text-sm font-medium text-gray-700">
+                  Verification Rate
+                </p>
                 <p className="text-xl font-semibold">
-                  {Math.round((MOCK_PROJECTS.filter(p => p.status === 'verified').length / MOCK_PROJECTS.length) * 100)}%
+                  {Math.round(
+                    (MOCK_PROJECTS.filter((p) => p.status === "verified")
+                      .length /
+                      MOCK_PROJECTS.length) *
+                      100
+                  )}
+                  %
                 </p>
               </div>
             </div>
@@ -148,11 +188,21 @@ const Projects = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all-types">All Types</SelectItem>
-                <SelectItem value="Forest Conservation">Forest Conservation</SelectItem>
-                <SelectItem value="Renewable Energy">Renewable Energy</SelectItem>
-                <SelectItem value="Biodiversity Conservation">Biodiversity Conservation</SelectItem>
-                <SelectItem value="Wetland Restoration">Wetland Restoration</SelectItem>
-                <SelectItem value="Methane Reduction">Methane Reduction</SelectItem>
+                <SelectItem value="Forest Conservation">
+                  Forest Conservation
+                </SelectItem>
+                <SelectItem value="Renewable Energy">
+                  Renewable Energy
+                </SelectItem>
+                <SelectItem value="Biodiversity Conservation">
+                  Biodiversity Conservation
+                </SelectItem>
+                <SelectItem value="Wetland Restoration">
+                  Wetland Restoration
+                </SelectItem>
+                <SelectItem value="Methane Reduction">
+                  Methane Reduction
+                </SelectItem>
               </SelectContent>
             </Select>
             <Select value={status} onValueChange={setStatus}>
@@ -177,12 +227,18 @@ const Projects = () => {
           </div>
         ) : (
           <div className="text-center py-16">
-            <p className="text-lg text-gray-500">No projects found matching your criteria.</p>
-            <Button variant="outline" className="mt-4" onClick={() => {
-              setSearchTerm('');
-              setProjectType('all-types');
-              setStatus('all-statuses');
-            }}>
+            <p className="text-lg text-gray-500">
+              No projects found matching your criteria.
+            </p>
+            <Button
+              variant="outline"
+              className="mt-4"
+              onClick={() => {
+                setSearchTerm("");
+                setProjectType("all-types");
+                setStatus("all-statuses");
+              }}
+            >
               Clear Filters
             </Button>
           </div>

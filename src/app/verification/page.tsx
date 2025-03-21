@@ -1,16 +1,16 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { VerificationRequestsList } from "./components/VerificationRequestsList";
-import { MOCK_VERIFICATION_REQUESTS } from "./data/mockVerificationData";
-import { useVerificationFilters } from "./hooks/useVerificationFilters";
 import { useWallet } from "@/context/walletContext";
 import { mintingPolicyToId, UTxO } from "@lucid-evolution/lucid";
 import { getAddress } from "@/lib/utils";
 import { ValidatorContract, ValidatorMinter } from "@/config/scripts/scripts";
+import { VerificationRequestsList } from "@/componentpages/verification/components/VerificationRequestsList";
+import { useVerificationFilters } from "@/componentpages/verification/hooks/useVerificationFilters";
+import { MOCK_VERIFICATION_REQUESTS } from "@/componentpages/verification/data/mockVerificationData";
 
-const VerificationPageContent = () => {
+export default function Page() {
   const [projects, setProjects] = useState<UTxO[]>([]);
   const { activeTab, setActiveTab, filteredRequests } = useVerificationFilters(
     MOCK_VERIFICATION_REQUESTS,
@@ -83,6 +83,4 @@ const VerificationPageContent = () => {
     </div>
     // </Layout>
   );
-};
-
-export default VerificationPageContent;
+}

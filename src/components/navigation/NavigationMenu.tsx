@@ -1,5 +1,5 @@
+"use client";
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { WalletConnectionDialog } from "@/components/wallet/WalletConnectionDialog";
 import {
@@ -25,6 +25,7 @@ import {
   FileText,
 } from "lucide-react";
 import WalletConnector from "../wallet/client";
+import Link from "next/link";
 
 export const NavigationMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -38,7 +39,7 @@ export const NavigationMenu = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <Leaf className="h-8 w-8 text-carbonica-green-dark" />
               <span className="font-bold text-xl text-carbonica-green-dark">
                 Carbonica
@@ -89,7 +90,7 @@ export const NavigationMenu = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link
-                    to="/profile"
+                    href="/profile"
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <UserCircle className="h-4 w-4" />
@@ -98,7 +99,7 @@ export const NavigationMenu = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link
-                    to="/projects/register"
+                    href="/projects/register"
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <FileText className="h-4 w-4" />
@@ -107,7 +108,7 @@ export const NavigationMenu = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link
-                    to="/settings"
+                    href="/settings"
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <Settings className="h-4 w-4" />
@@ -195,7 +196,7 @@ interface NavLinkProps {
 const NavLink = ({ to, label, icon }: NavLinkProps) => {
   return (
     <Link
-      to={to}
+      href={to}
       className="text-gray-700 hover:text-carbonica-green-dark flex items-center space-x-1 py-2 text-sm font-medium"
     >
       {icon}
@@ -207,7 +208,7 @@ const NavLink = ({ to, label, icon }: NavLinkProps) => {
 const MobileNavLink = ({ to, label, icon }: NavLinkProps) => {
   return (
     <Link
-      to={to}
+      href={to}
       className="text-gray-700 hover:text-carbonica-green-dark flex items-center space-x-3 py-2 text-base font-medium"
     >
       {icon}

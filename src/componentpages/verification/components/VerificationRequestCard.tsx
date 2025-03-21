@@ -5,17 +5,20 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowRight } from "lucide-react";
 import { VerificationRequest } from "../types/verificationTypes";
 import { VerificationStatusBadge } from "./VerificationStatusBadge";
-import { KarbonDatum } from "@/types/datum";
+import { VerificationDetailsDialog } from "./VerificationDetailsDialog";
 import { Data, toText, UTxO } from "@lucid-evolution/lucid";
 import { useWallet } from "@/context/walletContext";
+import { KarbonDatum } from "@/types/datum";
 
 interface VerificationRequestCardProps {
   request: { data: VerificationRequest; project: UTxO };
 }
-// export const VerificationRequestCard = (request: UTxO) => {
-export const VerificationRequestCard: React.FC<
-  VerificationRequestCardProps
-> = ({ request: { data, project } }) => {
+
+export const VerificationRequestCard = ({
+  request,
+}: VerificationRequestCardProps) => {
+  const { data, project } = request;
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [walletConnection] = useWallet();
   const { lucid } = walletConnection;
 
@@ -23,15 +26,13 @@ export const VerificationRequestCard: React.FC<
 
   useEffect(() => {
     async function fetchDatum() {
-      if (!lucid) return;
+      if (!lucid || !project) return;
       const data = await lucid.datumOf(project);
       const datum = Data.castFrom(data, KarbonDatum);
-      console.log(datum);
       setDatum(datum);
     }
     fetchDatum();
   }, [lucid]);
-
   return (
     <Card className="mb-4 overflow-hidden">
       <CardContent className="p-6">
@@ -81,7 +82,11 @@ export const VerificationRequestCard: React.FC<
             )}
 
             <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDetailsOpen(true)}
+              >
                 View Details <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
@@ -90,6 +95,11 @@ export const VerificationRequestCard: React.FC<
           "loading..."
         )}
       </CardContent>
+      <VerificationDetailsDialog
+        request={{ data, project, datum }}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+      />
     </Card>
   );
 };

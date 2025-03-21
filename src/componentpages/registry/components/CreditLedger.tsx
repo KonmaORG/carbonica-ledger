@@ -1,35 +1,51 @@
-
-import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Search, Download, ExternalLink, Leaf, BadgeCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { CreditEntry } from '../types/registryTypes';
+"use client";
+import React, { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Search, Download, ExternalLink, Leaf, BadgeCheck } from "lucide-react";
+import { CreditEntry } from "../types/registryTypes";
+import Link from "next/link";
 
 interface CreditLedgerProps {
   creditEntries: CreditEntry[];
 }
 
-const StatusBadge = ({ status }: { status: CreditEntry['status'] }) => {
+const StatusBadge = ({ status }: { status: CreditEntry["status"] }) => {
   switch (status) {
-    case 'active':
+    case "active":
       return (
-        <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+        <Badge
+          variant="outline"
+          className="bg-green-100 text-green-800 border-green-200"
+        >
           Active
         </Badge>
       );
-    case 'transferred':
+    case "transferred":
       return (
-        <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
+        <Badge
+          variant="outline"
+          className="bg-blue-100 text-blue-800 border-blue-200"
+        >
           Transferred
         </Badge>
       );
-    case 'retired':
+    case "retired":
       return (
-        <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">
+        <Badge
+          variant="outline"
+          className="bg-purple-100 text-purple-800 border-purple-200"
+        >
           Retired
         </Badge>
       );
@@ -39,21 +55,23 @@ const StatusBadge = ({ status }: { status: CreditEntry['status'] }) => {
 };
 
 export const CreditLedger = ({ creditEntries }: CreditLedgerProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredEntries, setFilteredEntries] = useState<CreditEntry[]>(creditEntries);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEntries, setFilteredEntries] =
+    useState<CreditEntry[]>(creditEntries);
 
   const handleSearch = () => {
-    const filtered = creditEntries.filter(entry => 
-      entry.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.creditId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.location.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered = creditEntries.filter(
+      (entry) =>
+        entry.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.creditId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredEntries(filtered);
   };
 
   const resetFilters = () => {
-    setSearchTerm('');
+    setSearchTerm("");
     setFilteredEntries(creditEntries);
   };
 
@@ -105,13 +123,20 @@ export const CreditLedger = ({ creditEntries }: CreditLedgerProps) => {
             <TableBody>
               {filteredEntries.map((entry) => (
                 <TableRow key={entry.id}>
-                  <TableCell className="font-medium">{entry.creditId}</TableCell>
+                  <TableCell className="font-medium">
+                    {entry.creditId}
+                  </TableCell>
                   <TableCell>
-                    <Link to={`/projects/${entry.projectId}`} className="text-carbonica-blue-dark hover:underline flex items-center">
+                    <Link
+                      href={`/projects/${entry.projectId}`}
+                      className="text-carbonica-blue-dark hover:underline flex items-center"
+                    >
                       {entry.projectName}
                       <BadgeCheck className="h-4 w-4 ml-1 text-carbonica-green-dark" />
                     </Link>
-                    <div className="text-xs text-gray-500">{entry.location}</div>
+                    <div className="text-xs text-gray-500">
+                      {entry.location}
+                    </div>
                   </TableCell>
                   <TableCell>{entry.quantity.toLocaleString()}</TableCell>
                   <TableCell>{entry.vintage}</TableCell>
@@ -132,7 +157,9 @@ export const CreditLedger = ({ creditEntries }: CreditLedgerProps) => {
         </div>
 
         <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-          <p>Showing {filteredEntries.length} of {creditEntries.length} entries</p>
+          <p>
+            Showing {filteredEntries.length} of {creditEntries.length} entries
+          </p>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export Data

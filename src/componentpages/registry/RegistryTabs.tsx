@@ -1,14 +1,15 @@
+"use client";
 
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BookOpen, Code, Webhook } from 'lucide-react';
-import { CreditLedger } from './components/CreditLedger';
-import { BlockchainVerification } from './components/BlockchainVerification';
-import { ApiDocumentation } from '@/components/api/ApiDocumentation';
-import { MOCK_CREDIT_ENTRIES } from './data/mockCreditEntries';
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BookOpen, Code, Webhook } from "lucide-react";
+import { CreditLedger } from "./components/CreditLedger";
+import { BlockchainVerification } from "./components/BlockchainVerification";
+import { ApiDocumentation } from "@/components/api/ApiDocumentation";
+import { MOCK_CREDIT_ENTRIES } from "./data/mockCreditEntries";
 
 export const RegistryTabs = () => {
-  const [activeTab, setActiveTab] = useState('registry');
+  const [activeTab, setActiveTab] = useState("registry");
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
