@@ -1,9 +1,12 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Share2 } from "lucide-react";
+import dynamic from "next/dynamic";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Share2 } from 'lucide-react';
-import { SocialShareModal } from './SocialShareModal';
-
+const SocialShareModal = dynamic(() => import("./SocialShareModal"), {
+  ssr: false, // Disable server-side rendering
+});
 interface SocialShareButtonProps {
   content: {
     title: string;
@@ -11,43 +14,49 @@ interface SocialShareButtonProps {
     url?: string;
     imageUrl?: string;
   };
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
   iconOnly?: boolean;
   buttonText?: string;
 }
 
-export const SocialShareButton = ({ 
-  content, 
-  variant = "outline", 
+export const SocialShareButton = ({
+  content,
+  variant = "outline",
   size = "sm",
   className,
   iconOnly = false,
-  buttonText = "Share"
+  buttonText = "Share",
 }: SocialShareButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Use the current URL if none is provided
-  const shareContent = {
-    ...content,
-    url: content.url || window.location.href
-  };
+  let shareContent;
+  useEffect(() => {
+    shareContent = { ...content, url: content.url || window.location.href };
+  }, [content]);
 
   return (
     <>
-      <Button 
-        variant={variant} 
-        size={size} 
+      <Button
+        variant={variant}
+        size={size}
         className={className}
         onClick={() => setIsModalOpen(true)}
         aria-label="Share content"
       >
-        <Share2 className={`h-4 w-4 ${!iconOnly ? 'mr-2' : ''}`} />
+        <Share2 className={`h-4 w-4 ${!iconOnly ? "mr-2" : ""}`} />
         {!iconOnly && buttonText}
       </Button>
-      
-      <SocialShareModal 
+
+      <SocialShareModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         content={shareContent}
