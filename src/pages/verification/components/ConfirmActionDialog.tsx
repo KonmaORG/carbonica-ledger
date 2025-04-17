@@ -8,15 +8,19 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Loader2 } from 'lucide-react';
 
 interface ConfirmActionDialogProps {
   action: 'approve' | 'reject' | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
   isSubmitting: boolean;
+  rejectionReason?: string;
+  setRejectionReason?: (reason: string) => void;
 }
 
 export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
@@ -24,39 +28,58 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
   isOpen,
   onOpenChange,
   onConfirm,
-  isSubmitting
+  isSubmitting,
+  rejectionReason = '',
+  setRejectionReason = () => {}
 }) => {
-  const actionLabels = {
-    approve: "Approve Request",
-    reject: "Reject Request"
-  };
+  if (!action) return null;
 
-  const actionDescriptions = {
-    approve: "This will approve the verification request and sign the transaction on-chain.",
-    reject: "This will reject the verification request and sign the transaction on-chain."
-  };
+  const isRejection = action === 'reject';
+  
+  const dialogTitle = isRejection 
+    ? "Reject Verification Request" 
+    : "Approve Verification Request";
+    
+  const dialogDescription = isRejection
+    ? "This will reject the verification request. This action cannot be undone."
+    : "This will approve the verification request and issue carbon credits to the project.";
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Confirm {action && actionLabels[action]}
-          </AlertDialogTitle>
+          <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
           <AlertDialogDescription>
-            {action && actionDescriptions[action]}
+            {dialogDescription}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        
+        {isRejection && (
+          <div className="py-4">
+            <label htmlFor="rejection-reason" className="block text-sm font-medium mb-2">
+              Reason for rejection
+            </label>
+            <Textarea 
+              id="rejection-reason"
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Please provide a detailed reason for the rejection"
+              className="min-h-24"
+            />
+          </div>
+        )}
+        
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={onConfirm}
-            disabled={isSubmitting}
-            className={
-              isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-            }
+            disabled={isSubmitting || (isRejection && !rejectionReason)}
+            onClick={(e) => {
+              e.preventDefault();
+              onConfirm();
+            }}
           >
-            {isSubmitting ? "Processing..." : "Confirm & Sign"}
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isRejection ? 'Reject' : 'Approve'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -2,8 +2,9 @@
 import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { VerificationStatusBadge } from './VerificationStatusBadge';
-import { VerificationRequest } from '../types/verificationTypes';
+import { VerificationRequest } from '@/types/model';
 import { VerificationTimeline } from './VerificationTimeline';
+import { VerificationDocuments } from './VerificationDocuments';
 
 interface VerificationDetailsContentProps {
   request: VerificationRequest;
@@ -42,6 +43,8 @@ export const VerificationDetailsContent: React.FC<VerificationDetailsContentProp
         </div>
         <Progress value={request.progress} className="h-2" />
       </div>
+
+      <VerificationDocuments verificationId={request.id} />
 
       {request.rejectionReason && (
         <div className="p-4 bg-red-50 border border-red-100 rounded-md">

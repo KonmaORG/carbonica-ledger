@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { VerificationStatusBadge } from './VerificationStatusBadge';
-import { VerificationRequest } from '../types/verificationTypes';
+import { VerificationRequest } from '@/types/model';
 import { useToast } from '@/hooks/use-toast';
 import { VerificationDetailsContent } from './VerificationDetailsContent';
 import { ValidatorActions } from './ValidatorActions';
 import { ConfirmActionDialog } from './ConfirmActionDialog';
+import { useVerification } from '@/contexts/VerificationContext';
 
 interface VerificationDetailsDialogProps {
   request: VerificationRequest;
@@ -28,9 +29,11 @@ export const VerificationDetailsDialog = ({
   onOpenChange,
 }: VerificationDetailsDialogProps) => {
   const { toast } = useToast();
+  const { approveVerification, rejectVerification } = useVerification();
   const [confirmAction, setConfirmAction] = React.useState<'approve' | 'reject' | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [rejectionReason, setRejectionReason] = React.useState('');
 
   const handleAction = async (action: 'approve' | 'reject') => {
     setConfirmAction(action);
@@ -41,19 +44,20 @@ export const VerificationDetailsDialog = ({
     setIsSubmitting(true);
 
     try {
-      // Simulate blockchain transaction
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Show success message
-      const actionMessages = {
-        approve: "Verification request approved successfully",
-        reject: "Verification request rejected"
-      };
-
-      toast({
-        title: "Transaction Successful",
-        description: actionMessages[confirmAction!],
-      });
+      if (confirmAction === 'approve') {
+        await approveVerification(request.id);
+      } else if (confirmAction === 'reject') {
+        if (!rejectionReason) {
+          toast({
+            title: "Validation Error",
+            description: "Please provide a reason for rejection",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+        await rejectVerification(request.id, rejectionReason);
+      }
       
       setIsConfirmOpen(false);
       onOpenChange(false);
@@ -99,6 +103,8 @@ export const VerificationDetailsDialog = ({
         onOpenChange={setIsConfirmOpen}
         onConfirm={executeAction}
         isSubmitting={isSubmitting}
+        rejectionReason={rejectionReason}
+        setRejectionReason={setRejectionReason}
       />
     </>
   );
