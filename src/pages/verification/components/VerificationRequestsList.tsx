@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { VerificationRequest } from '../types/verificationTypes';
+import { VerificationRequest } from '@/types/model';
 import { VerificationRequestCard } from './VerificationRequestCard';
 
 interface VerificationRequestsListProps {
