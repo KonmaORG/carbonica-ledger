@@ -2,15 +2,17 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
 
-// Initialize Supabase client - Lovable injects these variables automatically
+// Initialize Supabase client with the environment variables
+// When Supabase is connected through Lovable, these variables are automatically injected
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+// Create a temporary client with dummy values if environment variables are not available
+// This prevents the app from crashing during development or when Supabase is not fully set up
+const url = supabaseUrl || 'https://placeholder-url.supabase.co';
+const key = supabaseAnonKey || 'placeholder-key';
 
-export const supabase: SupabaseClient<Database> = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient<Database> = createClient(url, key);
 
 // Auth helper functions
 export const getCurrentUser = async () => {
