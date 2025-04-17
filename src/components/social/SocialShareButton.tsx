@@ -11,7 +11,7 @@ interface SocialShareButtonProps {
   content: {
     title: string;
     description: string;
-    url?: string;
+    url: string;
     imageUrl?: string;
   };
   variant?:
@@ -38,10 +38,13 @@ export const SocialShareButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Use the current URL if none is provided
-  let shareContent;
+  const [shareContent, setShareContent] = useState(content);
   useEffect(() => {
-    shareContent = { ...content, url: content.url || window.location.href };
-  }, [content]);
+    setShareContent((prev) => ({
+      ...prev,
+      url: content.url || window.location.href,
+    }));
+  }, []);
 
   return (
     <>
