@@ -1,11 +1,5 @@
-
-import React from 'react';
-import { 
-  GanttChart,
-  Award,
-  Leaf,
-  ShieldCheck 
-} from 'lucide-react';
+import React from "react";
+import { GanttChart, Award, Leaf, ShieldCheck } from "lucide-react";
 
 interface StatCardProps {
   title: string;
@@ -18,9 +12,7 @@ const StatCard = ({ title, value, icon, color }: StatCardProps) => {
   return (
     <div className={`stats-card border-l-${color}`}>
       <div className="flex items-center">
-        <div className={`p-3 rounded-full bg-${color}/10 mr-4`}>
-          {icon}
-        </div>
+        <div className={`p-3 rounded-full bg-${color}/10 mr-4`}>{icon}</div>
         <div>
           <p className="text-sm font-medium text-gray-500">{title}</p>
           <p className="text-2xl font-bold">{value}</p>

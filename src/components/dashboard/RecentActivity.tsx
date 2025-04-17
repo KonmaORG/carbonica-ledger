@@ -1,12 +1,11 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Leaf, ArrowRight, ShieldCheck, Award } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Leaf, ArrowRight, ShieldCheck, Award } from "lucide-react";
 
 interface ActivityItem {
   id: string;
-  type: 'issuance' | 'transfer' | 'retirement' | 'validation';
+  type: "issuance" | "transfer" | "retirement" | "validation";
   projectId: string;
   projectName: string;
   date: string;
@@ -23,7 +22,7 @@ const MOCK_ACTIVITIES: ActivityItem[] = [
     projectId: "1",
     projectName: "Amazon Rainforest Conservation",
     date: "12 Jun 2023",
-    amount: 25000
+    amount: 25000,
   },
   {
     id: "a2",
@@ -33,7 +32,7 @@ const MOCK_ACTIVITIES: ActivityItem[] = [
     date: "10 Jun 2023",
     amount: 15000,
     from: "EcoFund Inc.",
-    to: "GreenCorp"
+    to: "GreenCorp",
   },
   {
     id: "a3",
@@ -42,7 +41,7 @@ const MOCK_ACTIVITIES: ActivityItem[] = [
     projectName: "Amazon Rainforest Conservation",
     date: "08 Jun 2023",
     amount: 5000,
-    from: "TechGiant Co."
+    from: "TechGiant Co.",
   },
   {
     id: "a4",
@@ -50,48 +49,60 @@ const MOCK_ACTIVITIES: ActivityItem[] = [
     projectId: "3",
     projectName: "Solar Farm Development",
     date: "07 Jun 2023",
-    validator: "ClimateVerify Ltd."
-  }
+    validator: "ClimateVerify Ltd.",
+  },
 ];
 
-const ActivityIcon = ({ type }: { type: ActivityItem['type'] }) => {
+const ActivityIcon = ({ type }: { type: ActivityItem["type"] }) => {
   switch (type) {
-    case 'issuance':
+    case "issuance":
       return <Leaf className="h-5 w-5 text-carbonica-green-dark" />;
-    case 'transfer':
+    case "transfer":
       return <ArrowRight className="h-5 w-5 text-carbonica-blue-dark" />;
-    case 'retirement':
+    case "retirement":
       return <ShieldCheck className="h-5 w-5 text-carbonica-blue-dark" />;
-    case 'validation':
+    case "validation":
       return <Award className="h-5 w-5 text-carbonica-green-dark" />;
     default:
       return null;
   }
 };
 
-const ActivityBadge = ({ type }: { type: ActivityItem['type'] }) => {
+const ActivityBadge = ({ type }: { type: ActivityItem["type"] }) => {
   switch (type) {
-    case 'issuance':
+    case "issuance":
       return (
-        <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+        <Badge
+          variant="outline"
+          className="bg-green-100 text-green-800 border-green-200"
+        >
           Issuance
         </Badge>
       );
-    case 'transfer':
+    case "transfer":
       return (
-        <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
+        <Badge
+          variant="outline"
+          className="bg-blue-100 text-blue-800 border-blue-200"
+        >
           Transfer
         </Badge>
       );
-    case 'retirement':
+    case "retirement":
       return (
-        <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">
+        <Badge
+          variant="outline"
+          className="bg-purple-100 text-purple-800 border-purple-200"
+        >
           Retirement
         </Badge>
       );
-    case 'validation':
+    case "validation":
       return (
-        <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">
+        <Badge
+          variant="outline"
+          className="bg-amber-100 text-amber-800 border-amber-200"
+        >
           Validation
         </Badge>
       );
@@ -102,36 +113,51 @@ const ActivityBadge = ({ type }: { type: ActivityItem['type'] }) => {
 
 const ActivityDetails = ({ activity }: { activity: ActivityItem }) => {
   switch (activity.type) {
-    case 'issuance':
+    case "issuance":
       return (
         <p className="text-sm text-gray-600">
-          <span className="font-medium">{activity.amount?.toLocaleString()}</span> credits issued for{' '}
-          <a href={`/projects/${activity.projectId}`} className="text-carbonica-blue-dark hover:underline">
+          <span className="font-medium">
+            {activity.amount?.toLocaleString()}
+          </span>{" "}
+          credits issued for{" "}
+          <a
+            href={`/projects/${activity.projectId}`}
+            className="text-carbonica-blue-dark hover:underline"
+          >
             {activity.projectName}
           </a>
         </p>
       );
-    case 'transfer':
+    case "transfer":
       return (
         <p className="text-sm text-gray-600">
-          <span className="font-medium">{activity.amount?.toLocaleString()}</span> credits transferred from{' '}
-          <span className="font-medium">{activity.from}</span> to{' '}
+          <span className="font-medium">
+            {activity.amount?.toLocaleString()}
+          </span>{" "}
+          credits transferred from{" "}
+          <span className="font-medium">{activity.from}</span> to{" "}
           <span className="font-medium">{activity.to}</span>
         </p>
       );
-    case 'retirement':
+    case "retirement":
       return (
         <p className="text-sm text-gray-600">
-          <span className="font-medium">{activity.amount?.toLocaleString()}</span> credits retired by{' '}
+          <span className="font-medium">
+            {activity.amount?.toLocaleString()}
+          </span>{" "}
+          credits retired by{" "}
           <span className="font-medium">{activity.from}</span>
         </p>
       );
-    case 'validation':
+    case "validation":
       return (
         <p className="text-sm text-gray-600">
-          <a href={`/projects/${activity.projectId}`} className="text-carbonica-blue-dark hover:underline">
+          <a
+            href={`/projects/${activity.projectId}`}
+            className="text-carbonica-blue-dark hover:underline"
+          >
             {activity.projectName}
-          </a>{' '}
+          </a>{" "}
           validated by <span className="font-medium">{activity.validator}</span>
         </p>
       );
@@ -156,7 +182,9 @@ export const RecentActivity = () => {
               <div className="space-y-1">
                 <div className="flex items-center">
                   <ActivityBadge type={activity.type} />
-                  <span className="ml-2 text-xs text-gray-500">{activity.date}</span>
+                  <span className="ml-2 text-xs text-gray-500">
+                    {activity.date}
+                  </span>
                 </div>
                 <ActivityDetails activity={activity} />
               </div>

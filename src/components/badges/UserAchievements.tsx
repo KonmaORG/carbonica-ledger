@@ -1,11 +1,20 @@
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { BadgeDisplay, UserBadge } from "./BadgeDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Share2 } from "lucide-react";
+import dynamic from "next/dynamic";
 
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BadgeDisplay, UserBadge } from './BadgeDisplay';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Share2 } from 'lucide-react';
-import { SocialShareModal } from '../social/SocialShareModal';
+const SocialShareModal = dynamic(() => import("../social/SocialShareModal"), {
+  ssr: false, // Disable server-side rendering
+});
 
 interface UserAchievementsProps {
   badges: UserBadge[];
@@ -13,12 +22,18 @@ interface UserAchievementsProps {
   totalCreditsRetired: number;
 }
 
-export const UserAchievements = ({ badges, userName, totalCreditsRetired }: UserAchievementsProps) => {
+export const UserAchievements = ({
+  badges,
+  userName,
+  totalCreditsRetired,
+}: UserAchievementsProps) => {
   const [isShareModalOpen, setIsShareModalOpen] = React.useState(false);
-  
+
   const shareableContent = {
     title: `${userName}'s Carbon Offset Achievements`,
-    description: `${userName} has retired ${totalCreditsRetired.toLocaleString()} carbon credits and earned ${badges.length} sustainability badges!`,
+    description: `${userName} has retired ${totalCreditsRetired.toLocaleString()} carbon credits and earned ${
+      badges.length
+    } sustainability badges!`,
     url: window.location.href,
   };
 
@@ -32,9 +47,9 @@ export const UserAchievements = ({ badges, userName, totalCreditsRetired }: User
               Track your impact and share your progress
             </CardDescription>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="flex gap-1 items-center"
             onClick={() => setIsShareModalOpen(true)}
           >
@@ -47,14 +62,19 @@ export const UserAchievements = ({ badges, userName, totalCreditsRetired }: User
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-sm font-medium">Impact Summary</h3>
-            <Badge variant="outline" className="bg-carbonica-green-light/20 text-carbonica-green-dark">
+            <Badge
+              variant="outline"
+              className="bg-carbonica-green-light/20 text-carbonica-green-dark"
+            >
               Level {Math.floor(totalCreditsRetired / 1000) + 1}
             </Badge>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-muted/50 p-3 rounded-md">
               <p className="text-sm text-muted-foreground">Credits Retired</p>
-              <p className="text-2xl font-bold">{totalCreditsRetired.toLocaleString()}</p>
+              <p className="text-2xl font-bold">
+                {totalCreditsRetired.toLocaleString()}
+              </p>
             </div>
             <div className="bg-muted/50 p-3 rounded-md">
               <p className="text-sm text-muted-foreground">Badges Earned</p>
@@ -62,13 +82,17 @@ export const UserAchievements = ({ badges, userName, totalCreditsRetired }: User
             </div>
           </div>
         </div>
-        
+
         <div>
           <h3 className="text-sm font-medium mb-3">Your Badges</h3>
           {badges.length > 0 ? (
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
               {badges.map((badge) => (
-                <div key={badge.id} className="group relative" title={badge.description}>
+                <div
+                  key={badge.id}
+                  className="group relative"
+                  title={badge.description}
+                >
                   <BadgeDisplay badge={badge} />
                 </div>
               ))}
@@ -80,9 +104,9 @@ export const UserAchievements = ({ badges, userName, totalCreditsRetired }: User
           )}
         </div>
       </CardContent>
-      
-      <SocialShareModal 
-        isOpen={isShareModalOpen} 
+
+      <SocialShareModal
+        isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         content={shareableContent}
       />
