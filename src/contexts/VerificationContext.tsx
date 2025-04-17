@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { dataService } from '../services/dataService';
+import { supabaseService } from '../services/supabaseService';
 import { 
   VerificationRequest,
   VerificationDocument,
@@ -9,6 +9,7 @@ import {
   User
 } from '../types/model';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from './AuthContext';
 
 interface VerificationContextType {
   // Data
@@ -31,6 +32,8 @@ interface VerificationContextType {
   rejectVerification: (id: string, reason: string) => Promise<boolean>;
   assignVerifier: (verificationId: string, verifierId: string) => Promise<boolean>;
   addTimelineEvent: (verificationId: string, event: Partial<VerificationEvent>) => Promise<boolean>;
+  createVerificationRequest: (projectId: string, projectName: string) => Promise<VerificationRequest>;
+  uploadDocument: (verificationId: string, file: File, name: string, description?: string) => Promise<VerificationDocument>;
 }
 
 const VerificationContext = createContext<VerificationContextType | undefined>(undefined);
@@ -41,15 +44,18 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+    
     const loadData = async () => {
       try {
         setLoading(true);
         const [requestsData, projectsData, usersData] = await Promise.all([
-          dataService.getVerificationRequests(),
-          dataService.getProjects(),
-          dataService.getUsers()
+          supabaseService.getVerificationRequests(),
+          supabaseService.getProjects(),
+          supabaseService.getUsers()
         ]);
         
         setVerificationRequests(requestsData);
@@ -68,7 +74,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     };
 
     loadData();
-  }, [toast]);
+  }, [toast, isAuthenticated]);
 
   const getVerificationById = (id: string) => {
     return verificationRequests.find(request => request.id === id);
@@ -83,42 +89,19 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getDocumentsByVerificationId = async (id: string) => {
-    return dataService.getDocumentsByVerificationId(id);
+    return supabaseService.getDocumentsByVerificationId(id);
   };
 
   const getTimelineByVerificationId = async (id: string) => {
-    return dataService.getTimelineByVerificationId(id);
+    return supabaseService.getTimelineByVerificationId(id);
   };
 
-  // Action: Approve verification
   const approveVerification = async (id: string, notes?: string): Promise<boolean> => {
     try {
-      // In real application, this would make an API call
-      // For now, we'll simulate by updating our local state
-      const updatedRequests = verificationRequests.map(req => {
-        if (req.id === id) {
-          return {
-            ...req,
-            status: 'approved' as const,
-            progress: 100,
-            updatedAt: new Date().toISOString(),
-            timeline: [
-              ...req.timeline,
-              {
-                id: `e${req.timeline.length + 1}`,
-                verificationId: id,
-                timestamp: new Date().toISOString(),
-                eventType: 'approval' as const,
-                message: notes || 'Verification request approved',
-                userId: 'u2', // Mock user ID
-                userName: 'Marcus Johnson' // Mock user name
-              }
-            ]
-          };
-        }
-        return req;
-      });
-
+      const result = await supabaseService.approveVerification(id, notes);
+      
+      // Refresh the verification list
+      const updatedRequests = await supabaseService.getVerificationRequests();
       setVerificationRequests(updatedRequests);
       
       toast({
@@ -126,7 +109,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
         description: "Verification has been approved",
       });
       
-      return true;
+      return result;
     } catch (error) {
       console.error('Failed to approve verification:', error);
       toast({
@@ -138,35 +121,12 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Action: Reject verification
   const rejectVerification = async (id: string, reason: string): Promise<boolean> => {
     try {
-      // Similar to approve, but with rejection status
-      const updatedRequests = verificationRequests.map(req => {
-        if (req.id === id) {
-          return {
-            ...req,
-            status: 'rejected' as const,
-            progress: 100,
-            rejectionReason: reason,
-            updatedAt: new Date().toISOString(),
-            timeline: [
-              ...req.timeline,
-              {
-                id: `e${req.timeline.length + 1}`,
-                verificationId: id,
-                timestamp: new Date().toISOString(),
-                eventType: 'rejection' as const,
-                message: `Verification request rejected: ${reason}`,
-                userId: 'u2', // Mock user ID
-                userName: 'Marcus Johnson' // Mock user name
-              }
-            ]
-          };
-        }
-        return req;
-      });
-
+      const result = await supabaseService.rejectVerification(id, reason);
+      
+      // Refresh the verification list
+      const updatedRequests = await supabaseService.getVerificationRequests();
       setVerificationRequests(updatedRequests);
       
       toast({
@@ -174,7 +134,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
         description: "The verification request has been rejected",
       });
       
-      return true;
+      return result;
     } catch (error) {
       console.error('Failed to reject verification:', error);
       toast({
@@ -186,46 +146,21 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Action: Assign verifier
   const assignVerifier = async (verificationId: string, verifierId: string): Promise<boolean> => {
     try {
-      const verifier = users.find(user => user.id === verifierId);
-      if (!verifier) throw new Error("Verifier not found");
+      const result = await supabaseService.assignVerifier(verificationId, verifierId);
       
-      const updatedRequests = verificationRequests.map(req => {
-        if (req.id === verificationId) {
-          return {
-            ...req,
-            verifierId,
-            verifier: verifier.name, // Keep the string name for backward compatibility
-            status: 'in_review' as const,
-            progress: Math.max(req.progress, 30), // Ensure progress is at least 30%
-            updatedAt: new Date().toISOString(),
-            timeline: [
-              ...req.timeline,
-              {
-                id: `e${req.timeline.length + 1}`,
-                verificationId,
-                timestamp: new Date().toISOString(),
-                eventType: 'assignment' as const,
-                message: `Assigned to ${verifier.name}`,
-                userId: 'admin', // Mock admin user
-                userName: 'System Administrator'
-              }
-            ]
-          };
-        }
-        return req;
-      });
-
+      // Refresh the verification list
+      const updatedRequests = await supabaseService.getVerificationRequests();
       setVerificationRequests(updatedRequests);
       
+      const verifier = users.find(user => user.id === verifierId);
       toast({
         title: "Verifier Assigned",
-        description: `${verifier.name} has been assigned to this verification`,
+        description: `${verifier?.name || 'A verifier'} has been assigned to this verification`,
       });
       
-      return true;
+      return result;
     } catch (error) {
       console.error('Failed to assign verifier:', error);
       toast({
@@ -237,42 +172,95 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Add timeline event
   const addTimelineEvent = async (
     verificationId: string, 
     eventData: Partial<VerificationEvent>
   ): Promise<boolean> => {
     try {
-      const request = verificationRequests.find(req => req.id === verificationId);
-      if (!request) throw new Error("Verification request not found");
-      
-      const newEvent: VerificationEvent = {
-        id: `e${request.timeline.length + 1}`,
-        verificationId,
-        timestamp: new Date().toISOString(),
-        eventType: eventData.eventType || 'review',
+      const event = await supabaseService.addTimelineEvent({
+        verification_id: verificationId,
+        event_type: eventData.eventType || 'review',
         message: eventData.message || 'Review comment added',
-        userId: eventData.userId || 'u2',
-        userName: eventData.userName || 'System User',
+        user_id: eventData.userId || '',
         metadata: eventData.metadata
-      };
+      });
       
+      // Refresh the verification list to include the new event
+      const updatedRequests = await supabaseService.getVerificationRequests();
+      setVerificationRequests(updatedRequests);
+      
+      return true;
+    } catch (error) {
+      console.error('Failed to add timeline event:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add comment. Please try again.",
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
+  const createVerificationRequest = async (projectId: string, projectName: string): Promise<VerificationRequest> => {
+    try {
+      const newRequest = await supabaseService.createVerificationRequest(projectId, projectName);
+      
+      // Add to the local state
+      setVerificationRequests(prev => [...prev, newRequest]);
+      
+      toast({
+        title: "Success",
+        description: "Verification request submitted successfully",
+      });
+      
+      return newRequest;
+    } catch (error) {
+      console.error('Failed to create verification request:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit verification request. Please try again.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
+  const uploadDocument = async (
+    verificationId: string, 
+    file: File, 
+    name: string, 
+    description?: string
+  ): Promise<VerificationDocument> => {
+    try {
+      const newDocument = await supabaseService.uploadDocument(verificationId, file, name, description);
+      
+      // Update the verification request with the new document
       const updatedRequests = verificationRequests.map(req => {
         if (req.id === verificationId) {
           return {
             ...req,
-            timeline: [...req.timeline, newEvent],
-            updatedAt: new Date().toISOString()
+            documents: [...req.documents, newDocument]
           };
         }
         return req;
       });
-
+      
       setVerificationRequests(updatedRequests);
-      return true;
+      
+      toast({
+        title: "Document Uploaded",
+        description: "The document was uploaded successfully",
+      });
+      
+      return newDocument;
     } catch (error) {
-      console.error('Failed to add timeline event:', error);
-      return false;
+      console.error('Failed to upload document:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload document. Please try again.",
+        variant: "destructive"
+      });
+      throw error;
     }
   };
 
@@ -289,7 +277,9 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     approveVerification,
     rejectVerification,
     assignVerifier,
-    addTimelineEvent
+    addTimelineEvent,
+    createVerificationRequest,
+    uploadDocument
   };
 
   return (
