@@ -1,18 +1,26 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProjectRegistrationForm } from '@/components/projects/ProjectRegistrationForm';
-import { ProjectRegistrationSuccess } from '@/components/projects/ProjectRegistrationSuccess';
+"use client";
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProjectRegistrationForm } from "@/components/projects/ProjectRegistrationForm";
+import { ProjectRegistrationSuccess } from "@/components/projects/ProjectRegistrationSuccess";
 
 const ProjectRegister = () => {
-  const [submissionState, setSubmissionState] = useState<'form' | 'success'>('form');
+  const [submissionState, setSubmissionState] = useState<"form" | "success">(
+    "form"
+  );
   const [projectData, setProjectData] = useState<any>(null);
 
   const handleFormSubmit = (data: any) => {
-    console.log('Project registration data:', data);
+    console.log("Project registration data:", data);
     setProjectData(data);
-    setSubmissionState('success');
+    setSubmissionState("success");
   };
 
   return (
@@ -20,17 +28,19 @@ const ProjectRegister = () => {
       <div>
         <h1 className="text-2xl font-bold">Register Carbon Offset Project</h1>
         <p className="text-gray-600">
-          Submit your project details to get carbon credits for verified emissions reductions
+          Submit your project details to get carbon credits for verified
+          emissions reductions
         </p>
       </div>
 
-      {submissionState === 'form' ? (
+      {submissionState === "form" ? (
         <Card>
           <CardHeader>
             <CardTitle>Project Registration Form</CardTitle>
             <CardDescription>
-              Please provide accurate information about your carbon offset project. 
-              All submissions will be reviewed by validators before credit issuance.
+              Please provide accurate information about your carbon offset
+              project. All submissions will be reviewed by validators before
+              credit issuance.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -45,12 +55,16 @@ const ProjectRegister = () => {
               </TabsContent>
               <TabsContent value="emissions">
                 <div className="text-center py-12">
-                  <p className="text-gray-500">Please complete the Project Details tab first.</p>
+                  <p className="text-gray-500">
+                    Please complete the Project Details tab first.
+                  </p>
                 </div>
               </TabsContent>
               <TabsContent value="documents">
                 <div className="text-center py-12">
-                  <p className="text-gray-500">Please complete the Project Details tab first.</p>
+                  <p className="text-gray-500">
+                    Please complete the Project Details tab first.
+                  </p>
                 </div>
               </TabsContent>
             </Tabs>
