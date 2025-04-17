@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { DashboardHero } from "./DashboardHero";
 import { DashboardStats } from "./DashboardStats";

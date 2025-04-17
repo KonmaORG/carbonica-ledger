@@ -128,7 +128,7 @@ export const ProjectCard = ({
         <div className="mt-4 flex items-center">
           <div className="bg-carbonica-green-light/20 px-3 py-1 rounded-full">
             <span className="text-carbonica-green-dark font-medium">
-              {credits.toLocaleString()} Credits
+              {credits.toLocaleString("en-US")} Credits
             </span>
           </div>
         </div>
