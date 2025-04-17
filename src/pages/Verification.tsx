@@ -1,5 +1,8 @@
+import React from "react";
+import VerificationPage from "./verification/index";
 
-import React from 'react';
-import VerificationPage from './verification';
+function Verification() {
+  return <VerificationPage />;
+}
 
-export default VerificationPage;
+export default Verification;
