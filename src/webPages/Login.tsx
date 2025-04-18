@@ -1,31 +1,38 @@
-
-import React from 'react';
-import { Layout } from '@/components/layout/Layout';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+"use client";
+import React, { useState } from "react";
+import { Layout } from "@/components/layout/Layout";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       await signIn(email, password);
-      navigate('/');
+      router.push("/");
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +64,10 @@ const Login = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-blue-600 hover:underline"
+                  >
                     Forgot password?
                   </Link>
                 </div>
@@ -77,12 +87,12 @@ const Login = () => {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing In
                   </>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
               <p className="mt-4 text-center text-sm">
-                Don't have an account?{' '}
-                <Link to="/signup" className="text-blue-600 hover:underline">
+                Don't have an account?{" "}
+                <Link href="/signup" className="text-blue-600 hover:underline">
                   Sign up
                 </Link>
               </p>
