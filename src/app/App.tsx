@@ -70,14 +70,14 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              <Route
+              {/* <Route
                 path="/compliance"
                 element={
                   <ProtectedRoute>
                     <Compliance />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
               <Route
                 path="/profile"
                 element={
