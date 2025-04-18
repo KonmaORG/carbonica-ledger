@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -29,13 +29,19 @@ export const UserAchievements = ({
 }: UserAchievementsProps) => {
   const [isShareModalOpen, setIsShareModalOpen] = React.useState(false);
 
-  const shareableContent = {
+  const [shareableContent, setShareableContent] = useState({
     title: `${userName}'s Carbon Offset Achievements`,
     description: `${userName} has retired ${totalCreditsRetired.toLocaleString()} carbon credits and earned ${
       badges.length
     } sustainability badges!`,
-    url: window.location.href,
-  };
+    url: "",
+  });
+  useEffect(() => {
+    setShareableContent((prev) => ({
+      ...prev,
+      url: window.location.href,
+    }));
+  });
 
   return (
     <Card>

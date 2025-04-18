@@ -78,14 +78,14 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              <Route
+              {/* <Route
                 path="/profile"
                 element={
                   <ProtectedRoute>
                     <UserProfile />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
               <Route
                 path="/settings"
                 element={
