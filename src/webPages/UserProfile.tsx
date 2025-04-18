@@ -1,12 +1,17 @@
-
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProfileHeader } from './profile/components/ProfileHeader';
-import { ProfileOverview } from './profile/components/ProfileOverview';
-import { ProfileProjects } from './profile/components/ProfileProjects';
-import { ProfileCredits } from './profile/components/ProfileCredits';
-import { ProfileAchievements } from './profile/components/ProfileAchievements';
-import { userData, userProjects, creditTransactions, userBadges } from '@/data/sampleUserData';
+"use client";
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProfileHeader } from "./profile/components/ProfileHeader";
+import { ProfileOverview } from "./profile/components/ProfileOverview";
+import { ProfileProjects } from "./profile/components/ProfileProjects";
+import { ProfileCredits } from "./profile/components/ProfileCredits";
+import { ProfileAchievements } from "./profile/components/ProfileAchievements";
+import {
+  userData,
+  userProjects,
+  creditTransactions,
+  userBadges,
+} from "@/data/sampleUserData";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -24,7 +29,7 @@ const UserProfile = () => {
         </TabsList>
 
         <TabsContent value="overview">
-          <ProfileOverview 
+          <ProfileOverview
             user={userData}
             projects={userProjects}
             transactions={creditTransactions}

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -124,13 +124,19 @@ const ProjectDetails = () => {
     }
   };
 
-  const shareContent = {
+  const [shareContent, setShareContent] = useState({
     title: `Carbon Offset Project: ${project.title}`,
     description: `Check out this ${project.type} carbon offset project in ${
       project.location
     } with ${project.credits.toLocaleString()} verified carbon credits!`,
-    url: window.location.href,
-  };
+    url: "",
+  });
+  useEffect(() => {
+    setShareContent((prev) => ({
+      ...prev,
+      url: window.location.href,
+    }));
+  });
 
   return (
     <Layout>
