@@ -19,5 +19,3 @@ export const IDENTIFICATION_PID: PolicyId = process.env
   .NEXT_PUBLIC_IDENTIFICATION_PID as string;
 
 // SUPABASE
-export const SUPABASEURL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-export const SUPABASEKEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
