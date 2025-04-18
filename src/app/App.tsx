@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { RootLayout } from "../components/layout/RootLayout";
+// import { RootLayout } from "../components/layout/RootLayout";
 import Index from "../webPages/Index";
 import Projects from "../webPages/Projects";
 import ProjectDetails from "../webPages/ProjectDetails";
@@ -25,12 +25,12 @@ const App = () => (
     <AuthProvider>
       <VerificationProvider>
         <BrowserRouter>
-          <RootLayout>
-            <Routes>
-              {/* <Route path="/" element={<Index />} /> */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              {/* <Route
+          {/* <RootLayout> */}
+          <Routes>
+            {/* <Route path="/" element={<Index />} /> */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            {/* <Route
                 path="/projects"
                 element={
                   <ProtectedRoute>
@@ -38,7 +38,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/projects/:id"
                 element={
                   <ProtectedRoute>
@@ -46,7 +46,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/projects/register"
                 element={
                   <ProtectedRoute>
@@ -54,7 +54,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/verification"
                 element={
                   <ProtectedRoute>
@@ -62,7 +62,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/registry"
                 element={
                   <ProtectedRoute>
@@ -70,7 +70,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/compliance"
                 element={
                   <ProtectedRoute>
@@ -78,7 +78,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/profile"
                 element={
                   <ProtectedRoute>
@@ -86,7 +86,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* <Route
+            {/* <Route
                 path="/settings"
                 element={
                   <ProtectedRoute>
@@ -94,10 +94,10 @@ const App = () => (
                   </ProtectedRoute>
                 }
               /> */}
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </RootLayout>
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          {/* </RootLayout> */}
         </BrowserRouter>
       </VerificationProvider>
     </AuthProvider>
