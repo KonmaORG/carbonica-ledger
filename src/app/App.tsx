@@ -27,49 +27,49 @@ const App = () => (
         <BrowserRouter>
           <RootLayout>
             <Routes>
-              <Route path="/" element={<Index />} />
+              {/* <Route path="/" element={<Index />} /> */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route
+              {/* <Route
                 path="/projects"
                 element={
                   <ProtectedRoute>
                     <Projects />
                   </ProtectedRoute>
                 }
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/projects/:id"
                 element={
                   <ProtectedRoute>
                     <ProjectDetails />
                   </ProtectedRoute>
                 }
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/projects/register"
                 element={
                   <ProtectedRoute>
                     <ProjectRegister />
                   </ProtectedRoute>
                 }
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/verification"
                 element={
                   <ProtectedRoute>
                     <Verification />
                   </ProtectedRoute>
                 }
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/registry"
                 element={
                   <ProtectedRoute>
                     <Registry />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
               <Route
                 path="/compliance"
                 element={

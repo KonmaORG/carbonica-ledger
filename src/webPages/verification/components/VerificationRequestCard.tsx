@@ -1,18 +1,20 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { ArrowRight } from 'lucide-react';
-import { VerificationRequest } from '../types/verificationTypes';
-import { VerificationStatusBadge } from './VerificationStatusBadge';
-import { VerificationDetailsDialog } from './VerificationDetailsDialog';
+"use client";
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { ArrowRight } from "lucide-react";
+import { VerificationRequest } from "../types/verificationTypes";
+import { VerificationStatusBadge } from "./VerificationStatusBadge";
+import { VerificationDetailsDialog } from "./VerificationDetailsDialog";
 
 interface VerificationRequestCardProps {
   request: VerificationRequest;
 }
 
-export const VerificationRequestCard = ({ request }: VerificationRequestCardProps) => {
+export const VerificationRequestCard = ({
+  request,
+}: VerificationRequestCardProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   return (
@@ -21,13 +23,15 @@ export const VerificationRequestCard = ({ request }: VerificationRequestCardProp
         <div className="flex flex-col md:flex-row justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold">{request.projectName}</h3>
-            <p className="text-sm text-gray-500">Submitted: {request.submittedDate}</p>
+            <p className="text-sm text-gray-500">
+              Submitted: {request.submittedDate}
+            </p>
           </div>
           <div className="mt-2 md:mt-0">
             <VerificationStatusBadge status={request.status} />
           </div>
         </div>
-        
+
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Verification Progress</span>
@@ -35,32 +39,32 @@ export const VerificationRequestCard = ({ request }: VerificationRequestCardProp
           </div>
           <Progress value={request.progress} className="h-2" />
         </div>
-        
+
         {request.verifier && (
           <div className="mt-4 text-sm">
             <span className="text-gray-600">Verifier: </span>
             <span className="font-medium">{request.verifier}</span>
           </div>
         )}
-        
+
         {request.expectedCompletion && (
           <div className="mt-1 text-sm">
             <span className="text-gray-600">Expected Completion: </span>
             <span className="font-medium">{request.expectedCompletion}</span>
           </div>
         )}
-        
+
         {request.rejectionReason && (
           <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md text-sm text-red-800">
             <p className="font-medium mb-1">Rejection Reason:</p>
             <p>{request.rejectionReason}</p>
           </div>
         )}
-        
+
         <div className="mt-4 flex justify-end">
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setDetailsOpen(true)}
           >
             View Details <ArrowRight className="ml-1 h-4 w-4" />
@@ -68,9 +72,9 @@ export const VerificationRequestCard = ({ request }: VerificationRequestCardProp
         </div>
       </CardContent>
 
-      <VerificationDetailsDialog 
-        request={request} 
-        open={detailsOpen} 
+      <VerificationDetailsDialog
+        request={request}
+        open={detailsOpen}
         onOpenChange={setDetailsOpen}
       />
     </Card>

@@ -1,14 +1,26 @@
-
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
-import { User } from '@supabase/supabase-js';
-import { useToast } from '@/hooks/use-toast';
+"use client";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from "react";
+import { supabase } from "../lib/supabase";
+import { User } from "@supabase/supabase-js";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string, company: string, role: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string,
+    company: string,
+    role: string
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
 }
@@ -27,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { data } = await supabase.auth.getSession();
         setUser(data.session?.user || null);
       } catch (error) {
-        console.error('Error getting initial auth session:', error);
+        console.error("Error getting initial auth session:", error);
       } finally {
         setLoading(false);
       }
@@ -36,12 +48,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     getInitialSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user || null);
-        setLoading(false);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+      setLoading(false);
+    });
 
     // Cleanup subscription
     return () => {
@@ -55,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password,
       });
-      
+
       if (error) throw error;
       toast({
         title: "Welcome back!",
@@ -71,7 +83,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUp = async (email: string, password: string, name: string, company: string, role: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    name: string,
+    company: string,
+    role: string
+  ) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -81,10 +99,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             name,
             company,
             role,
-          }
-        }
+          },
+        },
       });
-      
+
       if (error) throw error;
       toast({
         title: "Account created!",
@@ -133,7 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
