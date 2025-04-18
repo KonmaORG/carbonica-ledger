@@ -3,7 +3,6 @@ import {
   Network,
   PolicyId,
   Provider,
-  validatorToAddress,
 } from "@lucid-evolution/lucid";
 
 export const BF_URL = process.env.NEXT_PUBLIC_BF_URL!;
@@ -18,3 +17,7 @@ export const SIGNER2 = process.env.NEXT_PUBLIC_SIGNER_2 as string;
 export const SIGNER3 = process.env.NEXT_PUBLIC_SIGNER_3 as string;
 export const IDENTIFICATION_PID: PolicyId = process.env
   .NEXT_PUBLIC_IDENTIFICATION_PID as string;
+
+// SUPABASE
+export const SUPABASEURL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+export const SUPABASEKEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
