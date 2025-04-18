@@ -10,17 +10,47 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjectRegistrationForm } from "@/components/projects/ProjectRegistrationForm";
 import { ProjectRegistrationSuccess } from "@/components/projects/ProjectRegistrationSuccess";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 const ProjectRegister = () => {
   const [submissionState, setSubmissionState] = useState<"form" | "success">(
     "form"
   );
   const [projectData, setProjectData] = useState<any>(null);
+  const { user } = useAuth();
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = async (data: any) => {
+    if (!user) {
+      console.log("must be logged in");
+      return;
+    }
     console.log("Project registration data:", data);
     setProjectData(data);
     setSubmissionState("success");
+    // call cardano project submit and then save data on supabase with txHash
+    const formattedData = {
+      user_id: user.id, // Assuming session contains user ID
+      project_name: data.projectName,
+      project_type: data.projectType,
+      location: data.location,
+      country: data.country,
+      start_date: data.startDate.toISOString().split("T")[0], // Convert to YYYY-MM-DD
+      estimated_completion: data.estimatedCompletion
+        .toISOString()
+        .split("T")[0],
+      emissions_target: data.emissionsTarget,
+      description: data.description,
+      txHash: "uyfkjgcj",
+    };
+    const { error } = await supabase.from("Projects").insert([formattedData]);
+
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+
+    console.log("Project submitted successfully!");
   };
 
   return (
