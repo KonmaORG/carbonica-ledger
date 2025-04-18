@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Footer } from "@/components/layout/Footer";
 import { NavigationMenu } from "@/components/navigation/NavigationMenu";
 import { VerificationProvider } from "@/contexts/VerificationContext";
+import CardanoProvider from "@/contexts/cardanoProvider";
 
 export default function RootLayout({
   children,
@@ -16,17 +17,19 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <TooltipProvider>
-          <AuthProvider>
-            <VerificationProvider>
-              <div className="min-h-screen flex flex-col">
-                <NavigationMenu />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-              </div>
-              {/* <Toaster /> */}
-            </VerificationProvider>
-            <Sonner />
-          </AuthProvider>
+          <CardanoProvider>
+            <AuthProvider>
+              <VerificationProvider>
+                <div className="min-h-screen flex flex-col">
+                  <NavigationMenu />
+                  <main className="flex-grow">{children}</main>
+                  <Footer />
+                </div>
+                {/* <Toaster /> */}
+              </VerificationProvider>
+              <Sonner />
+            </AuthProvider>
+          </CardanoProvider>
         </TooltipProvider>
       </body>
     </html>

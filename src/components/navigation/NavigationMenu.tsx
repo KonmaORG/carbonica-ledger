@@ -24,6 +24,7 @@ import {
   FileText,
 } from "lucide-react";
 import Link from "next/link";
+import WalletConnector from "@/components/wallet/walletConnector";
 
 export const NavigationMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,7 +76,7 @@ export const NavigationMenu = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline">Connect Wallet</Button>
+            <WalletConnector />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
@@ -178,9 +179,7 @@ export const NavigationMenu = () => {
               icon={<FileText className="h-5 w-5" />}
             />
             <div className="pt-4 space-y-3">
-              <Button variant="outline" className="w-full">
-                Connect Wallet
-              </Button>
+              <WalletConnector />
             </div>
           </nav>
         </div>
