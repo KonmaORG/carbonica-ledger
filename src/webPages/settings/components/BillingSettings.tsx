@@ -1,12 +1,19 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Save, Download, CreditCard } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+"use client";
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Save, Download, CreditCard } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const BillingSettings = () => {
   const { toast } = useToast();
@@ -35,14 +42,20 @@ export const BillingSettings = () => {
                 <CreditCard className="h-5 w-5" />
                 <div>
                   <p>•••• •••• •••• 4242</p>
-                  <p className="text-xs text-muted-foreground">Expires 12/2025</p>
+                  <p className="text-xs text-muted-foreground">
+                    Expires 12/2025
+                  </p>
                 </div>
               </div>
-              <Button variant="outline" size="sm">Remove</Button>
+              <Button variant="outline" size="sm">
+                Remove
+              </Button>
             </div>
-            <Button variant="outline" className="mt-3">Add Payment Method</Button>
+            <Button variant="outline" className="mt-3">
+              Add Payment Method
+            </Button>
           </div>
-          
+
           <div className="pt-4 border-t">
             <p className="font-medium">Billing Address</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
@@ -72,18 +85,19 @@ export const BillingSettings = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="pt-4 border-t">
             <p className="font-medium">Billing History</p>
-            <p className="text-sm text-muted-foreground mt-1">View and download your previous invoices.</p>
-            <Button variant="outline" className="mt-2">View Billing History</Button>
+            <p className="text-sm text-muted-foreground mt-1">
+              View and download your previous invoices.
+            </p>
+            <Button variant="outline" className="mt-2">
+              View Billing History
+            </Button>
           </div>
         </div>
-        
-        <Button 
-          onClick={handleSave}
-          className="flex items-center gap-2"
-        >
+
+        <Button onClick={handleSave} className="flex items-center gap-2">
           <Save className="h-4 w-4" />
           Save Billing Information
         </Button>
