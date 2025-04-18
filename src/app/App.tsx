@@ -28,8 +28,8 @@ const App = () => (
           {/* <RootLayout> */}
           <Routes>
             {/* <Route path="/" element={<Index />} /> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            {/* <Route path="/login" element={<Login />} /> */}
+            {/* <Route path="/signup" element={<SignUp />} /> */}
             {/* <Route
                 path="/projects"
                 element={
