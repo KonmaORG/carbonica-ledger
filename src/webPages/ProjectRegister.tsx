@@ -27,23 +27,16 @@ const ProjectRegister = () => {
     }
     console.log("Project registration data:", data);
     setProjectData(data);
-    setSubmissionState("success");
+    // setSubmissionState("success");
     // call cardano project submit and then save data on supabase with txHash
     const formattedData = {
-      user_id: user.id, // Assuming session contains user ID
-      project_name: data.projectName,
-      project_type: data.projectType,
-      location: data.location,
-      country: data.country,
-      start_date: data.startDate.toISOString().split("T")[0], // Convert to YYYY-MM-DD
-      estimated_completion: data.estimatedCompletion
-        .toISOString()
-        .split("T")[0],
-      emissions_target: data.emissionsTarget,
-      description: data.description,
+      ...data,
+      user_id: user.id,
+      startDate: data.startDate.toISOString().split("T")[0], // Convert to YYYY-MM-DD
+      estimatedCompletion: data.estimatedCompletion.toISOString().split("T")[0],
       txHash: "uyfkjgcj",
     };
-    const { error } = await supabase.from("Projects").insert([formattedData]);
+    const { error } = await supabase.from("projects").insert([formattedData]);
 
     if (error) {
       console.log(error.message);
