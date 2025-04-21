@@ -1,15 +1,20 @@
-
-import React from 'react';
+import React, { useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CalendarIcon, Upload } from "lucide-react";
+import { CalendarIcon, FileCheck, Paperclip, Upload, X } from "lucide-react";
 import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -27,6 +32,8 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { Label } from "../ui/label";
+import { ProjectDocument } from "@/types/project";
 
 const projectFormSchema = z.object({
   projectName: z.string().min(3, {
@@ -50,17 +57,22 @@ const projectFormSchema = z.object({
   emissionsTarget: z.string().min(1, {
     message: "Emissions reduction target is required.",
   }),
-  description: z.string().min(50, {
-    message: "Description must be at least 50 characters.",
-  }).max(1000, {
-    message: "Description must not exceed 1000 characters."
-  }),
+  description: z
+    .string()
+    .min(50, {
+      message: "Description must be at least 50 characters.",
+    })
+    .max(1000, {
+      message: "Description must not exceed 1000 characters.",
+    }),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 interface ProjectRegistrationFormProps {
   onSubmit: (data: ProjectFormValues) => void;
+  setDocuments: (documents: ProjectDocument[]) => void;
+  documents: ProjectDocument[];
 }
 
 const PROJECT_TYPES = [
@@ -73,16 +85,23 @@ const PROJECT_TYPES = [
   "Sustainable Agriculture",
   "Biodiversity Conservation",
   "Clean Transportation",
-  "Other"
+  "Other",
 ];
 
-export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormProps) {
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+export function ProjectRegistrationForm({
+  onSubmit,
+  setDocuments,
+  documents,
+}: ProjectRegistrationFormProps) {
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
       description: "",
     },
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFormSubmit = (data: ProjectFormValues) => {
     toast({
@@ -92,9 +111,63 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
     onSubmit(data);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFiles(files);
+    } else {
+      console.log("No files selected");
+    }
+  };
+
+  const handleFiles = (files: FileList) => {
+    try {
+      const newDocs: ProjectDocument[] = Array.from(files)
+        .filter((file) => file.size <= MAX_FILE_SIZE)
+        .map((file) => ({
+          file,
+          name: file.name,
+          type: file.type,
+          url: URL.createObjectURL(file),
+        }));
+
+      if (newDocs.length < files.length) {
+        toast({
+          title: "Invalid files",
+          description:
+            "Only PDFs and images (JPEG, PNG, GIF, WebP) up to 50MB are allowed.",
+          variant: "destructive",
+        });
+      }
+
+      if (newDocs.length > 0) {
+        setDocuments([...documents, ...newDocs]);
+      }
+    } catch (error) {
+      console.error("Error processing files:", error);
+      toast({
+        title: "Error",
+        description: "Failed to process uploaded files.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const removeDocument = (docUrl: string) => {
+    const doc = documents.find((d) => d.url === docUrl);
+    if (doc) {
+      URL.revokeObjectURL(doc.url);
+    }
+    const newDocs = documents.filter((d) => d.url !== docUrl);
+    setDocuments(newDocs);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -103,7 +176,10 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
               <FormItem>
                 <FormLabel>Project Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g. Rainforest Conservation Initiative" {...field} />
+                  <Input
+                    placeholder="e.g. Rainforest Conservation Initiative"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -116,7 +192,10 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Project Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select project type" />
@@ -276,33 +355,76 @@ export function ProjectRegistrationForm({ onSubmit }: ProjectRegistrationFormPro
                 />
               </FormControl>
               <FormDescription>
-                Provide a detailed description of your project, including methodology and expected outcomes.
+                Provide a detailed description of your project, including
+                methodology and expected outcomes.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="border border-dashed border-gray-300 rounded-md p-6">
-          <div className="flex flex-col items-center justify-center text-center">
-            <Upload className="h-10 w-10 text-gray-400 mb-2" />
-            <h3 className="font-medium">Upload Supporting Documents</h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Drag and drop files here or click to browse (Methodology details, baseline studies, etc.)
+        <div className="space-y-2">
+          <Label>Project Documents</Label>
+          <div className="border-2 border-dashed rounded-lg p-6 text-center">
+            <Paperclip className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+            <p className="text-sm font-medium">
+              Drag and drop files here or click to browse
             </p>
-            <div className="w-full max-w-xs">
-              <Input
-                type="file"
-                multiple
-                className="cursor-pointer"
-                onChange={(e) => console.log('Files selected:', e.target.files)}
-              />
-            </div>
-            <p className="text-xs text-gray-400 mt-2">
-              Upload PDF, DOCX, or ZIP files up to 50MB each
+            <p className="text-xs text-muted-foreground mt-1">
+              Upload PDFs or images (JPEG, PNG, GIF, WebP)
             </p>
+            <Input
+              type="file"
+              className="hidden"
+              id="file-upload"
+              multiple
+              onChange={handleFileChange}
+              accept="application/pdf,image/jpeg,image/png,image/gif,image/webp"
+              ref={fileInputRef}
+            />
+            <Label htmlFor="file-upload" className="mt-4 inline-block">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mr-2 h-4 w-4" /> Browse Files
+              </Button>
+            </Label>
           </div>
         </div>
+
+        {/* Document Preview Section */}
+        {documents.length > 0 && (
+          <div className="space-y-2">
+            <Label>Attached Documents ({documents.length})</Label>
+            <div className="space-y-2 max-h-40 overflow-y-auto p-1">
+              {documents.map((doc) => (
+                <div
+                  key={doc.url}
+                  className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded-md"
+                >
+                  <div className="flex items-center space-x-2">
+                    <FileCheck className="h-4 w-4 text-green-600" />
+                    <span className="text-sm truncate max-w-[200px] sm:max-w-[300px]">
+                      {doc.name}
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 text-gray-500 hover:text-red-500"
+                    onClick={() => removeDocument(doc.url)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-end">
           <Button type="submit">Submit Project for Validation</Button>
