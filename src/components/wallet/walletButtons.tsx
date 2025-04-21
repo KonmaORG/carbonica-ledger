@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useCardano } from "@/contexts/cardanoContext";
 import { CardanoWallet } from "@/types/cardano";
 import Image from "next/image";
-import { NETWORK, PROVIDER } from "@/config";
-import { Lucid } from "@lucid-evolution/lucid";
+import { BF_PID, BF_URL, NETWORK } from "@/config";
+import { Blockfrost, Lucid, Network } from "@lucid-evolution/lucid";
 
 interface WalletButtonProps {
   setConnecting: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,7 +23,8 @@ export default function WalletButton({
     setConnecting(true);
     setIsOpen(false);
     try {
-      const lucid = await Lucid(PROVIDER, NETWORK);
+      const PROVIDER = new Blockfrost(BF_URL, BF_PID);
+      const lucid = await Lucid(PROVIDER, NETWORK as Network);
 
       const api = await wallet.enable();
 

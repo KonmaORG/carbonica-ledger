@@ -11,6 +11,7 @@ import {
   Lucid,
   LucidEvolution,
   mintingPolicyToId,
+  Network,
   paymentCredentialOf,
   stakeCredentialOf,
   toText,
@@ -26,7 +27,6 @@ import { blake2bHex } from "blakejs";
 import {
   IDENTIFICATION_PID,
   NETWORK,
-  PROVIDER,
   SIGNER1,
   SIGNER2,
   SIGNER3,
@@ -55,15 +55,18 @@ export async function submitProject(
   category: string,
   projectTitle: string
 ) {
-  const { wallet, address } = walletConnection;
+  const { wallet, address, lucid } = walletConnection;
   try {
-    if (!wallet || !address) throw new Error("Wallet Not Connected!");
+    if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
     const walletAPI = await wallet.enable();
-    const lucid = await Lucid(PROVIDER, NETWORK);
+    // const lucid = await Lucid(PROVIDER, NETWORK as Network);
     lucid.selectWallet.fromAPI(walletAPI);
 
     const validator = ValidatorContract();
-    const validatorContractAddress = validatorToAddress(NETWORK, validator);
+    const validatorContractAddress = validatorToAddress(
+      NETWORK as Network,
+      validator
+    );
     const mintingValidator: Validator = ValidatorMinter();
 
     const policyID = mintingPolicyToId(mintingValidator);
@@ -125,12 +128,11 @@ export async function submitProject(
 }
 
 export async function rejectProject(walletConnection: Cardano, utxo: UTxO) {
-  const { wallet, address } = walletConnection;
-
+  const { wallet, address, lucid } = walletConnection;
   try {
-    if (!wallet || !address) throw new Error("Wallet Not Connected!");
+    if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
     const walletAPI = await wallet.enable();
-    const lucid = await Lucid(PROVIDER, NETWORK);
+    // const lucid = await Lucid(PROVIDER, NETWORK as Network);
     lucid.selectWallet.fromAPI(walletAPI);
 
     const mintingValidator: Validator = ValidatorMinter();
@@ -178,12 +180,11 @@ export async function rejectProject(walletConnection: Cardano, utxo: UTxO) {
 }
 
 export async function acceptProject(walletConnection: Cardano, utxo: UTxO) {
-  const { wallet, address } = walletConnection;
-
+  const { wallet, address, lucid } = walletConnection;
   try {
-    if (!wallet || !address) throw new Error("Wallet Not Connected!");
+    if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
     const walletAPI = await wallet.enable();
-    const lucid = await Lucid(PROVIDER, NETWORK);
+    // const lucid = await Lucid(PROVIDER, NETWORK as Network);
     lucid.selectWallet.fromAPI(walletAPI);
 
     const mintingValidator: Validator = ValidatorMinter();
