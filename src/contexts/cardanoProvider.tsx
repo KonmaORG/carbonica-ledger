@@ -6,7 +6,7 @@ import { Cardano, CardanoContext } from "./cardanoContext";
 
 export default function CardanoProvider(props: { children: React.ReactNode }) {
   return (
-    <CardanoContext.Provider value={useState<Cardano>({ isEmulator: false })}>
+    <CardanoContext.Provider value={useState<Cardano>({})}>
       {props.children}
     </CardanoContext.Provider>
   );
