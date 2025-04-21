@@ -2,6 +2,7 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import {
   Address,
+  Blockfrost,
   LucidEvolution,
   PaymentKeyHash,
   StakeKeyHash,
@@ -15,10 +16,10 @@ export type Cardano = {
   balance?: number;
   pkh?: PaymentKeyHash;
   skh?: StakeKeyHash;
-  isEmulator: boolean;
+  provider?: Blockfrost;
 };
 
 export const CardanoContext = createContext<
   [Cardano, Dispatch<SetStateAction<Cardano>>]
->([{ isEmulator: false }, () => {}]);
+>([{}, () => {}]);
 export const useCardano = () => useContext(CardanoContext);
