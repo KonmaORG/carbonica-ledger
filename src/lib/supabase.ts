@@ -1,11 +1,12 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
+import { SUPABASEANONKEY, SUPABASEURL } from "@/config";
 
 // Initialize Supabase client with the environment variables
 // When Supabase is connected through Lovable, these variables are automatically injected
 
-const SUPABASEURL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASEANONKEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// const SUPABASEURL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// const SUPABASEANONKEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Create a temporary client with dummy values if environment variables are not available
 // This prevents the app from crashing during development or when Supabase is not fully set up

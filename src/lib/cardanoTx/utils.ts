@@ -1,4 +1,4 @@
-import { NETWORK, IDENTIFICATION_PID, PROVIDER } from "@/config";
+import { NETWORK, IDENTIFICATION_PID, BF_URL, BF_PID } from "@/config";
 import { ConfigDatumHolderValidator } from "@/config/scripts/scripts";
 import { KarbonDatum } from "@/types/datum";
 import {
@@ -12,11 +12,13 @@ import {
   credentialToAddress,
   UTxO,
   Data,
+  Blockfrost,
+  Network,
 } from "@lucid-evolution/lucid";
 
 export async function refUtxo(lucid: LucidEvolution) {
   const validator: Validator = ConfigDatumHolderValidator();
-  const address = validatorToAddress(NETWORK, validator);
+  const address = validatorToAddress(NETWORK as Network, validator);
 
   const ref_configNFT =
     IDENTIFICATION_PID + fromText("KarbonIdentificationNFT");
@@ -29,9 +31,10 @@ export async function refUtxo(lucid: LucidEvolution) {
 }
 
 export async function privateKeytoAddress(privateKey: string) {
+  const PROVIDER = new Blockfrost(BF_URL, BF_PID);
   const privateeyAddress = await makeWalletFromPrivateKey(
     PROVIDER,
-    NETWORK,
+    NETWORK as Network,
     privateKey
   ).address();
   return privateeyAddress;
@@ -58,7 +61,7 @@ export async function signWithPrivateKey(
 export function hashtoAddress(hash: string[]) {
   const vkh = keyHashToCredential(hash[0]);
   const skh = keyHashToCredential(hash[1]);
-  const address = credentialToAddress(NETWORK, vkh, skh);
+  const address = credentialToAddress(NETWORK as Network, vkh, skh);
   return address;
 }
 
@@ -71,6 +74,6 @@ export async function getKarbonDatum(lucid: LucidEvolution, utxo: UTxO) {
 export function tupleToAddress(tuple: [string, string]) {
   const pc = keyHashToCredential(tuple[0]);
   const sc = keyHashToCredential(tuple[1]);
-  const address = credentialToAddress(NETWORK, pc, sc);
+  const address = credentialToAddress(NETWORK as Network, pc, sc);
   return address;
 }
