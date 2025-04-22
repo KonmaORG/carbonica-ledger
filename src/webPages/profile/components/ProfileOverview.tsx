@@ -1,27 +1,32 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Award, Leaf, BadgeCheck, Clock } from 'lucide-react';
-import { User, CreditTransaction } from '@/types/user';
-import { Project } from '@/types/project';
-import { UserBadge } from '@/components/badges/BadgeDisplay';
-import { ProjectCard } from '@/components/projects/ProjectCard';
-import { UserAchievements } from '@/components/badges/UserAchievements';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Award, Leaf, BadgeCheck, Clock } from "lucide-react";
+import { User, CreditTransaction } from "@/types/user";
+import { ProjectType } from "@/types/project";
+import { UserBadge } from "@/components/badges/BadgeDisplay";
+import { ProjectCard } from "@/components/projects/ProjectCard";
+import { UserAchievements } from "@/components/badges/UserAchievements";
 
 interface ProfileOverviewProps {
   user: User;
-  projects: Project[];
+  projects: ProjectType[];
   transactions: CreditTransaction[];
   badges: UserBadge[];
 }
 
-export const ProfileOverview = ({ 
-  user, 
-  projects, 
-  transactions, 
-  badges 
+export const ProfileOverview = ({
+  user,
+  projects,
+  transactions,
+  badges,
 }: ProfileOverviewProps) => {
   return (
     <div className="space-y-6">
@@ -34,7 +39,9 @@ export const ProfileOverview = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{user.totalCredits.toLocaleString()}</p>
+            <p className="text-2xl font-bold">
+              {user.totalCredits.toLocaleString()}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -45,7 +52,9 @@ export const ProfileOverview = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{user.activeCredits.toLocaleString()}</p>
+            <p className="text-2xl font-bold">
+              {user.activeCredits.toLocaleString()}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -56,7 +65,9 @@ export const ProfileOverview = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{user.retiredCredits.toLocaleString()}</p>
+            <p className="text-2xl font-bold">
+              {user.retiredCredits.toLocaleString()}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -64,7 +75,7 @@ export const ProfileOverview = ({
       <h2 className="text-xl font-bold mt-8">Recent Projects</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.slice(0, 3).map((project) => (
-          <ProjectCard 
+          <ProjectCard
             key={project.id}
             id={project.id}
             title={project.title}
@@ -72,8 +83,7 @@ export const ProfileOverview = ({
             location={project.location}
             startDate={project.startDate}
             status={project.status}
-            credits={project.credits}
-            thumbnailUrl={project.thumbnailUrl}
+            emissionsTarget={project.emissionsTarget}
           />
         ))}
       </div>
@@ -84,17 +94,28 @@ export const ProfileOverview = ({
         </CardHeader>
         <CardContent>
           <div className="divide-y">
-            {transactions.slice(0, 3).map(transaction => (
-              <div key={transaction.id} className="py-3 flex justify-between items-center">
+            {transactions.slice(0, 3).map((transaction) => (
+              <div
+                key={transaction.id}
+                className="py-3 flex justify-between items-center"
+              >
                 <div>
-                  <p className="font-medium">{transaction.type}: {transaction.amount.toLocaleString()} credits</p>
+                  <p className="font-medium">
+                    {transaction.type}: {transaction.amount.toLocaleString()}{" "}
+                    credits
+                  </p>
                   <p className="text-sm text-gray-600">{transaction.project}</p>
                 </div>
                 <div className="text-right">
-                  <Badge variant="outline" className="bg-green-100 text-green-800">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-100 text-green-800"
+                  >
                     {transaction.status}
                   </Badge>
-                  <p className="text-sm text-gray-600 mt-1">{transaction.date}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {transaction.date}
+                  </p>
                 </div>
               </div>
             ))}
@@ -108,10 +129,10 @@ export const ProfileOverview = ({
         </CardFooter>
       </Card>
 
-      <UserAchievements 
-        badges={badges} 
-        userName={user.name} 
-        totalCreditsRetired={user.retiredCredits} 
+      <UserAchievements
+        badges={badges}
+        userName={user.name}
+        totalCreditsRetired={user.retiredCredits}
       />
     </div>
   );

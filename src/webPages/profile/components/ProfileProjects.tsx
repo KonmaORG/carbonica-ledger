@@ -1,12 +1,11 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Leaf } from 'lucide-react';
-import { Project } from '@/types/project';
-import { ProjectCard } from '@/components/projects/ProjectCard';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Leaf } from "lucide-react";
+import { ProjectType } from "@/types/project";
+import { ProjectCard } from "@/components/projects/ProjectCard";
 
 interface ProfileProjectsProps {
-  projects: Project[];
+  projects: ProjectType[];
 }
 
 export const ProfileProjects = ({ projects }: ProfileProjectsProps) => {
@@ -21,7 +20,7 @@ export const ProfileProjects = ({ projects }: ProfileProjectsProps) => {
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
-          <ProjectCard 
+          <ProjectCard
             key={project.id}
             id={project.id}
             title={project.title}
@@ -29,8 +28,7 @@ export const ProfileProjects = ({ projects }: ProfileProjectsProps) => {
             location={project.location}
             startDate={project.startDate}
             status={project.status}
-            credits={project.credits}
-            thumbnailUrl={project.thumbnailUrl}
+            emissionsTarget={project.emissionsTarget}
           />
         ))}
       </div>

@@ -9,9 +9,7 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     location: "Brazil",
     startDate: "Jan 2023",
     status: "verified",
-    credits: 125000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    emissionsTarget: "125000",
   },
   {
     id: "2",
@@ -20,9 +18,7 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     location: "Tanzania",
     startDate: "Mar 2023",
     status: "verified",
-    credits: 85000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    emissionsTarget: "85000",
   },
   {
     id: "3",
@@ -31,9 +27,7 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     location: "India",
     startDate: "Feb 2023",
     status: "pending",
-    credits: 62000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    emissionsTarget: "62000",
   },
 ];
 
