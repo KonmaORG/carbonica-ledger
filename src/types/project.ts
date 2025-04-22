@@ -8,7 +8,7 @@ export interface ProjectType {
   status: "verified" | "pending" | "rejected";
   emissionsTarget: string;
   description?: string;
-  verificationDate?: string;
+  estimatedCompletion?: string;
   documents?: {
     file_name: string;
     file_path: string;
