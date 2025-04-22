@@ -27,47 +27,56 @@ import { CreditLedger } from "./registry/components/CreditLedger";
 import { MOCK_CREDIT_ENTRIES } from "./registry/data/mockCreditEntries";
 import { ProjectType } from "@/types/project";
 import Link from "next/link";
-
-const MOCK_PROJECTS: ProjectType[] = [
-  {
-    id: "1",
-    title: "Amazon Rainforest Conservation Initiative",
-    type: "Forest Conservation",
-    location: "Brazil",
-    startDate: "Jan 2023",
-    status: "verified",
-    emissionsTarget: "125000",
-    description:
-      "A comprehensive conservation project aimed at protecting and restoring critical areas of the Amazon rainforest. This initiative focuses on preventing deforestation, promoting sustainable land use, and supporting local communities.",
-    verificationDate: "Mar 2023",
-
-    developer: "EcoFund Inc.",
-    verifier: "Climate Standards Authority (CSA)",
-  },
-  {
-    id: "2",
-    title: "Serengeti Wildlife Corridor Protection",
-    type: "Biodiversity Conservation",
-    location: "Tanzania",
-    startDate: "Mar 2023",
-    status: "verified",
-    emissionsTarget: "85000",
-
-    description:
-      "Protection of critical wildlife corridors in the Serengeti ecosystem, ensuring the safe migration of numerous species and preserving biodiversity in the region.",
-    verificationDate: "May 2023",
-    developer: "Wildlife Protection Trust",
-    verifier: "EcoVerify International",
-  },
-];
+import { supabase } from "@/lib/supabase";
 
 const ProjectDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const project = MOCK_PROJECTS.find((p) => p.id === id);
+  const [project, setProject] = useState<ProjectType>();
+  const [shareContent, setShareContent] = useState({
+    title: ``,
+    description: ``,
+    url: ``,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  console.log(id);
 
-  const projectCredits = MOCK_CREDIT_ENTRIES.filter(
-    (credit) => credit.projectId === id
-  );
+  useEffect(() => {
+    if (id) {
+      fetchProject(id);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && project) {
+      setShareContent({
+        title: `Carbon Offset Project: ${project.title}`,
+        description: `Check out this ${project.type} carbon offset project in ${project.location} with ${project.emissionsTarget} verified carbon credits!`,
+        url: window.location.href,
+      });
+    }
+  }, [project]);
+
+  const fetchProject = async (projectId) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*") // Select the columns you need
+        .eq("id", projectId) // Filter by the specific ID
+        .single(); // Expect a single record
+
+      if (error) throw error;
+      setProject(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   if (!project) {
     return (
@@ -83,6 +92,14 @@ const ProjectDetails = () => {
         </div>
       </Layout>
     );
+  }
+  function formatDateToLongForm(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   }
 
   const getStatusBadge = () => {
@@ -119,18 +136,21 @@ const ProjectDetails = () => {
         return null;
     }
   };
+  const handleDownload = async (filePath, fileName) => {
+    const response = await fetch(filePath);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
 
-  const [shareContent, setShareContent] = useState({
-    title: `Carbon Offset Project: ${project.title}`,
-    description: `Check out this ${project.type} carbon offset project in ${project.location} with ${project.emissionsTarget} verified carbon credits!`,
-    url: "",
-  });
-  useEffect(() => {
-    setShareContent((prev) => ({
-      ...prev,
-      url: window.location.href,
-    }));
-  });
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    // Clean up the object URL
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
     <Layout>
@@ -221,7 +241,9 @@ const ProjectDetails = () => {
                         <Leaf className="h-5 w-5 text-carbonica-green-dark mt-0.5" />
                         <div>
                           <p className="font-medium">Methodology</p>
-                          <p className="text-gray-600">{project.description}</p>
+                          <p className="text-gray-600">
+                            {project.description?.substring(0, 100)}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
@@ -229,7 +251,7 @@ const ProjectDetails = () => {
                         <div>
                           <p className="font-medium">Verification Date</p>
                           <p className="text-gray-600">
-                            {project.verificationDate}
+                            {formatDateToLongForm(project.estimatedCompletion)}
                           </p>
                         </div>
                       </div>
@@ -237,79 +259,31 @@ const ProjectDetails = () => {
                   </TabsContent>
 
                   <TabsContent value="credits">
-                    <CreditLedger creditEntries={projectCredits} />
+                    {/* <CreditLedger creditEntries={project.emissionsTarget} /> */}
                   </TabsContent>
 
                   <TabsContent value="documentation">
                     <div className="space-y-4">
-                      <div className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
-                        <a
-                          href="#"
-                          className="flex justify-between items-center"
+                      {project.documents?.map((doc) => (
+                        <div
+                          key={doc.file_path}
+                          className="p-4 border rounded-md hover:bg-gray-50 transition-colors"
                         >
-                          <div>
-                            <h4 className="font-medium">
-                              Project Design Document (PDD)
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                              Last updated: April 2023
-                            </p>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium">{doc.file_name}</h4>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleDownload(doc.file_path, doc.file_name)
+                              }
+                            >
+                              Download
+                            </Button>
                           </div>
-                          <Button variant="outline" size="sm">
-                            Download
-                          </Button>
-                        </a>
-                      </div>
-                      <div className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
-                        <a
-                          href="#"
-                          className="flex justify-between items-center"
-                        >
-                          <div>
-                            <h4 className="font-medium">Validation Report</h4>
-                            <p className="text-sm text-gray-600">
-                              Last updated: May 2023
-                            </p>
-                          </div>
-                          <Button variant="outline" size="sm">
-                            Download
-                          </Button>
-                        </a>
-                      </div>
-                      <div className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
-                        <a
-                          href="#"
-                          className="flex justify-between items-center"
-                        >
-                          <div>
-                            <h4 className="font-medium">
-                              Verification Statement
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                              Last updated: June 2023
-                            </p>
-                          </div>
-                          <Button variant="outline" size="sm">
-                            Download
-                          </Button>
-                        </a>
-                      </div>
-                      <div className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
-                        <a
-                          href="#"
-                          className="flex justify-between items-center"
-                        >
-                          <div>
-                            <h4 className="font-medium">Monitoring Report</h4>
-                            <p className="text-sm text-gray-600">
-                              Last updated: July 2023
-                            </p>
-                          </div>
-                          <Button variant="outline" size="sm">
-                            Download
-                          </Button>
-                        </a>
-                      </div>
+                        </div>
+                      ))}
                     </div>
                   </TabsContent>
                 </Tabs>
