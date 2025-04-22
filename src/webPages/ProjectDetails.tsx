@@ -151,7 +151,7 @@ const ProjectDetails = () => {
     // Clean up the object URL
     window.URL.revokeObjectURL(url);
   };
-
+  const thumbnailURL = project.documents?.[0]?.file_path;
   return (
     <Layout>
       <div className="space-y-8">
@@ -171,6 +171,7 @@ const ProjectDetails = () => {
               <div className="relative h-64 overflow-hidden">
                 <img
                   src={
+                    thumbnailURL ||
                     "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
                   }
                   alt={project.title}
