@@ -25,10 +25,10 @@ import {
 } from "lucide-react";
 import { CreditLedger } from "./registry/components/CreditLedger";
 import { MOCK_CREDIT_ENTRIES } from "./registry/data/mockCreditEntries";
-import { Project } from "@/types/project";
+import { ProjectType } from "@/types/project";
 import Link from "next/link";
 
-const MOCK_PROJECTS: Project[] = [
+const MOCK_PROJECTS: ProjectType[] = [
   {
     id: "1",
     title: "Amazon Rainforest Conservation Initiative",
@@ -36,13 +36,11 @@ const MOCK_PROJECTS: Project[] = [
     location: "Brazil",
     startDate: "Jan 2023",
     status: "verified",
-    credits: 125000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    emissionsTarget: "125000",
     description:
       "A comprehensive conservation project aimed at protecting and restoring critical areas of the Amazon rainforest. This initiative focuses on preventing deforestation, promoting sustainable land use, and supporting local communities.",
     verificationDate: "Mar 2023",
-    methodology: "VM0015 - Avoided Unplanned Deforestation",
+
     developer: "EcoFund Inc.",
     verifier: "Climate Standards Authority (CSA)",
   },
@@ -53,13 +51,11 @@ const MOCK_PROJECTS: Project[] = [
     location: "Tanzania",
     startDate: "Mar 2023",
     status: "verified",
-    credits: 85000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    emissionsTarget: "85000",
+
     description:
       "Protection of critical wildlife corridors in the Serengeti ecosystem, ensuring the safe migration of numerous species and preserving biodiversity in the region.",
     verificationDate: "May 2023",
-    methodology: "VM0009 - Avoided Ecosystem Conversion",
     developer: "Wildlife Protection Trust",
     verifier: "EcoVerify International",
   },
@@ -126,9 +122,7 @@ const ProjectDetails = () => {
 
   const [shareContent, setShareContent] = useState({
     title: `Carbon Offset Project: ${project.title}`,
-    description: `Check out this ${project.type} carbon offset project in ${
-      project.location
-    } with ${project.credits.toLocaleString()} verified carbon credits!`,
+    description: `Check out this ${project.type} carbon offset project in ${project.location} with ${project.emissionsTarget} verified carbon credits!`,
     url: "",
   });
   useEffect(() => {
@@ -157,7 +151,6 @@ const ProjectDetails = () => {
               <div className="relative h-64 overflow-hidden">
                 <img
                   src={
-                    project.thumbnailUrl ||
                     "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
                   }
                   alt={project.title}
@@ -184,7 +177,7 @@ const ProjectDetails = () => {
                     </div>
                     <div className="bg-carbonica-green-light/20 px-3 py-1 rounded-full">
                       <span className="text-carbonica-green-dark font-medium">
-                        {project.credits.toLocaleString()} Credits
+                        {project.emissionsTarget} Credits
                       </span>
                     </div>
                   </div>
@@ -228,7 +221,7 @@ const ProjectDetails = () => {
                         <Leaf className="h-5 w-5 text-carbonica-green-dark mt-0.5" />
                         <div>
                           <p className="font-medium">Methodology</p>
-                          <p className="text-gray-600">{project.methodology}</p>
+                          <p className="text-gray-600">{project.description}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">

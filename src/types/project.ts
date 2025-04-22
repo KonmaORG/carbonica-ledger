@@ -1,16 +1,19 @@
 // Project-related type definitions
-export interface Project {
+export interface ProjectType {
   id: string;
   title: string;
   type: string;
   location: string;
   startDate: string;
   status: "verified" | "pending" | "rejected";
-  credits: number;
-  thumbnailUrl?: string;
+  emissionsTarget: string;
   description?: string;
   verificationDate?: string;
-  methodology?: string;
+  documents?: {
+    file_name: string;
+    file_path: string;
+    file_type: string;
+  }[];
   developer?: string;
   verifier?: string;
 }

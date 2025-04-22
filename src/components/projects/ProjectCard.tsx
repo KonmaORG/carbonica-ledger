@@ -19,18 +19,20 @@ import {
 } from "lucide-react";
 import { SocialShareButton } from "../social/SocialShareButton";
 import Link from "next/link";
+import { ProjectType } from "@/types/project";
 
-export interface ProjectCardProps {
-  id: string;
-  title: string;
-  type: string;
-  location: string;
-  startDate: string;
-  status: "pending" | "verified" | "rejected";
-  credits: number;
-  thumbnailUrl?: string;
-  description?: string;
-}
+export type ProjectCardProps = ProjectType;
+
+// {
+//   id: string;
+//   title: string;
+//   type: string;
+//   location: string;
+//   startDate: string;
+//   status: "pending" | "verified" | "rejected";
+//   emissionsTarget: string;
+//   description?: string;
+// }
 
 export const ProjectCard = ({
   id,
@@ -39,9 +41,9 @@ export const ProjectCard = ({
   location,
   startDate,
   status,
-  credits,
-  thumbnailUrl,
+  emissionsTarget,
   description,
+  documents,
 }: ProjectCardProps) => {
   const getStatusBadge = () => {
     switch (status) {
@@ -80,7 +82,7 @@ export const ProjectCard = ({
 
   const [shareContent, setShareContent] = useState({
     title: `Carbon Offset Project: ${title}`,
-    description: `Check out this ${type} carbon offset project in ${location} with ${credits.toLocaleString()} verified carbon credits!`,
+    description: `Check out this ${type} carbon offset project in ${location} with ${emissionsTarget} verified carbon credits!`,
     url: "",
   });
   useEffect(() => {
@@ -90,12 +92,14 @@ export const ProjectCard = ({
     }));
   }, []);
 
+  const thumbnailURL = documents?.[0]?.file_path;
+
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg">
       <div className="relative h-48 overflow-hidden">
         <img
           src={
-            thumbnailUrl ||
+            thumbnailURL ||
             "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
           }
           alt={title}
@@ -128,7 +132,7 @@ export const ProjectCard = ({
         <div className="mt-4 flex items-center">
           <div className="bg-carbonica-green-light/20 px-3 py-1 rounded-full">
             <span className="text-carbonica-green-dark font-medium">
-              {credits.toLocaleString("en-US")} Credits
+              {emissionsTarget} Credits
             </span>
           </div>
         </div>
