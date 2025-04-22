@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -89,6 +89,12 @@ const PROJECT_TYPES = [
 ];
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+];
 
 export function ProjectRegistrationForm({
   onSubmit,
@@ -102,6 +108,8 @@ export function ProjectRegistrationForm({
     },
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
   const handleFormSubmit = (data: ProjectFormValues) => {
     toast({
@@ -109,6 +117,48 @@ export function ProjectRegistrationForm({
       description: "Your project has been submitted for validation.",
     });
     onSubmit(data);
+  };
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.size > MAX_FILE_SIZE) {
+        toast({
+          title: "File too large",
+          description: "Thumbnail image must be under 50MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Thumbnail must be an image (JPEG, PNG, GIF, WebP).",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Revoke existing thumbnail URL if it exists
+      const existingThumbnail = documents.find((doc) => doc.isThumbnail);
+      if (existingThumbnail) {
+        URL.revokeObjectURL(existingThumbnail.url);
+      }
+
+      const newThumbnail: ProjectDocument = {
+        file,
+        name: file.name,
+        type: file.type,
+        url: URL.createObjectURL(file),
+        isThumbnail: true,
+      };
+
+      // Remove existing thumbnail from documents and add new thumbnail as first item
+      const filteredDocs = documents.filter((doc) => !doc.isThumbnail);
+      setDocuments([newThumbnail, ...filteredDocs]);
+      setThumbnailPreview(newThumbnail.url);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,7 +191,14 @@ export function ProjectRegistrationForm({
       }
 
       if (newDocs.length > 0) {
-        setDocuments([...documents, ...newDocs]);
+        // Ensure thumbnail remains first by filtering it out and appending new docs
+        const thumbnail = documents.find((doc) => doc.isThumbnail);
+        const otherDocs = documents.filter((doc) => !doc.isThumbnail);
+        setDocuments(
+          thumbnail
+            ? [thumbnail, ...otherDocs, ...newDocs]
+            : [...otherDocs, ...newDocs]
+        );
       }
     } catch (error) {
       console.error("Error processing files:", error);
@@ -157,6 +214,9 @@ export function ProjectRegistrationForm({
     const doc = documents.find((d) => d.url === docUrl);
     if (doc) {
       URL.revokeObjectURL(doc.url);
+      if (doc.isThumbnail) {
+        setThumbnailPreview(null);
+      }
     }
     const newDocs = documents.filter((d) => d.url !== docUrl);
     setDocuments(newDocs);
@@ -364,6 +424,63 @@ export function ProjectRegistrationForm({
         />
 
         <div className="space-y-2">
+          <Label>Project Thumbnail</Label>
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-1/2 border-2 border-dashed rounded-lg p-6 text-center">
+              <Paperclip className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+              <p className="text-sm font-medium">
+                Upload a thumbnail image for your project
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                JPEG, PNG, GIF, or WebP (max 50MB)
+              </p>
+              <Input
+                type="file"
+                className="hidden"
+                id="thumbnail-upload"
+                onChange={handleThumbnailChange}
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                ref={thumbnailInputRef}
+              />
+              <Label htmlFor="thumbnail-upload" className="mt-4 inline-block">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => thumbnailInputRef.current?.click()}
+                >
+                  <Upload className="mr-2 h-4 w-4" /> Upload Thumbnail
+                </Button>
+              </Label>
+            </div>
+            <div className="w-full md:w-1/2 flex items-center justify-center">
+              {thumbnailPreview ? (
+                <div className="relative">
+                  <img
+                    src={thumbnailPreview}
+                    alt="Project Thumbnail Preview"
+                    className="max-w-full max-h-48 rounded-lg object-cover"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6 text-gray-500 hover:text-red-500"
+                    onClick={() => removeDocument(thumbnailPreview)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No thumbnail uploaded
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <Label>Project Documents</Label>
           <div className="border-2 border-dashed rounded-lg p-6 text-center">
             <Paperclip className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
@@ -408,7 +525,7 @@ export function ProjectRegistrationForm({
                   <div className="flex items-center space-x-2">
                     <FileCheck className="h-4 w-4 text-green-600" />
                     <span className="text-sm truncate max-w-[200px] sm:max-w-[300px]">
-                      {doc.name}
+                      {doc.name} {doc.isThumbnail ? "(Thumbnail)" : ""}
                     </span>
                   </div>
                   <Button
