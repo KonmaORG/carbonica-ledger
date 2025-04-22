@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import {
   ProjectCard,
@@ -16,91 +16,148 @@ import {
 } from "@/components/ui/select";
 import { Search, Filter, Plus, Leaf, Globe, BarChart3 } from "lucide-react";
 import Link from "next/link";
+import { ProjectType } from "@/types/project";
+import { supabase } from "@/lib/supabase";
+import { toast } from "@/components/ui/use-toast";
 
-const MOCK_PROJECTS: ProjectCardProps[] = [
-  {
-    id: "1",
-    title: "Amazon Rainforest Conservation Initiative",
-    type: "Forest Conservation",
-    location: "Brazil",
-    startDate: "Jan 2023",
-    status: "verified",
-    credits: 125000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "2",
-    title: "Serengeti Wildlife Corridor Protection",
-    type: "Biodiversity Conservation",
-    location: "Tanzania",
-    startDate: "Mar 2023",
-    status: "verified",
-    credits: 85000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "3",
-    title: "Solar Farm Development in Rajasthan",
-    type: "Renewable Energy",
-    location: "India",
-    startDate: "Feb 2023",
-    status: "pending",
-    credits: 62000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "4",
-    title: "Wind Power Expansion in Scotland",
-    type: "Renewable Energy",
-    location: "United Kingdom",
-    startDate: "Apr 2023",
-    status: "verified",
-    credits: 45000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1548337138-e87d889cc369?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "5",
-    title: "Mangrove Restoration in Sundarbans",
-    type: "Wetland Restoration",
-    location: "Bangladesh",
-    startDate: "Dec 2022",
-    status: "verified",
-    credits: 73000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1583373834259-46cc92173cb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "6",
-    title: "Agricultural Methane Capture Program",
-    type: "Methane Reduction",
-    location: "Argentina",
-    startDate: "May 2023",
-    status: "pending",
-    credits: 28000,
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-];
+// const MOCK_PROJECTS: ProjectCardProps[] = [
+//   {
+//     id: "1",
+//     title: "Amazon Rainforest Conservation Initiative",
+//     type: "Forest Conservation",
+//     location: "Brazil",
+//     startDate: "Jan 2023",
+//     status: "verified",
+//     credits: 125000,
+//     thumbnailUrl:
+//       "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+//   },
+//   {
+//     id: "2",
+//     title: "Serengeti Wildlife Corridor Protection",
+//     type: "Biodiversity Conservation",
+//     location: "Tanzania",
+//     startDate: "Mar 2023",
+//     status: "verified",
+//     credits: 85000,
+//     thumbnailUrl:
+//       "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+//   },
+//   {
+//     id: "3",
+//     title: "Solar Farm Development in Rajasthan",
+//     type: "Renewable Energy",
+//     location: "India",
+//     startDate: "Feb 2023",
+//     status: "pending",
+//     credits: 62000,
+//     thumbnailUrl:
+//       "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+//   },
+//   {
+//     id: "4",
+//     title: "Wind Power Expansion in Scotland",
+//     type: "Renewable Energy",
+//     location: "United Kingdom",
+//     startDate: "Apr 2023",
+//     status: "verified",
+//     credits: 45000,
+//     thumbnailUrl:
+//       "https://images.unsplash.com/photo-1548337138-e87d889cc369?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+//   },
+//   {
+//     id: "5",
+//     title: "Mangrove Restoration in Sundarbans",
+//     type: "Wetland Restoration",
+//     location: "Bangladesh",
+//     startDate: "Dec 2022",
+//     status: "verified",
+//     credits: 73000,
+//     thumbnailUrl:
+//       "https://images.unsplash.com/photo-1583373834259-46cc92173cb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+//   },
+//   {
+//     id: "6",
+//     title: "Agricultural Methane Capture Program",
+//     type: "Methane Reduction",
+//     location: "Argentina",
+//     startDate: "May 2023",
+//     status: "pending",
+//     credits: 28000,
+//     thumbnailUrl:
+//       "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+//   },
+// ];
+
+const ITEMS_PER_PAGE = 10;
 
 const Projects = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [projectType, setProjectType] = useState<string>("all-types");
   const [status, setStatus] = useState<string>("all-statuses");
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredProjects = MOCK_PROJECTS.filter((project) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType =
-      projectType === "all-types" || project.type === projectType;
-    const matchesStatus =
-      status === "all-statuses" || project.status === status;
-    return matchesSearch && matchesType && matchesStatus;
-  });
+  // Fetch projects from Supabase
+  const fetchProjects = async (page: number) => {
+    setIsLoading(true);
+    try {
+      // Fetch total count for pagination
+      const { count, error: countError } = await supabase
+        .from("projects")
+        .select("*", { count: "exact", head: true });
+
+      if (countError) throw countError;
+
+      const totalItems = count || 0;
+      setTotalPages(Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+      // Fetch projects for the current page
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
+
+      if (error) throw error;
+
+      setProjects(data || []);
+    } catch (error: any) {
+      console.error("Error fetching projects:", error.message);
+      toast({
+        title: "Error",
+        description: "Failed to fetch projects. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch projects when page changes
+  useEffect(() => {
+    fetchProjects(currentPage);
+  }, [currentPage]);
+
+  // Handle page navigation
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // const filteredProjects = MOCK_PROJECTS.filter((project) => {
+  //   const matchesSearch =
+  //     project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     project.location.toLowerCase().includes(searchTerm.toLowerCase());
+  //   const matchesType =
+  //     projectType === "all-types" || project.type === projectType;
+  //   const matchesStatus =
+  //     status === "all-statuses" || project.status === status;
+  //   return matchesSearch && matchesType && matchesStatus;
+  // });
 
   return (
     <Layout>
@@ -133,7 +190,7 @@ const Projects = () => {
                   Global Impact
                 </p>
                 <p className="text-xl font-semibold">
-                  {MOCK_PROJECTS.length} Projects
+                  {/* {MOCK_PROJECTS.length} Projects */}
                 </p>
               </div>
             </div>
@@ -144,10 +201,10 @@ const Projects = () => {
                   Carbon Credits
                 </p>
                 <p className="text-xl font-semibold">
-                  {MOCK_PROJECTS.reduce(
+                  {/* {MOCK_PROJECTS.reduce(
                     (acc, project) => acc + project.credits,
                     0
-                  ).toLocaleString()}{" "}
+                  ).toLocaleString()}{" "} */}
                   tons
                 </p>
               </div>
@@ -159,12 +216,12 @@ const Projects = () => {
                   Verification Rate
                 </p>
                 <p className="text-xl font-semibold">
-                  {Math.round(
+                  {/* {Math.round(
                     (MOCK_PROJECTS.filter((p) => p.status === "verified")
                       .length /
                       MOCK_PROJECTS.length) *
                       100
-                  )}
+                  )} */}
                   %
                 </p>
               </div>
@@ -220,9 +277,9 @@ const Projects = () => {
           </div>
         </div>
 
-        {filteredProjects.length > 0 ? (
+        {projects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
+            {projects.map((project) => (
               <ProjectCard key={project.id} {...project} />
             ))}
           </div>
@@ -245,6 +302,47 @@ const Projects = () => {
           </div>
         )}
       </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+            {Math.min(
+              currentPage * ITEMS_PER_PAGE,
+              (currentPage - 1) * ITEMS_PER_PAGE + projects.length
+            )}{" "}
+            of {totalPages * ITEMS_PER_PAGE} projects
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </Button>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
