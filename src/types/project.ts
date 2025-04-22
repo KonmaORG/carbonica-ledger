@@ -20,4 +20,5 @@ export type ProjectDocument = {
   name: string; // File name (e.g., "report.pdf")
   type: string; // MIME type (e.g., "application/pdf")
   url: string; // Client-side URL for preview (from URL.createObjectURL)
+  isThumbnail?: boolean;
 };
