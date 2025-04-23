@@ -74,7 +74,6 @@ const fetchVerificationRequests = async ({
       ...project,
       verification: project.verification, // Ensure verification is included
     }));
-    console.log("Fetched verification requests:", formattedData);
     setVerificationRequests(formattedData as VerificationRequest[]);
   } catch (error: any) {
     console.error("Error fetching verification requests:", error.message);
