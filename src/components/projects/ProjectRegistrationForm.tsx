@@ -36,10 +36,10 @@ import { Label } from "../ui/label";
 import { ProjectDocument } from "@/types/project";
 
 const projectFormSchema = z.object({
-  projectName: z.string().min(3, {
+  title: z.string().min(3, {
     message: "Project name must be at least 3 characters.",
   }),
-  projectType: z.string({
+  type: z.string({
     required_error: "Please select a project type.",
   }),
   location: z.string().min(2, {
@@ -231,7 +231,7 @@ export function ProjectRegistrationForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
-            name="projectName"
+            name="title"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Project Name</FormLabel>
@@ -248,7 +248,7 @@ export function ProjectRegistrationForm({
 
           <FormField
             control={form.control}
-            name="projectType"
+            name="type"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Project Type</FormLabel>
