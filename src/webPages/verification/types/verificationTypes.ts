@@ -1,10 +1,9 @@
-
 export interface VerificationRequest {
   id: string;
   projectId: string;
-  projectName: string;
+  title: string;
   submittedDate: string;
-  status: 'pending' | 'in_review' | 'approved' | 'rejected';
+  status: "pending" | "in_review" | "approved" | "rejected";
   progress: number;
   verifier?: string;
   expectedCompletion?: string;
@@ -35,7 +34,13 @@ export interface VerificationEvent {
   id: string;
   verificationId: string;
   timestamp: string;
-  eventType: 'submission' | 'assignment' | 'review' | 'request_changes' | 'approval' | 'rejection';
+  eventType:
+    | "submission"
+    | "assignment"
+    | "review"
+    | "request_changes"
+    | "approval"
+    | "rejection";
   message: string;
   userId: string;
   userName?: string;

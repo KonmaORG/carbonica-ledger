@@ -22,7 +22,7 @@ export const VerificationRequestCard = ({
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold">{request.projectName}</h3>
+            <h3 className="text-lg font-semibold">{request.title}</h3>
             <p className="text-sm text-gray-500">
               Submitted: {request.submittedDate}
             </p>

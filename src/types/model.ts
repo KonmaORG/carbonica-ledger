@@ -1,4 +1,3 @@
-
 /**
  * Core Entity Types for Carbonica Platform
  * This file defines the primary data models used across the application
@@ -28,7 +27,7 @@ export interface Project {
   type: string;
   location: string;
   startDate: string;
-  status: 'pending_verification' | 'verified' | 'rejected';
+  status: "pending_verification" | "verified" | "rejected";
   credits: number;
   thumbnailUrl?: string;
   description?: string;
@@ -45,9 +44,9 @@ export interface Project {
 export interface VerificationRequest {
   id: string;
   projectId: string;
-  projectName: string;
+  title: string;
   submittedDate: string;
-  status: 'pending' | 'in_review' | 'approved' | 'rejected';
+  status: "pending" | "in_review" | "approved" | "rejected";
   progress: number;
   verifierId?: string; // User ID of assigned verifier
   verifier?: string; // Name of the verifier (transitional - will be removed once fully relational)
@@ -79,7 +78,13 @@ export interface VerificationEvent {
   id: string;
   verificationId: string;
   timestamp: string;
-  eventType: 'submission' | 'assignment' | 'review' | 'request_changes' | 'approval' | 'rejection';
+  eventType:
+    | "submission"
+    | "assignment"
+    | "review"
+    | "request_changes"
+    | "approval"
+    | "rejection";
   message: string;
   userId: string; // User who created this event
   userName?: string; // Name of the user (transitional - will be removed once fully relational)
@@ -107,7 +112,7 @@ export interface CreditEntry {
   location: string;
   quantity: number;
   vintage: string;
-  status: 'active' | 'transferred' | 'retired';
+  status: "active" | "transferred" | "retired";
   issuanceDate: string;
   lastActionDate: string;
   owner: string; // User ID
@@ -121,7 +126,7 @@ export interface CreditEntry {
 export interface CreditTransaction {
   id: string;
   date: string;
-  type: 'issuance' | 'transfer' | 'retirement';
+  type: "issuance" | "transfer" | "retirement";
   projectId: string;
   project: string; // Project name (transitional)
   creditId: string; // Reference to specific credit
@@ -129,7 +134,7 @@ export interface CreditTransaction {
   senderId: string; // User ID of sender
   recipientId?: string; // User ID of recipient (if transfer)
   recipient?: string; // Name of recipient (transitional)
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   transactionHash?: string; // For blockchain transactions
   metadata?: Record<string, any>; // Additional transaction data
   createdAt: string;

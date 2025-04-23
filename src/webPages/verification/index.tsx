@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,18 +7,98 @@ import { VerificationRequestsList } from "./components/VerificationRequestsList"
 import { useVerification } from "@/contexts/VerificationContext";
 import { Loader2 } from "lucide-react";
 import { VerificationRequest } from "@/types/model";
+import { supabase } from "@/lib/supabase";
+import { toast } from "@/components/ui/use-toast";
 
-const VerificationPage = () => {
-  const { verificationRequests, loading } = useVerification();
+const ITEMS_PER_PAGE = 10;
+
+const fetchVerificationRequests = async ({
+  page,
+  activeTab,
+  setVerificationRequests,
+  setTotalPages,
+  setIsLoading,
+}: {
+  page: number;
+  activeTab: string;
+  setVerificationRequests: React.Dispatch<
+    React.SetStateAction<VerificationRequest[]>
+  >;
+  setTotalPages: React.Dispatch<React.SetStateAction<number>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  setIsLoading(true);
+  try {
+    // Build the base query
+    let query = supabase
+      .from("projects")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false });
+
+    // Apply status filter if activeTab is not "all"
+    if (activeTab !== "all") {
+      query = query.eq("status", activeTab);
+    }
+    console.log("");
+    // Fetch total count for pagination
+    const { count, error: countError } = await query;
+
+    if (countError) throw countError;
+
+    const totalItems = count || 0;
+    setTotalPages(Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+    // Fetch requests for the current page
+    const { data, error } = await query.range(
+      (page - 1) * ITEMS_PER_PAGE,
+      page * ITEMS_PER_PAGE - 1
+    );
+
+    if (error) throw error;
+
+    setVerificationRequests(data || []);
+  } catch (error: any) {
+    console.error("Error fetching verification requests:", error.message);
+    toast({
+      title: "Error",
+      description: "Failed to fetch verification requests. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const Verification = () => {
+  const { verificationRequests, setVerificationRequests } = useVerification();
   const [activeTab, setActiveTab] = React.useState<string>("all");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const [totalPages, setTotalPages] = React.useState<number>(1);
 
-  // Filter requests based on the active tab
+  // Fetch requests when activeTab or currentPage changes
+  useEffect(() => {
+    fetchVerificationRequests({
+      page: currentPage,
+      activeTab,
+      setVerificationRequests,
+      setTotalPages,
+      setIsLoading,
+    });
+  }, [activeTab, currentPage, setVerificationRequests]);
+
+  // Filter requests based on the active tab (client-side fallback)
   const filteredRequests = React.useMemo(() => {
     if (activeTab === "all") return verificationRequests;
     return verificationRequests.filter(
       (request) => request.status === activeTab
     );
   }, [verificationRequests, activeTab]);
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <Layout>
@@ -34,14 +114,17 @@ const VerificationPage = () => {
           <Button>Submit New Verification</Button>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="h-10 w-10 animate-spin text-gray-400" />
           </div>
         ) : (
           <Tabs
             value={activeTab}
-            onValueChange={(value) => setActiveTab(value)}
+            onValueChange={(value) => {
+              setActiveTab(value);
+              setCurrentPage(1); // Reset to first page on tab change
+            }}
           >
             <TabsList className="mb-6">
               <TabsTrigger value="all">All Requests</TabsTrigger>
@@ -54,27 +137,46 @@ const VerificationPage = () => {
             <TabsContent value="all">
               <VerificationRequestsList requests={filteredRequests} />
             </TabsContent>
-
             <TabsContent value="pending">
               <VerificationRequestsList requests={filteredRequests} />
             </TabsContent>
-
             <TabsContent value="in_review">
               <VerificationRequestsList requests={filteredRequests} />
             </TabsContent>
-
             <TabsContent value="approved">
               <VerificationRequestsList requests={filteredRequests} />
             </TabsContent>
-
             <TabsContent value="rejected">
               <VerificationRequestsList requests={filteredRequests} />
             </TabsContent>
           </Tabs>
+        )}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center space-x-2 mt-6">
+            <Button
+              variant="outline"
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Previous
+            </Button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Next
+            </Button>
+          </div>
         )}
       </div>
     </Layout>
   );
 };
 
-export default VerificationPage;
+export default Verification;
