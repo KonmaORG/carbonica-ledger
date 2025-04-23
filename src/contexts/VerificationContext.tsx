@@ -20,6 +20,9 @@ import { useAuth } from "./AuthContext";
 interface VerificationContextType {
   // Data
   verificationRequests: VerificationRequest[];
+  setVerificationRequests: React.Dispatch<
+    React.SetStateAction<VerificationRequest[]>
+  >;
   projects: Project[];
   users: User[];
 
@@ -316,6 +319,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
 
   const contextValue: VerificationContextType = {
     verificationRequests,
+    setVerificationRequests,
     projects,
     users,
     loading,

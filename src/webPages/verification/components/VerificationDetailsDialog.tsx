@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,15 +6,15 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { VerificationStatusBadge } from './VerificationStatusBadge';
-import { VerificationRequest } from '@/types/model';
-import { useToast } from '@/hooks/use-toast';
-import { VerificationDetailsContent } from './VerificationDetailsContent';
-import { ValidatorActions } from './ValidatorActions';
-import { ConfirmActionDialog } from './ConfirmActionDialog';
-import { useVerification } from '@/contexts/VerificationContext';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { VerificationStatusBadge } from "./VerificationStatusBadge";
+import { VerificationRequest } from "@/types/model";
+import { useToast } from "@/hooks/use-toast";
+import { VerificationDetailsContent } from "./VerificationDetailsContent";
+import { ValidatorActions } from "./ValidatorActions";
+import { ConfirmActionDialog } from "./ConfirmActionDialog";
+import { useVerification } from "@/contexts/VerificationContext";
 
 interface VerificationDetailsDialogProps {
   request: VerificationRequest;
@@ -30,12 +29,14 @@ export const VerificationDetailsDialog = ({
 }: VerificationDetailsDialogProps) => {
   const { toast } = useToast();
   const { approveVerification, rejectVerification } = useVerification();
-  const [confirmAction, setConfirmAction] = React.useState<'approve' | 'reject' | null>(null);
+  const [confirmAction, setConfirmAction] = React.useState<
+    "approve" | "reject" | null
+  >(null);
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [rejectionReason, setRejectionReason] = React.useState('');
+  const [rejectionReason, setRejectionReason] = React.useState("");
 
-  const handleAction = async (action: 'approve' | 'reject') => {
+  const handleAction = async (action: "approve" | "reject") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
   };
@@ -44,9 +45,9 @@ export const VerificationDetailsDialog = ({
     setIsSubmitting(true);
 
     try {
-      if (confirmAction === 'approve') {
+      if (confirmAction === "approve") {
         await approveVerification(request.id);
-      } else if (confirmAction === 'reject') {
+      } else if (confirmAction === "reject") {
         if (!rejectionReason) {
           toast({
             title: "Validation Error",
@@ -58,13 +59,14 @@ export const VerificationDetailsDialog = ({
         }
         await rejectVerification(request.id, rejectionReason);
       }
-      
+
       setIsConfirmOpen(false);
       onOpenChange(false);
     } catch (error) {
       toast({
         title: "Transaction Failed",
-        description: "There was an error processing your request. Please try again.",
+        description:
+          "There was an error processing your request. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -77,7 +79,7 @@ export const VerificationDetailsDialog = ({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl">{request.projectName}</DialogTitle>
+            <DialogTitle className="text-xl">{request.title}</DialogTitle>
             <DialogDescription className="flex items-center justify-between">
               <span>Verification Request ID: {request.id}</span>
               <VerificationStatusBadge status={request.status} />
@@ -85,19 +87,18 @@ export const VerificationDetailsDialog = ({
           </DialogHeader>
 
           <VerificationDetailsContent request={request} />
-          
-          <ValidatorActions 
-            request={request}
-            onAction={handleAction}
-          />
+
+          <ValidatorActions request={request} onAction={handleAction} />
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Close
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <ConfirmActionDialog 
+      <ConfirmActionDialog
         action={confirmAction}
         isOpen={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
