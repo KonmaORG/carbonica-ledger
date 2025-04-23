@@ -1,7 +1,12 @@
-
-import React from 'react';
-import { VerificationRequest } from '@/types/model';
-import { CheckCircle, Clock, AlertCircle, XCircle, UserCheck } from 'lucide-react';
+import React from "react";
+import {
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  XCircle,
+  UserCheck,
+} from "lucide-react";
+import { VerificationRequest } from "../types/verificationTypes";
 
 interface TimelineItemProps {
   icon: React.ReactNode;
@@ -11,7 +16,13 @@ interface TimelineItemProps {
   isLast?: boolean;
 }
 
-const TimelineItem: React.FC<TimelineItemProps> = ({ icon, title, date, description, isLast = false }) => (
+const TimelineItem: React.FC<TimelineItemProps> = ({
+  icon,
+  title,
+  date,
+  description,
+  isLast = false,
+}) => (
   <div className="flex gap-4">
     <div className="flex flex-col items-center">
       <div className="rounded-full p-1 bg-white border border-gray-200">
@@ -19,9 +30,11 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ icon, title, date, descript
       </div>
       {!isLast && <div className="w-px h-full bg-gray-200 my-1" />}
     </div>
-    <div className={`pb-${isLast ? '0' : '5'}`}>
+    <div className={`pb-${isLast ? "0" : "5"}`}>
       <p className="font-medium text-gray-900">{title}</p>
-      <time className="text-xs text-gray-500">{new Date(date).toLocaleString()}</time>
+      <time className="text-xs text-gray-500">
+        {new Date(date).toLocaleString()}
+      </time>
       {description && (
         <p className="mt-1 text-sm text-gray-600">{description}</p>
       )}
@@ -33,26 +46,33 @@ interface VerificationTimelineProps {
   request: VerificationRequest;
 }
 
-export const VerificationTimeline: React.FC<VerificationTimelineProps> = ({ request }) => {
-  if (!request.timeline || request.timeline.length === 0) {
+export const VerificationTimeline: React.FC<VerificationTimelineProps> = ({
+  request,
+}) => {
+  if (
+    !request.verification[0].timeline ||
+    request.verification[0].timeline.length === 0
+  ) {
     return (
       <div className="border border-gray-100 rounded-md p-4">
-        <p className="text-center text-gray-500">No timeline events available</p>
+        <p className="text-center text-gray-500">
+          No timeline events available
+        </p>
       </div>
     );
   }
 
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
-      case 'submission':
+      case "submission":
         return <Clock className="h-4 w-4 text-blue-500" />;
-      case 'assignment':
+      case "assignment":
         return <UserCheck className="h-4 w-4 text-purple-500" />;
-      case 'review':
+      case "review":
         return <AlertCircle className="h-4 w-4 text-amber-500" />;
-      case 'approval':
+      case "approval":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'rejection':
+      case "rejection":
         return <XCircle className="h-4 w-4 text-red-500" />;
       default:
         return <Clock className="h-4 w-4 text-gray-500" />;
@@ -60,8 +80,8 @@ export const VerificationTimeline: React.FC<VerificationTimelineProps> = ({ requ
   };
 
   // Sort timeline events by timestamp (newest first)
-  const sortedEvents = [...request.timeline].sort((a, b) => 
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  const sortedEvents = [...request.verification[0].timeline].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
   return (

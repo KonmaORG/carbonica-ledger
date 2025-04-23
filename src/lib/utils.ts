@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { bech32 } from "bech32";
-import { ProjectDocument } from "@/types/project";
+import { ProjectDocumentUpload } from "@/types/project";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -70,7 +70,7 @@ export function getTimeRemaining(futureTimestamp) {
 }
 
 export const calculateCombinedHash = async (
-  documents: ProjectDocument[]
+  documents: ProjectDocumentUpload[]
 ): Promise<string> => {
   try {
     if (documents.length === 0) {
@@ -128,4 +128,13 @@ export function formatDateToLongForm(dateString) {
     month: "long",
     day: "numeric",
   });
+}
+
+export function formatISODate(isoString) {
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
 }

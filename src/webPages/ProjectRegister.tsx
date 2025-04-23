@@ -12,7 +12,7 @@ import { ProjectRegistrationForm } from "@/components/projects/ProjectRegistrati
 import { ProjectRegistrationSuccess } from "@/components/projects/ProjectRegistrationSuccess";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { ProjectDocument } from "@/types/project";
+import { ProjectDocumentUpload } from "@/types/project";
 import { calculateCombinedHash } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
@@ -21,12 +21,12 @@ const ProjectRegister = () => {
     "form"
   );
   const [projectData, setProjectData] = useState<any>(null);
-  const [documents, setDocuments] = useState<ProjectDocument[]>([]);
+  const [documents, setDocuments] = useState<ProjectDocumentUpload[]>([]);
   const { user } = useAuth();
 
   const uploadDocuments = async (
     projectId: string,
-    documents: ProjectDocument[],
+    documents: ProjectDocumentUpload[],
     user: any // Replace 'any' with your user type, e.g., Supabase User
   ): Promise<{ file_name: string; file_path: string; file_type: string }[]> => {
     const uploadedFiles: {

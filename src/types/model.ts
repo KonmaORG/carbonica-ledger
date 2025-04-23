@@ -3,6 +3,8 @@
  * This file defines the primary data models used across the application
  */
 
+import { ProjectDocument } from "./project";
+
 // User entity
 export interface User {
   id: string;
@@ -43,22 +45,28 @@ export interface Project {
 // Enhanced VerificationRequest entity
 export interface VerificationRequest {
   id: string;
-  projectId: string;
+  created_at: string;
   title: string;
-  submittedDate: string;
-  status: "pending" | "in_review" | "approved" | "rejected";
-  progress: number;
-  verifierId?: string; // User ID of assigned verifier
-  verifier?: string; // Name of the verifier (transitional - will be removed once fully relational)
-  expectedCompletion?: string;
-  rejectionReason?: string;
-  createdAt: string;
-  updatedAt: string;
-  // New fields
-  developerId: string; // User ID who submitted the verification
-  version: number; // For tracking verification versions
-  documents: VerificationDocument[];
-  timeline: VerificationEvent[];
+  type: string;
+  location: string;
+  country: string;
+  startDate: string;
+  estimatedCompletion: string;
+  emissionsTarget: string;
+  description: string;
+  txHash: string;
+  user_id: string;
+  documents: ProjectDocument[];
+  status: string;
+  verification: {
+    id: string;
+    credits: number | null;
+    rejectionReason: string | null;
+    unsignedTx: string | null;
+    txHash: string | null;
+    verifiers: { verfier: string; signed: boolean }[];
+    timeline?: string | null; // Link to the verification timeline
+  };
 }
 
 // New VerificationDocument entity
