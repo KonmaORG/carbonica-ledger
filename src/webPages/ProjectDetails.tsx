@@ -28,6 +28,7 @@ import { MOCK_CREDIT_ENTRIES } from "./registry/data/mockCreditEntries";
 import { ProjectType } from "@/types/project";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { formatDateToLongForm } from "@/lib/utils";
 
 const ProjectDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -92,14 +93,6 @@ const ProjectDetails = () => {
         </div>
       </Layout>
     );
-  }
-  function formatDateToLongForm(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   }
 
   const getStatusBadge = () => {
