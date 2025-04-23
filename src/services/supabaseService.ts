@@ -526,7 +526,7 @@ class SupabaseService {
     return {
       id: dbRequest.id,
       projectId: dbRequest.project_id,
-      projectName: dbRequest.project_name,
+      title: dbRequest.project_name,
       submittedDate: new Date(dbRequest.submitted_date).toLocaleDateString(),
       status: dbRequest.status,
       progress: dbRequest.progress,
