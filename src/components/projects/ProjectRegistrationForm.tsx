@@ -33,7 +33,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { Label } from "../ui/label";
-import { ProjectDocument } from "@/types/project";
+import { ProjectDocumentUpload } from "@/types/project";
 
 const projectFormSchema = z.object({
   title: z.string().min(3, {
@@ -71,8 +71,8 @@ type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 interface ProjectRegistrationFormProps {
   onSubmit: (data: ProjectFormValues) => void;
-  setDocuments: (documents: ProjectDocument[]) => void;
-  documents: ProjectDocument[];
+  setDocuments: (documents: ProjectDocumentUpload[]) => void;
+  documents: ProjectDocumentUpload[];
 }
 
 const PROJECT_TYPES = [
@@ -146,7 +146,7 @@ export function ProjectRegistrationForm({
         URL.revokeObjectURL(existingThumbnail.url);
       }
 
-      const newThumbnail: ProjectDocument = {
+      const newThumbnail: ProjectDocumentUpload = {
         file,
         name: file.name,
         type: file.type,
@@ -172,7 +172,7 @@ export function ProjectRegistrationForm({
 
   const handleFiles = (files: FileList) => {
     try {
-      const newDocs: ProjectDocument[] = Array.from(files)
+      const newDocs: ProjectDocumentUpload[] = Array.from(files)
         .filter((file) => file.size <= MAX_FILE_SIZE)
         .map((file) => ({
           file,

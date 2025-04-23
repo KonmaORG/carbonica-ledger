@@ -6,9 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VerificationRequestsList } from "./components/VerificationRequestsList";
 import { useVerification } from "@/contexts/VerificationContext";
 import { Loader2 } from "lucide-react";
-import { VerificationRequest } from "@/types/model";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/components/ui/use-toast";
+import { VerificationRequest } from "./types/verificationTypes";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -29,17 +29,30 @@ const fetchVerificationRequests = async ({
 }) => {
   setIsLoading(true);
   try {
-    // Build the base query
+    // Build the base query with a left join to include verification data
     let query = supabase
       .from("projects")
-      .select("*", { count: "exact" })
+      .select(
+        `
+        *,
+        verification (
+          id,
+          credits,
+          rejectionReason,
+          unsignedTx,
+          txHash,
+          verifiers
+        )
+      `,
+        { count: "exact" }
+      )
       .order("created_at", { ascending: false });
 
     // Apply status filter if activeTab is not "all"
     if (activeTab !== "all") {
       query = query.eq("status", activeTab);
     }
-    console.log("");
+
     // Fetch total count for pagination
     const { count, error: countError } = await query;
 
@@ -56,7 +69,13 @@ const fetchVerificationRequests = async ({
 
     if (error) throw error;
 
-    setVerificationRequests(data || []);
+    // Map the data to ensure verification is included (even if null)
+    const formattedData = (data || []).map((project) => ({
+      ...project,
+      verification: project.verification, // Ensure verification is included
+    }));
+    console.log("Fetched verification requests:", formattedData);
+    setVerificationRequests(formattedData as VerificationRequest[]);
   } catch (error: any) {
     console.error("Error fetching verification requests:", error.message);
     toast({

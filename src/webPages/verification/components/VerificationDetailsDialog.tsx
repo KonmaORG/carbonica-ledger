@@ -77,8 +77,8 @@ export const VerificationDetailsDialog = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle className="text-xl">{request.title}</DialogTitle>
             <DialogDescription className="flex items-center justify-between">
               <span>Verification Request ID: {request.id}</span>
@@ -86,15 +86,18 @@ export const VerificationDetailsDialog = ({
             </DialogDescription>
           </DialogHeader>
 
-          <VerificationDetailsContent request={request} />
+          <div className="flex-1 overflow-y-auto py-4">
+            <VerificationDetailsContent request={request} />
+          </div>
 
-          <ValidatorActions request={request} onAction={handleAction} />
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Close
-            </Button>
-          </DialogFooter>
+          <div className="flex-shrink-0 pt-4 border-t">
+            <DialogFooter className="mt-4">
+              <ValidatorActions request={request} onAction={handleAction} />
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
 

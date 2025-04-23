@@ -1,24 +1,30 @@
+import { ProjectDocument } from "@/types/project";
+
 export interface VerificationRequest {
   id: string;
-  projectId: string;
+  created_at: string;
   title: string;
-  submittedDate: string;
-  status: "pending" | "in_review" | "approved" | "rejected";
-  progress: number;
-  verifier?: string;
-  expectedCompletion?: string;
-  rejectionReason?: string;
-  // Required fields from the main model
-  createdAt: string;
-  updatedAt: string;
-  developerId: string;
-  version: number;
-  documents: VerificationDocument[];
-  timeline: VerificationEvent[];
-  // Optional field that may be present in some interfaces
-  verifierId?: string;
+  type: string;
+  location: string;
+  country: string;
+  startDate: string;
+  estimatedCompletion: string;
+  emissionsTarget: string;
+  description: string;
+  txHash: string;
+  user_id: string;
+  documents: ProjectDocument[];
+  status: string;
+  verification: {
+    id: string;
+    credits: number | null;
+    rejectionReason: string | null;
+    unsignedTx: string | null;
+    txHash: string | null;
+    timeline?: string | null;
+    verifiers: { verfier: string; signed: boolean }[];
+  };
 }
-
 export interface VerificationDocument {
   id: string;
   verificationId: string;

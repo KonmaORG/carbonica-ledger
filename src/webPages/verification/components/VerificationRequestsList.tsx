@@ -1,15 +1,20 @@
-
-import React from 'react';
-import { VerificationRequest } from '../types/verificationTypes';
-import { VerificationRequestCard } from './VerificationRequestCard';
+import React from "react";
+import { VerificationRequestCard } from "./VerificationRequestCard";
+import { VerificationRequest } from "../types/verificationTypes";
 
 interface VerificationRequestsListProps {
   requests: VerificationRequest[];
 }
 
-export const VerificationRequestsList = ({ requests }: VerificationRequestsListProps) => {
+export const VerificationRequestsList = ({
+  requests,
+}: VerificationRequestsListProps) => {
   if (requests.length === 0) {
-    return <p className="text-center py-8 text-gray-500">No verification requests found.</p>;
+    return (
+      <p className="text-center py-8 text-gray-500">
+        No verification requests found.
+      </p>
+    );
   }
 
   return (

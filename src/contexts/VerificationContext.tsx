@@ -51,12 +51,12 @@ interface VerificationContextType {
     projectId: string,
     projectName: string
   ) => Promise<VerificationRequest>;
-  uploadDocument: (
-    verificationId: string,
-    file: File,
-    name: string,
-    description?: string
-  ) => Promise<VerificationDocument>;
+  // uploadDocument: (
+  //   verificationId: string,
+  //   file: File,
+  //   name: string,
+  //   description?: string
+  // ) => Promise<VerificationDocument>;
 }
 
 const VerificationContext = createContext<VerificationContextType | undefined>(
@@ -273,49 +273,51 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const uploadDocument = async (
-    verificationId: string,
-    file: File,
-    name: string,
-    description?: string
-  ): Promise<VerificationDocument> => {
-    try {
-      const newDocument = await supabaseService.uploadDocument(
-        verificationId,
-        file,
-        name,
-        description
-      );
+  // const uploadDocument = async (
+  //   verificationId: string,
+  //   file: File,
+  //   name: string,
+  //   description?: string
+  // ): Promise<VerificationDocument> => {
+  //   try {
+  //     const newDocument = await supabaseService.uploadDocument(
+  //       verificationId,
+  //       file,
+  //       name,
+  //       description
+  //     );
 
-      // Update the verification request with the new document
-      const updatedRequests = verificationRequests.map((req) => {
-        if (req.id === verificationId) {
-          return {
-            ...req,
-            documents: [...req.documents, newDocument],
-          };
-        }
-        return req;
-      });
+  //     // Update the verification request with the new document
+  //     const updatedRequests = verificationRequests.map((req) => {
+  //       if (req.id === verificationId) {
+  //         return {
+  //           ...req,
+  //           documents: req.documents?.length
+  //             ? [...req.documents, newDocument]
+  //             : [newDocument],
+  //         };
+  //       }
+  //       return req;
+  //     });
 
-      setVerificationRequests(updatedRequests);
+  //     setVerificationRequests(updatedRequests);
 
-      toast({
-        title: "Document Uploaded",
-        description: "The document was uploaded successfully",
-      });
+  //     toast({
+  //       title: "Document Uploaded",
+  //       description: "The document was uploaded successfully",
+  //     });
 
-      return newDocument;
-    } catch (error) {
-      console.error("Failed to upload document:", error);
-      toast({
-        title: "Error",
-        description: "Failed to upload document. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
+  //     return newDocument;
+  //   } catch (error) {
+  //     console.error("Failed to upload document:", error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to upload document. Please try again.",
+  //       variant: "destructive",
+  //     });
+  //     throw error;
+  //   }
+  // };
 
   const contextValue: VerificationContextType = {
     verificationRequests,
@@ -333,7 +335,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     assignVerifier,
     addTimelineEvent,
     createVerificationRequest,
-    uploadDocument,
+    // uploadDocument,
   };
 
   return (
