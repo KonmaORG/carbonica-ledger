@@ -50,7 +50,6 @@ export const VerificationDocuments: React.FC<VerificationDocumentsProps> = ({
     const parts = fileUrl.split(".");
     return parts.length > 1 ? parts.pop().toLowerCase() : null;
   }
-  console.log("Documents: ", documents);
 
   if (documents.length === 0) {
     return (
