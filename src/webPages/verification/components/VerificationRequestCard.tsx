@@ -18,7 +18,7 @@ export const VerificationRequestCard = ({
 }: VerificationRequestCardProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const progress =
-    request.verification[0].verifiers[0].verifier !== null
+    request.verification[0].verifiers.length > 0
       ? (request.verification[0].verifiers.filter(
           (item) => item.signed === true
         ).length /
@@ -48,7 +48,7 @@ export const VerificationRequestCard = ({
           <Progress value={progress} className="h-2" />
         </div>
 
-        {request.verification[0].verifiers[0].verifier !== null &&
+        {request.verification[0].verifiers.length > 0 &&
           request.verification[0].verifiers.map((verifier, index) => (
             <div key={"index"} className="mt-4 text-sm">
               <span className="text-gray-600">Verifier: </span>

@@ -14,7 +14,7 @@ export const VerificationDetailsContent: React.FC<
   VerificationDetailsContentProps
 > = ({ request }) => {
   const progress =
-    request.verification[0].verifiers[0].verifier !== null
+    request.verification[0].verifiers.length > 0
       ? (request.verification[0].verifiers.filter(
           (item) => item.signed === true
         ).length /
@@ -33,7 +33,7 @@ export const VerificationDetailsContent: React.FC<
           <h3 className="text-sm font-medium text-gray-500">Submitted Date</h3>
           <p>{formatISODate(request.created_at)}</p>
         </div>
-        {request.verification[0].verifiers[0].verifier !== null &&
+        {request.verification[0].verifiers.length > 0 &&
           request.verification[0].verifiers.map((verifier, index) => (
             <div key={index}>
               <h3 className="text-sm font-medium text-gray-500">Verifier</h3>
