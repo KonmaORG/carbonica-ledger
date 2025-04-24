@@ -1,11 +1,10 @@
-
-import { VerificationRequest } from '../types/verificationTypes';
+import { VerificationRequest } from "../types/verificationTypes";
 
 export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
   {
     id: "v1",
     projectId: "3",
-    projectName: "Solar Farm Development in Rajasthan",
+    title: "Solar Farm Development in Rajasthan",
     submittedDate: "May 15, 2023",
     status: "in_review",
     progress: 60,
@@ -24,8 +23,8 @@ export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
         fileType: "pdf",
         uploadedBy: "u1",
         uploadedAt: "2023-05-15T10:30:00Z",
-        description: "Complete project design documentation"
-      }
+        description: "Complete project design documentation",
+      },
     ],
     timeline: [
       {
@@ -35,14 +34,14 @@ export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
         eventType: "submission",
         message: "Verification request submitted",
         userId: "u1",
-        userName: "Alice Chen"
-      }
-    ]
+        userName: "Alice Chen",
+      },
+    ],
   },
   {
     id: "v2",
     projectId: "6",
-    projectName: "Agricultural Methane Capture Program",
+    title: "Agricultural Methane Capture Program",
     submittedDate: "May 20, 2023",
     status: "pending",
     progress: 10,
@@ -59,14 +58,14 @@ export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
         eventType: "submission",
         message: "Verification request submitted",
         userId: "u1",
-        userName: "Alice Chen"
-      }
-    ]
+        userName: "Alice Chen",
+      },
+    ],
   },
   {
     id: "v3",
     projectId: "7",
-    projectName: "Afforestation Project in Kenya",
+    title: "Afforestation Project in Kenya",
     submittedDate: "Apr 12, 2023",
     status: "approved",
     progress: 100,
@@ -84,19 +83,20 @@ export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
         eventType: "submission",
         message: "Verification request submitted",
         userId: "u1",
-        userName: "Alice Chen"
-      }
-    ]
+        userName: "Alice Chen",
+      },
+    ],
   },
   {
     id: "v4",
     projectId: "8",
-    projectName: "Waste-to-Energy Facility",
+    title: "Waste-to-Energy Facility",
     submittedDate: "Apr 5, 2023",
     status: "rejected",
     progress: 100,
     verifier: "EcoAudit Partners",
-    rejectionReason: "Insufficient documentation for emissions baseline calculation",
+    rejectionReason:
+      "Insufficient documentation for emissions baseline calculation",
     createdAt: "2023-04-05T11:30:00Z",
     updatedAt: "2023-04-20T16:45:00Z",
     developerId: "u1",
@@ -110,8 +110,8 @@ export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
         eventType: "submission",
         message: "Verification request submitted",
         userId: "u1",
-        userName: "Alice Chen"
-      }
-    ]
-  }
+        userName: "Alice Chen",
+      },
+    ],
+  },
 ];

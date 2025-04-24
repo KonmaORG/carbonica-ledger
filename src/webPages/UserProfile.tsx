@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileHeader } from "./profile/components/ProfileHeader";
-import { ProfileOverview } from "./profile/components/ProfileOverview";
+import ProfileOverview from "./profile/components/ProfileOverview";
 import { ProfileProjects } from "./profile/components/ProfileProjects";
 import { ProfileCredits } from "./profile/components/ProfileCredits";
 import { ProfileAchievements } from "./profile/components/ProfileAchievements";
