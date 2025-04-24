@@ -85,110 +85,110 @@ class SupabaseService {
   }
 
   // Verification Requests
-  async getVerificationRequests(): Promise<VerificationRequest[]> {
-    const { data, error } = await supabase.from("verification_requests")
-      .select(`
-        *,
-        verification_documents(*),
-        verification_events(*)
-      `);
+  // async getVerificationRequests(): Promise<VerificationRequest[]> {
+  //   const { data, error } = await supabase.from("verification_requests")
+  //     .select(`
+  //       *,
+  //       verification_documents(*),
+  //       verification_events(*)
+  //     `);
 
-    if (error) {
-      console.error("Error fetching verification requests:", error);
-      throw error;
-    }
+  //   if (error) {
+  //     console.error("Error fetching verification requests:", error);
+  //     throw error;
+  //   }
 
-    return this.mapDbVerificationRequestsToModel(data || []);
-  }
+  //   return this.mapDbVerificationRequestsToModel(data || []);
+  // }
 
-  async getVerificationRequestById(
-    id: string
-  ): Promise<VerificationRequest | undefined> {
-    const { data, error } = await supabase
-      .from("verification_requests")
-      .select(
-        `
-        *,
-        verification_documents(*),
-        verification_events(*)
-      `
-      )
-      .eq("id", id)
-      .single();
+  // async getVerificationRequestById(
+  //   id: string
+  // ): Promise<VerificationRequest | undefined> {
+  //   const { data, error } = await supabase
+  //     .from("verification_requests")
+  //     .select(
+  //       `
+  //       *,
+  //       verification_documents(*),
+  //       verification_events(*)
+  //     `
+  //     )
+  //     .eq("id", id)
+  //     .single();
 
-    if (error && error.code !== "PGRST116") {
-      console.error("Error fetching verification request:", error);
-      throw error;
-    }
+  //   if (error && error.code !== "PGRST116") {
+  //     console.error("Error fetching verification request:", error);
+  //     throw error;
+  //   }
 
-    return data ? this.mapDbVerificationRequestToModel(data) : undefined;
-  }
+  //   return data ? this.mapDbVerificationRequestToModel(data) : undefined;
+  // }
 
-  async getVerificationRequestsByProject(
-    projectId: string
-  ): Promise<VerificationRequest[]> {
-    const { data, error } = await supabase
-      .from("verification_requests")
-      .select(
-        `
-        *,
-        verification_documents(*),
-        verification_events(*)
-      `
-      )
-      .eq("project_id", projectId);
+  // async getVerificationRequestsByProject(
+  //   projectId: string
+  // ): Promise<VerificationRequest[]> {
+  //   const { data, error } = await supabase
+  //     .from("verification_requests")
+  //     .select(
+  //       `
+  //       *,
+  //       verification_documents(*),
+  //       verification_events(*)
+  //     `
+  //     )
+  //     .eq("project_id", projectId);
 
-    if (error) {
-      console.error("Error fetching project verification requests:", error);
-      throw error;
-    }
+  //   if (error) {
+  //     console.error("Error fetching project verification requests:", error);
+  //     throw error;
+  //   }
 
-    return this.mapDbVerificationRequestsToModel(data || []);
-  }
+  //   return this.mapDbVerificationRequestsToModel(data || []);
+  // }
 
-  async getVerificationRequestsByDeveloper(
-    developerId: string
-  ): Promise<VerificationRequest[]> {
-    const { data, error } = await supabase
-      .from("verification_requests")
-      .select(
-        `
-        *,
-        verification_documents(*),
-        verification_events(*)
-      `
-      )
-      .eq("developer_id", developerId);
+  // async getVerificationRequestsByDeveloper(
+  //   developerId: string
+  // ): Promise<VerificationRequest[]> {
+  //   const { data, error } = await supabase
+  //     .from("verification_requests")
+  //     .select(
+  //       `
+  //       *,
+  //       verification_documents(*),
+  //       verification_events(*)
+  //     `
+  //     )
+  //     .eq("developer_id", developerId);
 
-    if (error) {
-      console.error("Error fetching developer verification requests:", error);
-      throw error;
-    }
+  //   if (error) {
+  //     console.error("Error fetching developer verification requests:", error);
+  //     throw error;
+  //   }
 
-    return this.mapDbVerificationRequestsToModel(data || []);
-  }
+  //   return this.mapDbVerificationRequestsToModel(data || []);
+  // }
 
-  async getVerificationRequestsByVerifier(
-    verifierId: string
-  ): Promise<VerificationRequest[]> {
-    const { data, error } = await supabase
-      .from("verification_requests")
-      .select(
-        `
-        *,
-        verification_documents(*),
-        verification_events(*)
-      `
-      )
-      .eq("verifier_id", verifierId);
+  // async getVerificationRequestsByVerifier(
+  //   verifierId: string
+  // ): Promise<VerificationRequest[]> {
+  //   const { data, error } = await supabase
+  //     .from("verification_requests")
+  //     .select(
+  //       `
+  //       *,
+  //       verification_documents(*),
+  //       verification_events(*)
+  //     `
+  //     )
+  //     .eq("verifier_id", verifierId);
 
-    if (error) {
-      console.error("Error fetching verifier verification requests:", error);
-      throw error;
-    }
+  //   if (error) {
+  //     console.error("Error fetching verifier verification requests:", error);
+  //     throw error;
+  //   }
 
-    return this.mapDbVerificationRequestsToModel(data || []);
-  }
+  //   return this.mapDbVerificationRequestsToModel(data || []);
+  // }
 
   // Verification Documents
   async getDocumentsByVerificationId(
@@ -282,78 +282,78 @@ class SupabaseService {
   }
 
   // Add verification request
-  async createVerificationRequest(
-    projectId: string,
-    projectName: string
-  ): Promise<VerificationRequest> {
-    // 1. Get the current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("User not authenticated");
+  // async createVerificationRequest(
+  //   projectId: string,
+  //   projectName: string
+  // ): Promise<VerificationRequest> {
+  //   // 1. Get the current user
+  //   const {
+  //     data: { user },
+  //   } = await supabase.auth.getUser();
+  //   if (!user) throw new Error("User not authenticated");
 
-    // 2. Create verification request
-    const { data, error } = await supabase
-      .from("verification_requests")
-      .insert({
-        project_id: projectId,
-        project_name: projectName,
-        submitted_date: new Date().toISOString(),
-        status: "pending",
-        progress: 0,
-        developer_id: user.id,
-      })
-      .select()
-      .single();
+  //   // 2. Create verification request
+  //   const { data, error } = await supabase
+  //     .from("verification_requests")
+  //     .insert({
+  //       project_id: projectId,
+  //       project_name: projectName,
+  //       submitted_date: new Date().toISOString(),
+  //       status: "pending",
+  //       progress: 0,
+  //       developer_id: user.id,
+  //     })
+  //     .select()
+  //     .single();
 
-    if (error) {
-      console.error("Error creating verification request:", error);
-      throw error;
-    }
+  //   if (error) {
+  //     console.error("Error creating verification request:", error);
+  //     throw error;
+  //   }
 
-    // 3. Create initial timeline event
-    await this.addTimelineEvent({
-      verification_id: data.id,
-      event_type: "submission",
-      message: "Verification request submitted",
-      user_id: user.id,
-    });
+  //   // 3. Create initial timeline event
+  //   await this.addTimelineEvent({
+  //     verification_id: data.id,
+  //     event_type: "submission",
+  //     message: "Verification request submitted",
+  //     user_id: user.id,
+  //   });
 
-    // 4. Fetch the full verification request with documents and timeline
-    return (await this.getVerificationRequestById(
-      data.id
-    )) as VerificationRequest;
-  }
+  //   // 4. Fetch the full verification request with documents and timeline
+  //   return (await this.getVerificationRequestById(
+  //     data.id
+  //   )) as VerificationRequest;
+  // }
 
-  // Update verification request
-  async updateVerificationRequest(
-    id: string,
-    updates: Partial<VerificationRequest>
-  ): Promise<VerificationRequest> {
-    const { data, error } = await supabase
-      .from("verification_requests")
-      .update({
-        status: updates.status,
-        progress: updates.progress,
-        verifier_id: updates.verifierId,
-        expected_completion: updates.expectedCompletion,
-        rejection_reason: updates.rejectionReason,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", id)
-      .select()
-      .single();
+  // // Update verification request
+  // async updateVerificationRequest(
+  //   id: string,
+  //   updates: Partial<VerificationRequest>
+  // ): Promise<VerificationRequest> {
+  //   const { data, error } = await supabase
+  //     .from("verification_requests")
+  //     .update({
+  //       status: updates.status,
+  //       // progress: updates.progress,
+  //       // verifier_id: updates.verifierId,
+  //       // expected_completion: updates.expectedCompletion,
+  //       // rejection_reason: updates.rejectionReason,
+  //       updated_at: new Date().toISOString(),
+  //     })
+  //     .eq("id", id)
+  //     .select()
+  //     .single();
 
-    if (error) {
-      console.error("Error updating verification request:", error);
-      throw error;
-    }
+  //   if (error) {
+  //     console.error("Error updating verification request:", error);
+  //     throw error;
+  //   }
 
-    // Fetch the full verification request with documents and timeline
-    return (await this.getVerificationRequestById(
-      data.id
-    )) as VerificationRequest;
-  }
+  //   // Fetch the full verification request with documents and timeline
+  //   return (await this.getVerificationRequestById(
+  //     data.id
+  //   )) as VerificationRequest;
+  // }
 
   // Add timeline event
   async addTimelineEvent(event: {
@@ -518,40 +518,40 @@ class SupabaseService {
     return dbProjects.map((dbProject) => this.mapDbProjectToModel(dbProject));
   }
 
-  private mapDbVerificationRequestToModel(dbRequest: any): VerificationRequest {
-    // Handle the nested data from the join
-    const documents = dbRequest.verification_documents || [];
-    const events = dbRequest.verification_events || [];
+  // private mapDbVerificationRequestToModel(dbRequest: any): VerificationRequest {
+  //   // Handle the nested data from the join
+  //   const documents = dbRequest.verification_documents || [];
+  //   const events = dbRequest.verification_events || [];
 
-    return {
-      id: dbRequest.id,
-      projectId: dbRequest.project_id,
-      projectName: dbRequest.project_name,
-      submittedDate: new Date(dbRequest.submitted_date).toLocaleDateString(),
-      status: dbRequest.status,
-      progress: dbRequest.progress,
-      verifierId: dbRequest.verifier_id || undefined,
-      verifier: dbRequest.verifier_name || undefined, // This would come from a join if needed
-      expectedCompletion: dbRequest.expected_completion
-        ? new Date(dbRequest.expected_completion).toLocaleDateString()
-        : undefined,
-      rejectionReason: dbRequest.rejection_reason || undefined,
-      developerId: dbRequest.developer_id,
-      version: dbRequest.version,
-      createdAt: dbRequest.created_at,
-      updatedAt: dbRequest.updated_at,
-      documents: this.mapDbVerificationDocumentsToModel(documents),
-      timeline: this.mapDbVerificationEventsToModel(events),
-    };
-  }
+  //   return {
+  //     id: dbRequest.id,
+  //     // projectId: dbRequest.project_id,
+  //     // projectName: dbRequest.project_name,
+  //     // submittedDate: new Date(dbRequest.submitted_date).toLocaleDateString(),
+  //     status: dbRequest.status,
+  //     // progress: dbRequest.progress,
+  //     // verifierId: dbRequest.verifier_id || undefined,
+  //     // verifier: dbRequest.verifier_name || undefined, // This would come from a join if needed
+  //     // expectedCompletion: dbRequest.expected_completion
+  //     // ? new Date(dbRequest.expected_completion).toLocaleDateString()
+  //     // : undefined,
+  //     // rejectionReason: dbRequest.rejection_reason || undefined,
+  //     // developerId: dbRequest.developer_id,
+  //     // version: dbRequest.version,
+  //     // createdAt: dbRequest.created_at,
+  //     // updatedAt: dbRequest.updated_at,
+  //     // documents: this.mapDbVerificationDocumentsToModel(documents),
+  //     // timeline: this.mapDbVerificationEventsToModel(events),
+  //   };
+  // }
 
-  private mapDbVerificationRequestsToModel(
-    dbRequests: any[]
-  ): VerificationRequest[] {
-    return dbRequests.map((dbRequest) =>
-      this.mapDbVerificationRequestToModel(dbRequest)
-    );
-  }
+  // private mapDbVerificationRequestsToModel(
+  //   dbRequests: any[]
+  // ): VerificationRequest[] {
+  //   return dbRequests.map((dbRequest) =>
+  //     this.mapDbVerificationRequestToModel(dbRequest)
+  //   );
+  // }
 
   private mapDbVerificationDocumentToModel(
     dbDocument: any

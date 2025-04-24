@@ -1,13 +1,12 @@
-
-import { 
-  User, 
-  Project, 
-  VerificationRequest, 
-  VerificationDocument, 
-  VerificationEvent, 
-  CreditEntry, 
-  CreditTransaction 
-} from '../types/model';
+import {
+  User,
+  Project,
+  VerificationRequest,
+  VerificationDocument,
+  VerificationEvent,
+  CreditEntry,
+  CreditTransaction,
+} from "../types/model";
 
 // Mock Users
 export const MOCK_USERS: User[] = [
@@ -24,7 +23,7 @@ export const MOCK_USERS: User[] = [
     retiredCredits: 10000,
     verifiedProjects: 3,
     createdAt: "2022-01-10T12:00:00Z",
-    updatedAt: "2023-05-15T09:30:00Z"
+    updatedAt: "2023-05-15T09:30:00Z",
   },
   {
     id: "u2",
@@ -39,7 +38,7 @@ export const MOCK_USERS: User[] = [
     retiredCredits: 0,
     verifiedProjects: 12,
     createdAt: "2021-03-05T10:15:00Z",
-    updatedAt: "2023-06-01T14:20:00Z"
+    updatedAt: "2023-06-01T14:20:00Z",
   },
   {
     id: "u3",
@@ -54,8 +53,8 @@ export const MOCK_USERS: User[] = [
     retiredCredits: 5000,
     verifiedProjects: 0,
     createdAt: "2022-11-20T09:45:00Z",
-    updatedAt: "2023-07-12T11:05:00Z"
-  }
+    updatedAt: "2023-07-12T11:05:00Z",
+  },
 ];
 
 // Mock Projects
@@ -68,15 +67,17 @@ export const MOCK_PROJECTS: Project[] = [
     startDate: "Jan 15, 2023",
     status: "verified",
     credits: 25000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    description: "Conservation of 5000 acres of Amazon rainforest to prevent deforestation and protect biodiversity.",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    description:
+      "Conservation of 5000 acres of Amazon rainforest to prevent deforestation and protect biodiversity.",
     developer: "u1",
     verificationId: "v3",
     methodology: "VM0015",
     verifier: "u2",
     verificationDate: "Apr 12, 2023",
     createdAt: "2023-01-15T08:00:00Z",
-    updatedAt: "2023-04-12T15:30:00Z"
+    updatedAt: "2023-04-12T15:30:00Z",
   },
   {
     id: "p2",
@@ -86,140 +87,142 @@ export const MOCK_PROJECTS: Project[] = [
     startDate: "May 15, 2023",
     status: "pending_verification",
     credits: 18000,
-    thumbnailUrl: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    description: "Development of a 50MW solar farm in Rajasthan, India to replace coal-based electricity generation.",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    description:
+      "Development of a 50MW solar farm in Rajasthan, India to replace coal-based electricity generation.",
     developer: "u1",
     verificationId: "v1",
     methodology: "ACM0002",
     createdAt: "2023-05-15T10:15:00Z",
-    updatedAt: "2023-05-15T10:15:00Z"
-  }
+    updatedAt: "2023-05-15T10:15:00Z",
+  },
 ];
 
 // Mock Verification Requests with detailed timeline events and documents
-export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
-  {
-    id: "v1",
-    projectId: "p2",
-    projectName: "Solar Farm Development in Rajasthan",
-    submittedDate: "May 15, 2023",
-    status: "in_review",
-    progress: 60,
-    verifierId: "u2",
-    verifier: "ClimateVerify Ltd.",
-    expectedCompletion: "Jun 25, 2023",
-    developerId: "u1",
-    createdAt: "2023-05-15T10:30:00Z",
-    updatedAt: "2023-05-20T15:45:00Z",
-    version: 1,
-    documents: [
-      {
-        id: "d1",
-        verificationId: "v1",
-        name: "Project Design Document",
-        fileUrl: "/files/pdd_solar_rajasthan.pdf",
-        fileType: "pdf",
-        uploadedBy: "u1",
-        uploadedAt: "2023-05-15T10:30:00Z",
-        description: "Complete project design documentation"
-      },
-      {
-        id: "d2",
-        verificationId: "v1",
-        name: "Emissions Calculation Spreadsheet",
-        fileUrl: "/files/emissions_calc_rajasthan.xlsx",
-        fileType: "xlsx",
-        uploadedBy: "u1",
-        uploadedAt: "2023-05-15T10:35:00Z",
-        description: "Detailed calculation of emissions reduction"
-      }
-    ],
-    timeline: [
-      {
-        id: "e1",
-        verificationId: "v1",
-        timestamp: "2023-05-15T10:30:00Z",
-        eventType: "submission",
-        message: "Verification request submitted",
-        userId: "u1",
-        userName: "Alice Chen"
-      },
-      {
-        id: "e2",
-        verificationId: "v1",
-        timestamp: "2023-05-18T09:15:00Z",
-        eventType: "assignment",
-        message: "Assigned to ClimateVerify Ltd.",
-        userId: "admin",
-        userName: "System Administrator"
-      },
-      {
-        id: "e3",
-        verificationId: "v1",
-        timestamp: "2023-05-20T15:45:00Z",
-        eventType: "review",
-        message: "Initial review completed, additional documentation requested",
-        userId: "u2",
-        userName: "Marcus Johnson"
-      }
-    ]
-  },
-  {
-    id: "v3",
-    projectId: "p1",
-    projectName: "Amazon Rainforest Conservation",
-    submittedDate: "Apr 12, 2023",
-    status: "approved",
-    progress: 100,
-    verifierId: "u2",
-    verifier: "ClimateVerify Ltd.",
-    developerId: "u1",
-    createdAt: "2023-04-12T09:00:00Z",
-    updatedAt: "2023-04-30T14:20:00Z",
-    version: 1,
-    documents: [
-      {
-        id: "d5",
-        verificationId: "v3",
-        name: "Project Design Document",
-        fileUrl: "/files/pdd_amazon.pdf",
-        fileType: "pdf",
-        uploadedBy: "u1",
-        uploadedAt: "2023-04-12T09:00:00Z",
-        description: "Complete project design documentation"
-      }
-    ],
-    timeline: [
-      {
-        id: "e7",
-        verificationId: "v3",
-        timestamp: "2023-04-12T09:00:00Z",
-        eventType: "submission",
-        message: "Verification request submitted",
-        userId: "u1",
-        userName: "Alice Chen"
-      },
-      {
-        id: "e8",
-        verificationId: "v3",
-        timestamp: "2023-04-13T11:30:00Z",
-        eventType: "assignment",
-        message: "Assigned to ClimateVerify Ltd.",
-        userId: "admin",
-        userName: "System Administrator"
-      },
-      {
-        id: "e9",
-        verificationId: "v3",
-        timestamp: "2023-04-30T14:20:00Z",
-        eventType: "approval",
-        message: "Verification approved. 25,000 credits issued.",
-        userId: "u2",
-        userName: "Marcus Johnson"
-      }
-    ]
-  }
-];
+// export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
+//   {
+//     id: "v1",
+//     projectId: "p2",
+//     projectName: "Solar Farm Development in Rajasthan",
+//     submittedDate: "May 15, 2023",
+//     status: "in_review",
+//     progress: 60,
+//     verifierId: "u2",
+//     verifier: "ClimateVerify Ltd.",
+//     expectedCompletion: "Jun 25, 2023",
+//     developerId: "u1",
+//     createdAt: "2023-05-15T10:30:00Z",
+//     updatedAt: "2023-05-20T15:45:00Z",
+//     version: 1,
+//     documents: [
+//       {
+//         id: "d1",
+//         verificationId: "v1",
+//         name: "Project Design Document",
+//         fileUrl: "/files/pdd_solar_rajasthan.pdf",
+//         fileType: "pdf",
+//         uploadedBy: "u1",
+//         uploadedAt: "2023-05-15T10:30:00Z",
+//         description: "Complete project design documentation"
+//       },
+//       {
+//         id: "d2",
+//         verificationId: "v1",
+//         name: "Emissions Calculation Spreadsheet",
+//         fileUrl: "/files/emissions_calc_rajasthan.xlsx",
+//         fileType: "xlsx",
+//         uploadedBy: "u1",
+//         uploadedAt: "2023-05-15T10:35:00Z",
+//         description: "Detailed calculation of emissions reduction"
+//       }
+//     ],
+//     timeline: [
+//       {
+//         id: "e1",
+//         verificationId: "v1",
+//         timestamp: "2023-05-15T10:30:00Z",
+//         eventType: "submission",
+//         message: "Verification request submitted",
+//         userId: "u1",
+//         userName: "Alice Chen"
+//       },
+//       {
+//         id: "e2",
+//         verificationId: "v1",
+//         timestamp: "2023-05-18T09:15:00Z",
+//         eventType: "assignment",
+//         message: "Assigned to ClimateVerify Ltd.",
+//         userId: "admin",
+//         userName: "System Administrator"
+//       },
+//       {
+//         id: "e3",
+//         verificationId: "v1",
+//         timestamp: "2023-05-20T15:45:00Z",
+//         eventType: "review",
+//         message: "Initial review completed, additional documentation requested",
+//         userId: "u2",
+//         userName: "Marcus Johnson"
+//       }
+//     ]
+//   },
+//   {
+//     id: "v3",
+//     projectId: "p1",
+//     projectName: "Amazon Rainforest Conservation",
+//     submittedDate: "Apr 12, 2023",
+//     status: "approved",
+//     progress: 100,
+//     verifierId: "u2",
+//     verifier: "ClimateVerify Ltd.",
+//     developerId: "u1",
+//     createdAt: "2023-04-12T09:00:00Z",
+//     updatedAt: "2023-04-30T14:20:00Z",
+//     version: 1,
+//     documents: [
+//       {
+//         id: "d5",
+//         verificationId: "v3",
+//         name: "Project Design Document",
+//         fileUrl: "/files/pdd_amazon.pdf",
+//         fileType: "pdf",
+//         uploadedBy: "u1",
+//         uploadedAt: "2023-04-12T09:00:00Z",
+//         description: "Complete project design documentation"
+//       }
+//     ],
+//     timeline: [
+//       {
+//         id: "e7",
+//         verificationId: "v3",
+//         timestamp: "2023-04-12T09:00:00Z",
+//         eventType: "submission",
+//         message: "Verification request submitted",
+//         userId: "u1",
+//         userName: "Alice Chen"
+//       },
+//       {
+//         id: "e8",
+//         verificationId: "v3",
+//         timestamp: "2023-04-13T11:30:00Z",
+//         eventType: "assignment",
+//         message: "Assigned to ClimateVerify Ltd.",
+//         userId: "admin",
+//         userName: "System Administrator"
+//       },
+//       {
+//         id: "e9",
+//         verificationId: "v3",
+//         timestamp: "2023-04-30T14:20:00Z",
+//         eventType: "approval",
+//         message: "Verification approved. 25,000 credits issued.",
+//         userId: "u2",
+//         userName: "Marcus Johnson"
+//       }
+//     ]
+//   }
+// ];
 
 // Mock Credit Entries
 export const MOCK_CREDIT_ENTRIES: CreditEntry[] = [
@@ -232,14 +235,14 @@ export const MOCK_CREDIT_ENTRIES: CreditEntry[] = [
     location: "Brazil",
     quantity: 25000,
     vintage: "2023",
-    status: 'active',
+    status: "active",
     issuanceDate: "Apr 30, 2023",
     lastActionDate: "Apr 30, 2023",
     owner: "u1",
     verificationId: "v3",
     serialNumber: "BRA-FC-2023-00001-00025000",
     createdAt: "2023-04-30T14:30:00Z",
-    updatedAt: "2023-04-30T14:30:00Z"
+    updatedAt: "2023-04-30T14:30:00Z",
   },
   {
     id: "c2",
@@ -250,15 +253,15 @@ export const MOCK_CREDIT_ENTRIES: CreditEntry[] = [
     location: "Brazil",
     quantity: 5000,
     vintage: "2023",
-    status: 'retired',
+    status: "retired",
     issuanceDate: "Apr 30, 2023",
     lastActionDate: "May 20, 2023",
     owner: "u3",
     verificationId: "v3",
     serialNumber: "BRA-FC-2023-00025001-00030000",
     createdAt: "2023-04-30T14:30:00Z",
-    updatedAt: "2023-05-20T11:15:00Z"
-  }
+    updatedAt: "2023-05-20T11:15:00Z",
+  },
 ];
 
 // Mock Credit Transactions
@@ -276,7 +279,7 @@ export const MOCK_CREDIT_TRANSACTIONS: CreditTransaction[] = [
     status: "completed",
     transactionHash: "0x123456789abcdef",
     createdAt: "2023-04-30T14:30:00Z",
-    updatedAt: "2023-04-30T14:30:00Z"
+    updatedAt: "2023-04-30T14:30:00Z",
   },
   {
     id: "t2",
@@ -292,7 +295,7 @@ export const MOCK_CREDIT_TRANSACTIONS: CreditTransaction[] = [
     status: "completed",
     transactionHash: "0x234567890abcdef",
     createdAt: "2023-05-10T10:15:00Z",
-    updatedAt: "2023-05-10T10:15:00Z"
+    updatedAt: "2023-05-10T10:15:00Z",
   },
   {
     id: "t3",
@@ -306,6 +309,6 @@ export const MOCK_CREDIT_TRANSACTIONS: CreditTransaction[] = [
     status: "completed",
     transactionHash: "0x3456789abcdef01",
     createdAt: "2023-05-20T11:15:00Z",
-    updatedAt: "2023-05-20T11:15:00Z"
-  }
+    updatedAt: "2023-05-20T11:15:00Z",
+  },
 ];
