@@ -7,6 +7,15 @@ import {
   CreditEntry,
   CreditTransaction,
 } from "../types/model";
+import {
+  User,
+  Project,
+  VerificationRequest,
+  VerificationDocument,
+  VerificationEvent,
+  CreditEntry,
+  CreditTransaction,
+} from "../types/model";
 
 // Mock Users
 export const MOCK_USERS: User[] = [
@@ -24,6 +33,7 @@ export const MOCK_USERS: User[] = [
     verifiedProjects: 3,
     createdAt: "2022-01-10T12:00:00Z",
     updatedAt: "2023-05-15T09:30:00Z",
+    updatedAt: "2023-05-15T09:30:00Z",
   },
   {
     id: "u2",
@@ -39,6 +49,7 @@ export const MOCK_USERS: User[] = [
     verifiedProjects: 12,
     createdAt: "2021-03-05T10:15:00Z",
     updatedAt: "2023-06-01T14:20:00Z",
+    updatedAt: "2023-06-01T14:20:00Z",
   },
   {
     id: "u3",
@@ -53,6 +64,8 @@ export const MOCK_USERS: User[] = [
     retiredCredits: 5000,
     verifiedProjects: 0,
     createdAt: "2022-11-20T09:45:00Z",
+    updatedAt: "2023-07-12T11:05:00Z",
+  },
     updatedAt: "2023-07-12T11:05:00Z",
   },
 ];
@@ -71,12 +84,17 @@ export const MOCK_PROJECTS: Project[] = [
       "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
     description:
       "Conservation of 5000 acres of Amazon rainforest to prevent deforestation and protect biodiversity.",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    description:
+      "Conservation of 5000 acres of Amazon rainforest to prevent deforestation and protect biodiversity.",
     developer: "u1",
     verificationId: "v3",
     methodology: "VM0015",
     verifier: "u2",
     verificationDate: "Apr 12, 2023",
     createdAt: "2023-01-15T08:00:00Z",
+    updatedAt: "2023-04-12T15:30:00Z",
     updatedAt: "2023-04-12T15:30:00Z",
   },
   {
@@ -91,10 +109,16 @@ export const MOCK_PROJECTS: Project[] = [
       "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
     description:
       "Development of a 50MW solar farm in Rajasthan, India to replace coal-based electricity generation.",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+    description:
+      "Development of a 50MW solar farm in Rajasthan, India to replace coal-based electricity generation.",
     developer: "u1",
     verificationId: "v1",
     methodology: "ACM0002",
     createdAt: "2023-05-15T10:15:00Z",
+    updatedAt: "2023-05-15T10:15:00Z",
+  },
     updatedAt: "2023-05-15T10:15:00Z",
   },
 ];
@@ -236,12 +260,14 @@ export const MOCK_CREDIT_ENTRIES: CreditEntry[] = [
     quantity: 25000,
     vintage: "2023",
     status: "active",
+    status: "active",
     issuanceDate: "Apr 30, 2023",
     lastActionDate: "Apr 30, 2023",
     owner: "u1",
     verificationId: "v3",
     serialNumber: "BRA-FC-2023-00001-00025000",
     createdAt: "2023-04-30T14:30:00Z",
+    updatedAt: "2023-04-30T14:30:00Z",
     updatedAt: "2023-04-30T14:30:00Z",
   },
   {
@@ -254,12 +280,15 @@ export const MOCK_CREDIT_ENTRIES: CreditEntry[] = [
     quantity: 5000,
     vintage: "2023",
     status: "retired",
+    status: "retired",
     issuanceDate: "Apr 30, 2023",
     lastActionDate: "May 20, 2023",
     owner: "u3",
     verificationId: "v3",
     serialNumber: "BRA-FC-2023-00025001-00030000",
     createdAt: "2023-04-30T14:30:00Z",
+    updatedAt: "2023-05-20T11:15:00Z",
+  },
     updatedAt: "2023-05-20T11:15:00Z",
   },
 ];
@@ -280,6 +309,7 @@ export const MOCK_CREDIT_TRANSACTIONS: CreditTransaction[] = [
     transactionHash: "0x123456789abcdef",
     createdAt: "2023-04-30T14:30:00Z",
     updatedAt: "2023-04-30T14:30:00Z",
+    updatedAt: "2023-04-30T14:30:00Z",
   },
   {
     id: "t2",
@@ -296,6 +326,7 @@ export const MOCK_CREDIT_TRANSACTIONS: CreditTransaction[] = [
     transactionHash: "0x234567890abcdef",
     createdAt: "2023-05-10T10:15:00Z",
     updatedAt: "2023-05-10T10:15:00Z",
+    updatedAt: "2023-05-10T10:15:00Z",
   },
   {
     id: "t3",
@@ -309,6 +340,8 @@ export const MOCK_CREDIT_TRANSACTIONS: CreditTransaction[] = [
     status: "completed",
     transactionHash: "0x3456789abcdef01",
     createdAt: "2023-05-20T11:15:00Z",
+    updatedAt: "2023-05-20T11:15:00Z",
+  },
     updatedAt: "2023-05-20T11:15:00Z",
   },
 ];
