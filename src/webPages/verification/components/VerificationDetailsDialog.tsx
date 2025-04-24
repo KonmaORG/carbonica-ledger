@@ -15,6 +15,9 @@ import { VerificationDetailsContent } from "./VerificationDetailsContent";
 import { ValidatorActions } from "./ValidatorActions";
 import { ConfirmActionDialog } from "./ConfirmActionDialog";
 import { useVerification } from "@/contexts/VerificationContext";
+import { ValidatorVote } from "./ValidatorVote";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 interface VerificationDetailsDialogProps {
   request: VerificationRequest;
@@ -27,6 +30,7 @@ export const VerificationDetailsDialog = ({
   open,
   onOpenChange,
 }: VerificationDetailsDialogProps) => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const { approveVerification, rejectVerification } = useVerification();
   const [confirmAction, setConfirmAction] = React.useState<
@@ -39,6 +43,38 @@ export const VerificationDetailsDialog = ({
   const handleAction = async (action: "approve" | "reject") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
+  };
+  const handleVote = async (action: "yes" | "no") => {
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const verifierId = user.id;
+    const newVerifier = {
+      verifierId,
+      signed: false,
+      vote: action,
+    };
+
+    // Append the new verifier to the existing array (or start a new array if null)
+    const updatedVerifiers = request.verification[0].verifiers
+      ? [...request.verification[0].verifiers, newVerifier]
+      : [newVerifier];
+
+    // Update the verification table's verifiers array
+    const { error } = await supabase
+      .from("verification")
+      .update({
+        verifiers: updatedVerifiers,
+      })
+      .eq("id", request.verification[0].id);
+
+    if (error) {
+      throw new Error(`Failed to update verifiers: ${error.message}`);
+    }
+    console.log("Verifier updated successfully:", updatedVerifiers);
+    setConfirmAction("approve");
+    // setIsConfirmOpen(true);
   };
 
   const executeAction = async () => {
@@ -92,7 +128,16 @@ export const VerificationDetailsDialog = ({
 
           <div className="flex-shrink-0 pt-4 border-t">
             <DialogFooter className="mt-4">
-              <ValidatorActions request={request} onAction={handleAction} />
+              {request.status === "pending" && (
+                <ValidatorVote
+                  request={request}
+                  onAction={handleVote}
+                  user={user}
+                />
+              )}
+              {request.status === "in_review" && (
+                <ValidatorActions request={request} onAction={handleAction} />
+              )}
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Close
               </Button>
