@@ -1,4 +1,3 @@
-
 import {
   User,
   Project,
@@ -7,20 +6,19 @@ import {
   VerificationEvent,
   VerificationComment,
   CreditEntry,
-  CreditTransaction
-} from '../types/model';
+  CreditTransaction,
+} from "../types/model";
 
 import {
   MOCK_USERS,
   MOCK_PROJECTS,
-  MOCK_VERIFICATION_REQUESTS,
   MOCK_CREDIT_ENTRIES,
-  MOCK_CREDIT_TRANSACTIONS
-} from '../data/mockData';
+  MOCK_CREDIT_TRANSACTIONS,
+} from "../data/mockData";
 
 /**
  * Data Service
- * 
+ *
  * This service provides data access methods for the application,
  * abstracting away the data source (mock data now, could be API later).
  */
@@ -31,7 +29,7 @@ class DataService {
   }
 
   async getUserById(id: string): Promise<User | undefined> {
-    return Promise.resolve(MOCK_USERS.find(user => user.id === id));
+    return Promise.resolve(MOCK_USERS.find((user) => user.id === id));
   }
 
   // Projects
@@ -40,45 +38,77 @@ class DataService {
   }
 
   async getProjectById(id: string): Promise<Project | undefined> {
-    return Promise.resolve(MOCK_PROJECTS.find(project => project.id === id));
+    return Promise.resolve(MOCK_PROJECTS.find((project) => project.id === id));
   }
 
   async getProjectsByDeveloper(developerId: string): Promise<Project[]> {
-    return Promise.resolve(MOCK_PROJECTS.filter(project => project.developer === developerId));
+    return Promise.resolve(
+      MOCK_PROJECTS.filter((project) => project.developer === developerId)
+    );
   }
 
   // Verification Requests
-  async getVerificationRequests(): Promise<VerificationRequest[]> {
-    return Promise.resolve([...MOCK_VERIFICATION_REQUESTS]);
-  }
+  // async getVerificationRequests(): Promise<VerificationRequest[]> {
+  //   return Promise.resolve([...MOCK_VERIFICATION_REQUESTS]);
+  // }
 
-  async getVerificationRequestById(id: string): Promise<VerificationRequest | undefined> {
-    return Promise.resolve(MOCK_VERIFICATION_REQUESTS.find(request => request.id === id));
-  }
+  // async getVerificationRequestById(
+  //   id: string
+  // ): Promise<VerificationRequest | undefined> {
+  //   return Promise.resolve(
+  //     MOCK_VERIFICATION_REQUESTS.find((request) => request.id === id)
+  //   );
+  // }
 
-  async getVerificationRequestsByProject(projectId: string): Promise<VerificationRequest[]> {
-    return Promise.resolve(MOCK_VERIFICATION_REQUESTS.filter(request => request.projectId === projectId));
-  }
+  // async getVerificationRequestsByProject(
+  //   projectId: string
+  // ): Promise<VerificationRequest[]> {
+  //   return Promise.resolve(
+  //     MOCK_VERIFICATION_REQUESTS.filter(
+  //       (request) => request.projectId === projectId
+  //     )
+  //   );
+  // }
 
-  async getVerificationRequestsByDeveloper(developerId: string): Promise<VerificationRequest[]> {
-    return Promise.resolve(MOCK_VERIFICATION_REQUESTS.filter(request => request.developerId === developerId));
-  }
+  // async getVerificationRequestsByDeveloper(
+  //   developerId: string
+  // ): Promise<VerificationRequest[]> {
+  //   return Promise.resolve(
+  //     MOCK_VERIFICATION_REQUESTS.filter(
+  //       (request) => request.developerId === developerId
+  //     )
+  //   );
+  // }
 
-  async getVerificationRequestsByVerifier(verifierId: string): Promise<VerificationRequest[]> {
-    return Promise.resolve(MOCK_VERIFICATION_REQUESTS.filter(request => request.verifierId === verifierId));
-  }
+  // async getVerificationRequestsByVerifier(
+  //   verifierId: string
+  // ): Promise<VerificationRequest[]> {
+  //   return Promise.resolve(
+  //     MOCK_VERIFICATION_REQUESTS.filter(
+  //       (request) => request.verifierId === verifierId
+  //     )
+  //   );
+  // }
 
   // Verification Documents
-  async getDocumentsByVerificationId(verificationId: string): Promise<VerificationDocument[]> {
-    const request = MOCK_VERIFICATION_REQUESTS.find(req => req.id === verificationId);
-    return Promise.resolve(request?.documents || []);
-  }
+  // async getDocumentsByVerificationId(
+  //   verificationId: string
+  // ): Promise<VerificationDocument[]> {
+  //   const request = MOCK_VERIFICATION_REQUESTS.find(
+  //     (req) => req.id === verificationId
+  //   );
+  //   return Promise.resolve(request?.documents || []);
+  // }
 
   // Verification Timeline Events
-  async getTimelineByVerificationId(verificationId: string): Promise<VerificationEvent[]> {
-    const request = MOCK_VERIFICATION_REQUESTS.find(req => req.id === verificationId);
-    return Promise.resolve(request?.timeline || []);
-  }
+  // async getTimelineByVerificationId(
+  //   verificationId: string
+  // ): Promise<VerificationEvent[]> {
+  //   const request = MOCK_VERIFICATION_REQUESTS.find(
+  //     (req) => req.id === verificationId
+  //   );
+  //   return Promise.resolve(request?.timeline || []);
+  // }
 
   // Credit Entries
   async getCreditEntries(): Promise<CreditEntry[]> {
@@ -86,11 +116,15 @@ class DataService {
   }
 
   async getCreditEntriesByOwner(ownerId: string): Promise<CreditEntry[]> {
-    return Promise.resolve(MOCK_CREDIT_ENTRIES.filter(entry => entry.owner === ownerId));
+    return Promise.resolve(
+      MOCK_CREDIT_ENTRIES.filter((entry) => entry.owner === ownerId)
+    );
   }
 
   async getCreditEntriesByProject(projectId: string): Promise<CreditEntry[]> {
-    return Promise.resolve(MOCK_CREDIT_ENTRIES.filter(entry => entry.projectId === projectId));
+    return Promise.resolve(
+      MOCK_CREDIT_ENTRIES.filter((entry) => entry.projectId === projectId)
+    );
   }
 
   // Credit Transactions
@@ -98,16 +132,22 @@ class DataService {
     return Promise.resolve([...MOCK_CREDIT_TRANSACTIONS]);
   }
 
-  async getCreditTransactionsByUser(userId: string): Promise<CreditTransaction[]> {
+  async getCreditTransactionsByUser(
+    userId: string
+  ): Promise<CreditTransaction[]> {
     return Promise.resolve(
       MOCK_CREDIT_TRANSACTIONS.filter(
-        tx => tx.senderId === userId || tx.recipientId === userId
+        (tx) => tx.senderId === userId || tx.recipientId === userId
       )
     );
   }
 
-  async getCreditTransactionsByProject(projectId: string): Promise<CreditTransaction[]> {
-    return Promise.resolve(MOCK_CREDIT_TRANSACTIONS.filter(tx => tx.projectId === projectId));
+  async getCreditTransactionsByProject(
+    projectId: string
+  ): Promise<CreditTransaction[]> {
+    return Promise.resolve(
+      MOCK_CREDIT_TRANSACTIONS.filter((tx) => tx.projectId === projectId)
+    );
   }
 }
 
