@@ -47,10 +47,10 @@ interface VerificationContextType {
     verificationId: string,
     event: Partial<VerificationEvent>
   ) => Promise<boolean>;
-  createVerificationRequest: (
-    projectId: string,
-    projectName: string
-  ) => Promise<VerificationRequest>;
+  // createVerificationRequest: (
+  //   projectId: string,
+  //   projectName: string
+  // ) => Promise<VerificationRequest>;
   // uploadDocument: (
   //   verificationId: string,
   //   file: File,
@@ -79,13 +79,13 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [requestsData, projectsData, usersData] = await Promise.all([
-          supabaseService.getVerificationRequests(),
+        const [projectsData, usersData] = await Promise.all([
+          // supabaseService.getVerificationRequests(),
           supabaseService.getProjects(),
           supabaseService.getUsers(),
         ]);
 
-        setVerificationRequests(requestsData);
+        // setVerificationRequests(requestsData);
         setProjects(projectsData);
         setUsers(usersData);
       } catch (error) {
@@ -132,8 +132,8 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
       const result = await supabaseService.approveVerification(id, notes);
 
       // Refresh the verification list
-      const updatedRequests = await supabaseService.getVerificationRequests();
-      setVerificationRequests(updatedRequests);
+      // const updatedRequests = await supabaseService.getVerificationRequests();
+      // setVerificationRequests(updatedRequests);
 
       toast({
         title: "Success",
@@ -160,8 +160,8 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
       const result = await supabaseService.rejectVerification(id, reason);
 
       // Refresh the verification list
-      const updatedRequests = await supabaseService.getVerificationRequests();
-      setVerificationRequests(updatedRequests);
+      // const updatedRequests = await supabaseService.getVerificationRequests();
+      // setVerificationRequests(updatedRequests);
 
       toast({
         title: "Verification Rejected",
@@ -191,8 +191,8 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
       );
 
       // Refresh the verification list
-      const updatedRequests = await supabaseService.getVerificationRequests();
-      setVerificationRequests(updatedRequests);
+      // const updatedRequests = await supabaseService.getVerificationRequests();
+      // setVerificationRequests(updatedRequests);
 
       const verifier = users.find((user) => user.id === verifierId);
       toast({
@@ -228,8 +228,8 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
       });
 
       // Refresh the verification list to include the new event
-      const updatedRequests = await supabaseService.getVerificationRequests();
-      setVerificationRequests(updatedRequests);
+      // const updatedRequests = await supabaseService.getVerificationRequests();
+      // setVerificationRequests(updatedRequests);
 
       return true;
     } catch (error) {
@@ -243,35 +243,35 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createVerificationRequest = async (
-    projectId: string,
-    projectName: string
-  ): Promise<VerificationRequest> => {
-    try {
-      const newRequest = await supabaseService.createVerificationRequest(
-        projectId,
-        projectName
-      );
+  // const createVerificationRequest = async (
+  //   projectId: string,
+  //   projectName: string
+  // ): Promise<VerificationRequest> => {
+  //   try {
+  //     // const newRequest = await supabaseService.createVerificationRequest(
+  //     // projectId,
+  //     // projectName
+  //     // );
 
-      // Add to the local state
-      setVerificationRequests((prev) => [...prev, newRequest]);
+  //     // Add to the local state
+  //     // setVerificationRequests((prev) => [...prev, newRequest]);
 
-      toast({
-        title: "Success",
-        description: "Verification request submitted successfully",
-      });
+  //     toast({
+  //       title: "Success",
+  //       description: "Verification request submitted successfully",
+  //     });
 
-      return newRequest;
-    } catch (error) {
-      console.error("Failed to create verification request:", error);
-      toast({
-        title: "Error",
-        description: "Failed to submit verification request. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
+  //     return [];
+  //   } catch (error) {
+  //     console.error("Failed to create verification request:", error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to submit verification request. Please try again.",
+  //       variant: "destructive",
+  //     });
+  //     throw error;
+  //   }
+  // };
 
   // const uploadDocument = async (
   //   verificationId: string,
@@ -334,7 +334,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
     rejectVerification,
     assignVerifier,
     addTimelineEvent,
-    createVerificationRequest,
+    // createVerificationRequest,
     // uploadDocument,
   };
 
