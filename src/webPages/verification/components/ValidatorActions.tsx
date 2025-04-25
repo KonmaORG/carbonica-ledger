@@ -5,33 +5,44 @@ import { VerificationRequest } from "../types/verificationTypes";
 
 interface ValidatorActionsProps {
   request: VerificationRequest;
-  onAction: (action: "approve" | "reject") => void;
 }
 
 export const ValidatorActions: React.FC<ValidatorActionsProps> = ({
   request,
-  onAction,
 }) => {
+  const yesVotes = request.verification[0].verifiers.filter(
+    (v: { vote: string }) => v.vote === "yes"
+  ).length;
+  const noVotes = request.verification[0].verifiers.filter(
+    (v: { vote: string }) => v.vote === "no"
+  ).length;
+
+  function signTx(action: "approve" | "reject") {
+    console.log(`User voted: ${action}`);
+  }
   return (
     <div className="flex flex-wrap gap-3">
-      <Button
-        variant="outline"
-        className="bg-green-50 hover:bg-green-100"
-        onClick={() => onAction("approve")}
-        disabled={request.status === "approved"}
-      >
-        <Check className="mr-2 h-4 w-4" />
-        Approve
-      </Button>
-      <Button
-        variant="outline"
-        className="bg-red-50 hover:bg-red-100"
-        onClick={() => onAction("reject")}
-        disabled={request.status === "rejected"}
-      >
-        <X className="mr-2 h-4 w-4" />
-        Reject
-      </Button>
+      {yesVotes > noVotes ? (
+        <Button
+          variant="outline"
+          className="bg-green-50 hover:bg-green-100"
+          onClick={() => signTx("approve")}
+          disabled={request.status === "approved"}
+        >
+          <Check className="mr-2 h-4 w-4" />
+          Sign
+        </Button>
+      ) : (
+        <Button
+          variant="outline"
+          className="bg-red-50 hover:bg-red-100"
+          onClick={() => signTx("reject")}
+          disabled={request.status === "rejected"}
+        >
+          <X className="mr-2 h-4 w-4" />
+          Sign
+        </Button>
+      )}
     </div>
   );
 };

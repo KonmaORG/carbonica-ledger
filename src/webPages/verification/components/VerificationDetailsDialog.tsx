@@ -183,7 +183,7 @@ export const VerificationDetailsDialog = ({
                 />
               )}
               {request.status === "in_review" && (
-                <ValidatorActions request={request} onAction={handleAction} />
+                <ValidatorActions request={request} />
               )}
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Close

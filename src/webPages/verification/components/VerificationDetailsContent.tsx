@@ -36,8 +36,11 @@ export const VerificationDetailsContent: React.FC<
         {request.verification[0].verifiers.length > 0 &&
           request.verification[0].verifiers.map((verifier, index) => (
             <div key={index}>
-              <h3 className="text-sm font-medium text-gray-500">Verifier</h3>
+              <h3 className="text-sm font-medium text-gray-500 flex">
+                Verifier
+              </h3>
               <p>{verifier.verifier}</p>
+              <p>Vote: {verifier.vote}</p>
             </div>
           ))}
         {request.estimatedCompletion && (
