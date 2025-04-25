@@ -13,13 +13,15 @@ import { VerificationStatusBadge } from "./VerificationStatusBadge";
 import { VerificationRequest } from "@/types/model";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationDetailsContent } from "./VerificationDetailsContent";
-import { ValidatorActions } from "./ValidatorActions";
 import { ConfirmActionDialog } from "./ConfirmActionDialog";
 import { useVerification } from "@/contexts/VerificationContext";
 // import ValidatorVote from "./ValidatorVote";
 import { useAuth } from "@/contexts/AuthContext";
 import dynamic from "next/dynamic";
 const ValidatorVote = dynamic(() => import("./ValidatorVote"), {
+  ssr: false,
+});
+const ValidatorActions = dynamic(() => import("./ValidatorActions"), {
   ssr: false,
 });
 interface VerificationDetailsDialogProps {

@@ -26,13 +26,11 @@ export default function WalletButton({
       const PROVIDER = new Blockfrost(BF_URL, BF_PID);
       const lucid = await Lucid(PROVIDER, NETWORK as Network);
 
+      let balance;
       const api = await wallet.enable();
-
       lucid.selectWallet.fromAPI(api);
-
       const address = await lucid.wallet().address();
-      const balance = parseInt(await api.getBalance());
-
+      //  balance = parseInt(await api.getBalance());
       setWalletConnection((prev) => {
         return { ...prev, wallet, address, balance, lucid };
       });

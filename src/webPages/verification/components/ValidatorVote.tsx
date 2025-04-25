@@ -77,7 +77,7 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
         status: shouldUpdateStatus
           ? "in_review"
           : request.verification[0].status || "pending",
-        unsignedTx: Tx,
+        unsignedTx: Tx?.toCBOR(),
       })
       .eq("id", verificationId);
 

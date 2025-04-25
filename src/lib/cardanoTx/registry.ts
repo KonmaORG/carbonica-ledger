@@ -262,12 +262,6 @@ export async function acceptProject(walletConnection: Cardano, txHash: string) {
       .addSigner(await privateKeytoAddress(SIGNER2))
       .complete();
 
-    // const signed = await multiSignwithPrivateKey(tx, [SIGNER1, SIGNER2]);
-    // const txHash = await submit(signed);
-
-    // console.log("-----------ProjectAccept---------");
-    // console.log("txHash: ", txHash);
-    // return { status: "ok", txHash };
     return tx;
   } catch (error: any) {
     console.log(error);
