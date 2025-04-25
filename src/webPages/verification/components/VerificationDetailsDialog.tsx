@@ -39,7 +39,6 @@ export const VerificationDetailsDialog = ({
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [rejectionReason, setRejectionReason] = React.useState("");
-
   const handleAction = async (action: "approve" | "reject") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
@@ -49,9 +48,11 @@ export const VerificationDetailsDialog = ({
       throw new Error("User not authenticated");
     }
 
+    const verificationId = request.verification[0].id;
+    const projectId = request.id;
     const verifierId = user.id;
     const newVerifier = {
-      verifierId,
+      verifier: verifierId,
       signed: false,
       vote: action,
     };
@@ -61,18 +62,64 @@ export const VerificationDetailsDialog = ({
       ? [...request.verification[0].verifiers, newVerifier]
       : [newVerifier];
 
+    const totalVotes = updatedVerifiers.length;
+    const yesVotes = updatedVerifiers.filter(
+      (v: { vote: string }) => v.vote === "yes"
+    ).length;
+    const noVotes = updatedVerifiers.filter(
+      (v: { vote: string }) => v.vote === "no"
+    ).length;
+
+    // Determine if status should be updated
+    const shouldUpdateStatus =
+      totalVotes === 5 || yesVotes >= 3 || noVotes >= 3;
     // Update the verification table's verifiers array
     const { error } = await supabase
       .from("verification")
       .update({
         verifiers: updatedVerifiers,
+        status: shouldUpdateStatus
+          ? "in_review"
+          : request.verification[0].status || "pending",
       })
-      .eq("id", request.verification[0].id);
+      .eq("id", verificationId);
 
     if (error) {
       throw new Error(`Failed to update verifiers: ${error.message}`);
     }
-    console.log("Verifier updated successfully:", updatedVerifiers);
+    if (shouldUpdateStatus) {
+      const { error: projectError } = await supabase
+        .from("projects")
+        .update({
+          status: "in_review",
+        })
+        .eq("id", projectId);
+
+      if (projectError) {
+        // Attempt to rollback the verification update
+        const { error: rollbackError } = await supabase
+          .from("verification")
+          .update({
+            verifiers: request.verification[0]?.verifiers || [],
+            status: request.verification[0]?.status || "pending",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", verificationId);
+
+        if (rollbackError) {
+          console.error("Rollback failed:", rollbackError);
+          throw new Error(
+            `Failed to update project: ${projectError.message}. Rollback also failed, please contact support.`
+          );
+        }
+
+        throw new Error(
+          `Failed to update project: ${projectError.message}. Verification update was reverted.`
+        );
+      }
+      console.log("Verifier updated successfully:", updatedVerifiers);
+    }
+
     setConfirmAction("approve");
     // setIsConfirmOpen(true);
   };
