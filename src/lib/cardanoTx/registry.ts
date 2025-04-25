@@ -12,6 +12,7 @@ import {
   LucidEvolution,
   mintingPolicyToId,
   Network,
+  OutRef,
   paymentCredentialOf,
   stakeCredentialOf,
   toText,
@@ -127,13 +128,15 @@ export async function submitProject(
   }
 }
 
-export async function rejectProject(walletConnection: Cardano, utxo: UTxO) {
+export async function rejectProject(walletConnection: Cardano, txHash: string) {
   const { wallet, address, lucid } = walletConnection;
   try {
     if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
     const walletAPI = await wallet.enable();
     // const lucid = await Lucid(PROVIDER, NETWORK as Network);
     lucid.selectWallet.fromAPI(walletAPI);
+    let oref: OutRef = { txHash, outputIndex: 0 };
+    const utxo = (await lucid.utxosByOutRef([oref]))[0];
 
     const mintingValidator: Validator = ValidatorMinter();
     const policyID = mintingPolicyToId(mintingValidator);
@@ -167,25 +170,28 @@ export async function rejectProject(walletConnection: Cardano, utxo: UTxO) {
       .addSigner(await privateKeytoAddress(SIGNER2))
       .complete();
 
-    const signed = await multiSignwithPrivateKey(tx, [SIGNER1, SIGNER2]);
-    const txHash = await submit(signed);
+    // const signed = await multiSignwithPrivateKey(tx, [SIGNER1, SIGNER2]);
+    // const txHash = await submit(signed);
 
-    console.log("-----------ProjectReject---------");
-    console.log("txHash: ", txHash);
-    return { status: "ok", txHash };
+    // console.log("-----------ProjectReject---------");
+    // console.log("txHash: ", txHash);
+    // return { status: "ok", txHash };
+    return tx;
   } catch (error: any) {
     console.log(error);
     throw { error: handleError(error) };
   }
 }
 
-export async function acceptProject(walletConnection: Cardano, utxo: UTxO) {
+export async function acceptProject(walletConnection: Cardano, txHash: string) {
   const { wallet, address, lucid } = walletConnection;
   try {
     if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
     const walletAPI = await wallet.enable();
     // const lucid = await Lucid(PROVIDER, NETWORK as Network);
     lucid.selectWallet.fromAPI(walletAPI);
+    let oref: OutRef = { txHash, outputIndex: 0 };
+    const utxo = (await lucid.utxosByOutRef([oref]))[0];
 
     const mintingValidator: Validator = ValidatorMinter();
     const policyIDMinter = mintingPolicyToId(mintingValidator);
@@ -256,12 +262,13 @@ export async function acceptProject(walletConnection: Cardano, utxo: UTxO) {
       .addSigner(await privateKeytoAddress(SIGNER2))
       .complete();
 
-    const signed = await multiSignwithPrivateKey(tx, [SIGNER1, SIGNER2]);
-    const txHash = await submit(signed);
+    // const signed = await multiSignwithPrivateKey(tx, [SIGNER1, SIGNER2]);
+    // const txHash = await submit(signed);
 
-    console.log("-----------ProjectAccept---------");
-    console.log("txHash: ", txHash);
-    return { status: "ok", txHash };
+    // console.log("-----------ProjectAccept---------");
+    // console.log("txHash: ", txHash);
+    // return { status: "ok", txHash };
+    return tx;
   } catch (error: any) {
     console.log(error);
     throw { error: handleError(error) };

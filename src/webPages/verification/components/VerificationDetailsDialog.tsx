@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Dialog,
@@ -15,10 +16,12 @@ import { VerificationDetailsContent } from "./VerificationDetailsContent";
 import { ValidatorActions } from "./ValidatorActions";
 import { ConfirmActionDialog } from "./ConfirmActionDialog";
 import { useVerification } from "@/contexts/VerificationContext";
-import { ValidatorVote } from "./ValidatorVote";
+// import ValidatorVote from "./ValidatorVote";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase";
-
+import dynamic from "next/dynamic";
+const ValidatorVote = dynamic(() => import("./ValidatorVote"), {
+  ssr: false,
+});
 interface VerificationDetailsDialogProps {
   request: VerificationRequest;
   open: boolean;
@@ -42,86 +45,6 @@ export const VerificationDetailsDialog = ({
   const handleAction = async (action: "approve" | "reject") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
-  };
-  const handleVote = async (action: "yes" | "no") => {
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
-
-    const verificationId = request.verification[0].id;
-    const projectId = request.id;
-    const verifierId = user.id;
-    const newVerifier = {
-      verifier: verifierId,
-      signed: false,
-      vote: action,
-    };
-
-    // Append the new verifier to the existing array (or start a new array if null)
-    const updatedVerifiers = request.verification[0].verifiers
-      ? [...request.verification[0].verifiers, newVerifier]
-      : [newVerifier];
-
-    const totalVotes = updatedVerifiers.length;
-    const yesVotes = updatedVerifiers.filter(
-      (v: { vote: string }) => v.vote === "yes"
-    ).length;
-    const noVotes = updatedVerifiers.filter(
-      (v: { vote: string }) => v.vote === "no"
-    ).length;
-
-    // Determine if status should be updated
-    const shouldUpdateStatus =
-      totalVotes === 5 || yesVotes >= 3 || noVotes >= 3;
-    // Update the verification table's verifiers array
-    const { error } = await supabase
-      .from("verification")
-      .update({
-        verifiers: updatedVerifiers,
-        status: shouldUpdateStatus
-          ? "in_review"
-          : request.verification[0].status || "pending",
-      })
-      .eq("id", verificationId);
-
-    if (error) {
-      throw new Error(`Failed to update verifiers: ${error.message}`);
-    }
-    if (shouldUpdateStatus) {
-      const { error: projectError } = await supabase
-        .from("projects")
-        .update({
-          status: "in_review",
-        })
-        .eq("id", projectId);
-
-      if (projectError) {
-        // Attempt to rollback the verification update
-        const { error: rollbackError } = await supabase
-          .from("verification")
-          .update({
-            verifiers: request.verification[0]?.verifiers || [],
-            status: request.verification[0]?.status || "pending",
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", verificationId);
-
-        if (rollbackError) {
-          console.error("Rollback failed:", rollbackError);
-          throw new Error(
-            `Failed to update project: ${projectError.message}. Rollback also failed, please contact support.`
-          );
-        }
-
-        throw new Error(
-          `Failed to update project: ${projectError.message}. Verification update was reverted.`
-        );
-      }
-      console.log("Verifier updated successfully:", updatedVerifiers);
-    }
-
-    setConfirmAction("approve");
-    // setIsConfirmOpen(true);
   };
 
   const executeAction = async () => {
@@ -176,11 +99,7 @@ export const VerificationDetailsDialog = ({
           <div className="flex-shrink-0 pt-4 border-t">
             <DialogFooter className="mt-4">
               {request.status === "pending" && (
-                <ValidatorVote
-                  request={request}
-                  onAction={handleVote}
-                  user={user}
-                />
+                <ValidatorVote request={request} user={user} />
               )}
               {request.status === "in_review" && (
                 <ValidatorActions request={request} />
