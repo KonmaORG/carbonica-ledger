@@ -11,9 +11,9 @@ import {
   validator_contract_validator_contract_mint,
   validator_contract_validator_contract_mint_mint,
 } from "./karbonLedger";
+import { IDENTIFICATION_PID } from "../index";
 
-export const identificationPolicyid: Data = process.env
-  .NEXT_PUBLIC_IDENTIFICATION_PID as string;
+export const identificationPolicyid: Data = IDENTIFICATION_PID;
 
 //#region Karbon_Ledger
 

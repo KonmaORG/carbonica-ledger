@@ -54,7 +54,8 @@ export async function submitProject(
   walletConnection: Cardano,
   fileHash: string,
   category: string,
-  projectTitle: string
+  projectTitle: string,
+  thumbnail: string
 ) {
   const { wallet, address, lucid } = walletConnection;
   try {
@@ -82,7 +83,6 @@ export async function submitProject(
       policyid: "",
       asset_name: fromText(""),
     };
-
     const datum: KarbonDatum = {
       developer: [
         paymentCredentialOf(address).hash,
@@ -112,7 +112,7 @@ export async function submitProject(
         [policyID]: {
           [projectAssetName]: {
             name: projectAssetName,
-            image: "https://avatars.githubusercontent.com/u/106166350",
+            images: thumbnail.split("/"),
           },
         },
       })
@@ -121,7 +121,7 @@ export async function submitProject(
     const txHash = await submit(tx);
 
     console.log("txHash: ", txHash);
-    return { status: "ok", txHash };
+    return txHash;
   } catch (error: any) {
     console.log(error);
     throw { error: handleError(error) };
