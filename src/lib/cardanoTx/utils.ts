@@ -1,5 +1,6 @@
-import { NETWORK, IDENTIFICATION_PID, BF_URL, BF_PID } from "@/config";
+import { NETWORK, IDENTIFICATION_PID, BF_URL, BF_PID, SIGNER1 } from "@/config";
 import { ConfigDatumHolderValidator } from "@/config/scripts/scripts";
+import { Cardano } from "@/contexts/cardanoContext";
 import { KarbonDatum } from "@/types/datum";
 import {
   LucidEvolution,
@@ -15,7 +16,20 @@ import {
   Blockfrost,
   Network,
 } from "@lucid-evolution/lucid";
+import { handleError } from "../utils";
 
+export async function sign(tx: string, walletConnection: Cardano) {
+  const { wallet } = walletConnection;
+  try {
+    if (!wallet) throw new Error("Wallet Not Connected!");
+    const walletAPI = await wallet.enable();
+    const signed = await walletAPI.signTx(tx, true);
+    return signed;
+  } catch (error) {
+    console.log(error);
+    throw handleError(error);
+  }
+}
 export async function refUtxo(lucid: LucidEvolution) {
   const validator: Validator = ConfigDatumHolderValidator();
   const address = validatorToAddress(NETWORK as Network, validator);
