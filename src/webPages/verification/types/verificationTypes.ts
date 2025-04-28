@@ -1,7 +1,7 @@
 import { ProjectDocument } from "@/types/project";
 
 export interface VerificationRequest {
-  id: string;
+  project_id: string;
   created_at: string;
   title: string;
   type: string;
@@ -18,12 +18,27 @@ export interface VerificationRequest {
   verification: {
     id: string;
     credits: number | null;
-    rejectionReason: string | null;
     unsignedTx: string | null;
     txHash: string | null;
     timeline?: string | null;
-    verifiers: { verfier: string; signed: boolean }[];
+    votes: requestVotes[];
   };
+}
+
+export interface requestVotes {
+  rejection_reason: string | null;
+  signed: boolean;
+  verifier_id: string;
+  user: VerificationUser;
+  vote: "Yes" | "No";
+  vote_id: string;
+  created_at: string;
+}
+export interface VerificationUser {
+  user_id: string;
+  name: string;
+  role: string;
+  address: string;
 }
 export interface VerificationDocument {
   id: string;

@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { VerificationStatusBadge } from "./VerificationStatusBadge";
-import { VerificationRequest } from "@/types/model";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationDetailsContent } from "./VerificationDetailsContent";
 import { ConfirmActionDialog } from "./ConfirmActionDialog";
@@ -18,6 +17,7 @@ import { useVerification } from "@/contexts/VerificationContext";
 // import ValidatorVote from "./ValidatorVote";
 import { useAuth } from "@/contexts/AuthContext";
 import dynamic from "next/dynamic";
+import { VerificationRequest } from "../types/verificationTypes";
 const ValidatorVote = dynamic(() => import("./ValidatorVote"), {
   ssr: false,
 });
@@ -54,7 +54,7 @@ export const VerificationDetailsDialog = ({
 
     try {
       if (confirmAction === "approve") {
-        await approveVerification(request.id);
+        await approveVerification(request.project_id);
       } else if (confirmAction === "reject") {
         if (!rejectionReason) {
           toast({
@@ -65,7 +65,7 @@ export const VerificationDetailsDialog = ({
           setIsSubmitting(false);
           return;
         }
-        await rejectVerification(request.id, rejectionReason);
+        await rejectVerification(request.project_id, rejectionReason);
       }
 
       setIsConfirmOpen(false);
@@ -89,7 +89,7 @@ export const VerificationDetailsDialog = ({
           <DialogHeader className="flex-shrink-0">
             <DialogTitle className="text-xl">{request.title}</DialogTitle>
             <DialogDescription className="flex items-center justify-between">
-              <span>Verification Request ID: {request.id}</span>
+              <span>Verification Request ID: {request.project_id}</span>
               <VerificationStatusBadge status={request.status} />
             </DialogDescription>
           </DialogHeader>
