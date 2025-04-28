@@ -31,9 +31,10 @@ export interface requestVotes {
   verifier_id: string;
   vote: "Yes" | "No";
   signed: boolean;
+  witness_set: string | null;
   rejection_reason: string | null;
   created_at: string;
-  user: VerificationUser;
+  users: VerificationUser;
 }
 export interface VerificationUser {
   user_id: string;
