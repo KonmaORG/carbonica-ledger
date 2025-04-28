@@ -50,8 +50,8 @@ export const VerificationTimeline: React.FC<VerificationTimelineProps> = ({
   request,
 }) => {
   if (
-    !request.verification[0].timeline ||
-    request.verification[0].timeline.length === 0
+    !request.verification.timeline ||
+    request.verification.timeline.length === 0
   ) {
     return (
       <div className="border border-gray-100 rounded-md p-4">

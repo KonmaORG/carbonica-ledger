@@ -20,7 +20,7 @@ export const VerificationRequestsList = ({
   return (
     <div className="space-y-4">
       {requests.map((request) => (
-        <VerificationRequestCard key={request.id} request={request} />
+        <VerificationRequestCard key={request.project_id} request={request} />
       ))}
     </div>
   );

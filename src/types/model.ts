@@ -3,6 +3,7 @@
  * This file defines the primary data models used across the application
  */
 
+import { requestVotes } from "@/webPages/verification/types/verificationTypes";
 import { ProjectDocument } from "./project";
 
 // User entity
@@ -43,31 +44,6 @@ export interface Project {
 }
 
 // Enhanced VerificationRequest entity
-export interface VerificationRequest {
-  id: string;
-  created_at: string;
-  title: string;
-  type: string;
-  location: string;
-  country: string;
-  startDate: string;
-  estimatedCompletion: string;
-  emissionsTarget: string;
-  description: string;
-  txHash: string;
-  user_id: string;
-  documents: ProjectDocument[];
-  status: string;
-  verification: {
-    id: string;
-    credits: number | null;
-    rejectionReason: string | null;
-    unsignedTx: string | null;
-    txHash: string | null;
-    verifiers: { verfier: string; signed: boolean }[];
-    timeline?: string | null; // Link to the verification timeline
-  };
-}
 
 // New VerificationDocument entity
 export interface VerificationDocument {

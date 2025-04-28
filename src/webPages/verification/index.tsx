@@ -29,19 +29,32 @@ const fetchVerificationRequests = async ({
 }) => {
   setIsLoading(true);
   try {
-    // Build the base query with a left join to include verification data
+    // Build the base query with left joins
     let query = supabase
       .from("projects")
       .select(
         `
         *,
         verification (
-          id,
+          verification_id,
           credits,
-          rejectionReason,
           unsignedTx,
           txHash,
-          verifiers
+          votes (
+            vote_id,
+            verifier_id,
+            signed,
+            vote,
+            witness_set,
+            rejection_reason,
+            created_at,
+            users (
+            user_id,
+            name,
+            role,
+            address
+            )
+          )
         )
       `,
         { count: "exact" }
@@ -72,8 +85,9 @@ const fetchVerificationRequests = async ({
     // Map the data to ensure verification is included (even if null)
     const formattedData = (data || []).map((project) => ({
       ...project,
-      verification: project.verification, // Ensure verification is included
+      verification: project.verification, // Single object
     }));
+    console.log("Formatted Data:", data); // Debugging line
     setVerificationRequests(formattedData as VerificationRequest[]);
   } catch (error: any) {
     console.error("Error fetching verification requests:", error.message);

@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { supabaseService } from "../services/supabaseService";
 import {
-  VerificationRequest,
   VerificationDocument,
   VerificationEvent,
   Project,
@@ -16,6 +15,7 @@ import {
 } from "../types/model";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "./AuthContext";
+import { VerificationRequest } from "@/webPages/verification/types/verificationTypes";
 
 interface VerificationContextType {
   // Data

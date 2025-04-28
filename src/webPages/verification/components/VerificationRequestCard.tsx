@@ -18,11 +18,10 @@ export const VerificationRequestCard = ({
 }: VerificationRequestCardProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const progress =
-    request.verification[0].verifiers.length > 0
-      ? (request.verification[0].verifiers.filter(
-          (item) => item.signed === true
-        ).length /
-          request.verification[0].verifiers.length) *
+    request.verification.votes?.length > 0
+      ? (request.verification.votes.filter((vote) => vote.signed === true)
+          .length /
+          request.verification.votes?.length) *
         100
       : 0;
   return (
@@ -48,11 +47,11 @@ export const VerificationRequestCard = ({
           <Progress value={progress} className="h-2" />
         </div>
 
-        {request.verification[0].verifiers.length > 0 &&
-          request.verification[0].verifiers.map((verifier, index) => (
-            <div key={"index"} className="mt-4 text-sm">
+        {request.verification.votes?.length > 0 &&
+          request.verification.votes.map((vote) => (
+            <div key={vote.vote_id} className="mt-4 text-sm">
               <span className="text-gray-600">Verifier: </span>
-              <span className="font-medium">{verifier.verifier}</span>
+              <span className="font-medium">{vote.verifier_id}</span>
             </div>
           ))}
 
@@ -61,12 +60,16 @@ export const VerificationRequestCard = ({
           <span className="font-medium">{request.estimatedCompletion}</span>
         </div>
 
-        {request.verification[0].rejectionReason && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md text-sm text-red-800">
-            <p className="font-medium mb-1">Rejection Reason:</p>
-            <p>{request.verification[0].rejectionReason}</p>
-          </div>
-        )}
+        {request.verification.votes?.length &&
+          request.verification.votes.map(
+            (vote) =>
+              vote.rejection_reason && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md text-sm text-red-800">
+                  <p className="font-medium mb-1">Rejection Reason:</p>
+                  <p>{vote.rejection_reason}</p>
+                </div>
+              )
+          )}
 
         <div className="mt-4 flex justify-end">
           <Button
