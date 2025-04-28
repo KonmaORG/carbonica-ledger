@@ -18,9 +18,10 @@ import {
 } from "@lucid-evolution/lucid";
 import { handleError } from "../utils";
 
-export async function sign(tx: string, walletConnection: Cardano) {
+export async function sign(tx: string | null, walletConnection: Cardano) {
   const { wallet } = walletConnection;
   try {
+    if (!tx) throw new Error("null tx");
     if (!wallet) throw new Error("Wallet Not Connected!");
     const walletAPI = await wallet.enable();
     const signed = await walletAPI.signTx(tx, true);

@@ -16,7 +16,7 @@ export interface VerificationRequest {
   documents: ProjectDocument[];
   status: string;
   verification: {
-    id: string;
+    verification_id: string;
     credits: number | null;
     unsignedTx: string | null;
     txHash: string | null;
@@ -26,13 +26,14 @@ export interface VerificationRequest {
 }
 
 export interface requestVotes {
-  rejection_reason: string | null;
-  signed: boolean;
-  verifier_id: string;
-  user: VerificationUser;
-  vote: "Yes" | "No";
   vote_id: string;
+  verification_id: string;
+  verifier_id: string;
+  vote: "Yes" | "No";
+  signed: boolean;
+  rejection_reason: string | null;
   created_at: string;
+  user: VerificationUser;
 }
 export interface VerificationUser {
   user_id: string;
