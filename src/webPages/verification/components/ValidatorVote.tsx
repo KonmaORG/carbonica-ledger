@@ -35,6 +35,9 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
     if (!user) {
       throw new Error("User not authenticated");
     }
+    if (!walletConnection.lucid || !walletConnection.wallet) {
+      throw new Error("Wallet not connected");
+    }
     try {
       setSubmitting((prev) => ({ ...prev, [action]: true }));
       const verificationId = request.verification.verification_id;
@@ -70,9 +73,9 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
       if (shouldUpdateStatus) {
         // creating transaction
         if (yesVotes > noVotes) {
-          Tx = await acceptProject(walletConnection, request.txHash);
+          Tx = await acceptProject(walletConnection, request);
         } else {
-          Tx = await rejectProject(walletConnection, request.txHash);
+          Tx = await rejectProject(walletConnection, request);
         }
 
         const { error: projectError } = await supabase

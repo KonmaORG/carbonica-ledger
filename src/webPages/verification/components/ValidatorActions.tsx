@@ -3,7 +3,7 @@ import React, { use, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { VerificationRequest } from "../types/verificationTypes";
-import { sign } from "@/lib/cardanoTx/utils";
+import { sign, submitTxMultiTx } from "@/lib/cardanoTx/utils";
 import { useCardano } from "@/contexts/cardanoContext";
 import { supabase } from "@/lib/supabase";
 import { acceptProject } from "@/lib/cardanoTx/registry";
@@ -33,8 +33,12 @@ export default function ValidatorActions({
   const vote_id = request.verification.votes.find(
     (vote) => vote.verifier_id === user.id
   )?.vote_id;
-  async function signTx() {
+  async function signTx(action: "Yes" | "No") {
     try {
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
       setSubmitting(true);
       const witness_set = await sign(
         request.verification.unsignedTx,
@@ -51,6 +55,22 @@ export default function ValidatorActions({
       if (error) {
         throw new Error(`Failed to Sign Transaction: ${error.message}`);
       }
+      request.verification.votes.forEach((vote) => {
+        if (vote.verifier_id === user.id) {
+          vote.witness_set = witness_set;
+        }
+      });
+      const sameVotes = request.verification.votes.filter(
+        (vote) => vote.vote === action
+      );
+      const isAllSigned = sameVotes.every((vote) => vote.signed === true);
+      if (isAllSigned) {
+        submitTxMultiTx(
+          request.verification.unsignedTx,
+          sameVotes,
+          walletconnection
+        );
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -63,7 +83,7 @@ export default function ValidatorActions({
         <Button
           variant="outline"
           className="bg-green-50 hover:bg-green-100"
-          onClick={signTx}
+          onClick={() => signTx("Yes")}
           disabled={request.status === "approved" || submitting}
         >
           <Check className="mr-2 h-4 w-4" />
@@ -73,7 +93,7 @@ export default function ValidatorActions({
         <Button
           variant="outline"
           className="bg-red-50 hover:bg-red-100"
-          onClick={signTx}
+          onClick={() => signTx("No")}
           disabled={request.status === "rejected" || submitting}
         >
           <X className="mr-2 h-4 w-4" />

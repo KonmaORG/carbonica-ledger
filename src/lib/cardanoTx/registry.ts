@@ -1,15 +1,9 @@
-import {
-  ConfigDatumHolderValidator,
-  ValidatorContract,
-  ValidatorMinter,
-} from "@/config/scripts/scripts";
+import { ValidatorContract, ValidatorMinter } from "@/config/scripts/scripts";
 import {
   Constr,
   Data,
   fromHex,
   fromText,
-  Lucid,
-  LucidEvolution,
   mintingPolicyToId,
   Network,
   OutRef,
@@ -17,7 +11,6 @@ import {
   stakeCredentialOf,
   toText,
   TxSignBuilder,
-  UTxO,
   Validator,
   validatorToAddress,
 } from "@lucid-evolution/lucid";
@@ -35,6 +28,7 @@ import {
 import { handleError } from "../utils";
 import {
   getKarbonDatum,
+  getMultiSignerAddress,
   hashtoAddress,
   multiSignwithPrivateKey,
   privateKeytoAddress,
@@ -43,6 +37,7 @@ import {
 import { Cardano } from "@/contexts/cardanoContext";
 import { KarbonRedeemerMint, KarbonRedeemerSpend } from "@/types/redeemer";
 import { AssetClass, KarbonDatum } from "@/types/datum";
+import { VerificationRequest } from "@/webPages/verification/types/verificationTypes";
 
 export async function submit(tx: TxSignBuilder) {
   const signed = await tx.sign.withWallet().complete();
@@ -128,7 +123,12 @@ export async function submitProject(
   }
 }
 
-export async function rejectProject(walletConnection: Cardano, txHash: string) {
+export async function rejectProject(
+  walletConnection: Cardano,
+  data: VerificationRequest
+) {
+  const txHash = data.txHash;
+  const multiSigner = getMultiSignerAddress(data.verification.votes, "No");
   const { wallet, address, lucid } = walletConnection;
   try {
     if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
@@ -159,16 +159,17 @@ export async function rejectProject(walletConnection: Cardano, txHash: string) {
     };
     const redeemer = Data.to(1n); // Burn
 
-    const tx = await lucid
+    let tx = lucid
       .newTx()
       .readFrom(refutxo)
       .collectFrom([utxo], Data.to(redeemerValidator, KarbonRedeemerSpend))
       .attach.SpendingValidator(validatorContract)
       .mintAssets(burnedAssets, redeemer)
-      .attach.MintingPolicy(mintingValidator)
-      .addSigner(await privateKeytoAddress(SIGNER1))
-      .addSigner(await privateKeytoAddress(SIGNER2))
-      .complete();
+      .attach.MintingPolicy(mintingValidator);
+
+    multiSigner.map((multiSigner) => {
+      tx.addSigner(multiSigner);
+    });
 
     // const signed = await multiSignwithPrivateKey(tx, [SIGNER1, SIGNER2]);
     // const txHash = await submit(signed);
@@ -176,14 +177,20 @@ export async function rejectProject(walletConnection: Cardano, txHash: string) {
     // console.log("-----------ProjectReject---------");
     // console.log("txHash: ", txHash);
     // return { status: "ok", txHash };
-    return tx;
+    const newTx = await tx.complete();
+    return newTx;
   } catch (error: any) {
     console.log(error);
     throw { error: handleError(error) };
   }
 }
 
-export async function acceptProject(walletConnection: Cardano, txHash: string) {
+export async function acceptProject(
+  walletConnection: Cardano,
+  data: VerificationRequest
+) {
+  const txHash = data.txHash;
+  const multiSigner = getMultiSignerAddress(data.verification.votes, "Yes");
   const { wallet, address, lucid } = walletConnection;
   try {
     if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
@@ -257,12 +264,13 @@ export async function acceptProject(walletConnection: Cardano, txHash: string) {
             hName: toText(datum.asset_name),
           },
         },
-      })
-      .addSigner(await privateKeytoAddress(SIGNER1))
-      .addSigner(await privateKeytoAddress(SIGNER2))
-      .complete();
+      });
+    multiSigner.map((multiSigner) => {
+      tx.addSigner(multiSigner);
+    });
 
-    return tx;
+    const newTx = await tx.complete();
+    return newTx;
   } catch (error: any) {
     console.log(error);
     throw { error: handleError(error) };
