@@ -104,7 +104,7 @@ export const VerificationDetailsDialog = ({
                 <ValidatorVote request={request} user={user} />
               )}
               {request.status === "in_review" && (
-                <ValidatorActions request={request} />
+                <ValidatorActions request={request} user={user} />
               )}
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Close
