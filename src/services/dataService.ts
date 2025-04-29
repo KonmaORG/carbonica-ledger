@@ -1,7 +1,6 @@
 import {
   User,
   Project,
-  VerificationRequest,
   VerificationDocument,
   VerificationEvent,
   VerificationComment,

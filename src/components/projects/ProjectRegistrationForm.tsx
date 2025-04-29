@@ -119,6 +119,7 @@ export default function ProjectRegistrationForm({
   const [documents, setDocuments] = useState<ProjectDocumentUpload[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [walletconnection] = useCardano();
+  const { lucid, wallet } = walletconnection;
   const { user } = useAuth();
 
   const uploadDocuments = async (
@@ -257,6 +258,14 @@ export default function ProjectRegistrationForm({
       });
       return;
     }
+    if (!wallet || !lucid) {
+      toast({
+        title: "Wallet not connected",
+        description: "You must connect your wallet to submit a project.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -280,15 +289,13 @@ export default function ProjectRegistrationForm({
         .insert([formattedData])
         .select()
         .single();
-
       if (projectError) {
         console.error("Error inserting project:", projectError.message);
         throw projectError;
       }
-
       // Upload documents and get metadata
       const uploadedFiles = await uploadDocuments(
-        projectData.id,
+        projectData.project_id,
         documents,
         user
       );
@@ -298,7 +305,7 @@ export default function ProjectRegistrationForm({
         documentsHash,
         projectData.type,
         projectData.title,
-        `${user.id}/${projectData.id}/thumbnail.${documents[0].file.name
+        `${user.id}/${projectData.project_id}/thumbnail.${documents[0].file.name
           .split(".")
           .pop()}`
       );
@@ -307,7 +314,7 @@ export default function ProjectRegistrationForm({
         const { error: updateError } = await supabase
           .from("projects")
           .update({ documents: uploadedFiles, txHash })
-          .eq("id", projectData.id);
+          .eq("project_id", projectData.project_id);
 
         if (updateError) {
           console.error(
@@ -317,11 +324,10 @@ export default function ProjectRegistrationForm({
           throw updateError;
         }
       }
-
       // Set success state
       setProjectData({
         ...formattedData,
-        id: projectData.id,
+        project_id: projectData.project_id,
         documents: uploadedFiles,
       });
       setSubmissionState("success");

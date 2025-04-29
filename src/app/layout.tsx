@@ -25,7 +25,7 @@ export default function RootLayout({
                   <main className="flex-grow">{children}</main>
                   <Footer />
                 </div>
-                {/* <Toaster /> */}
+                <Toaster />
               </VerificationProvider>
               <Sonner />
             </AuthProvider>

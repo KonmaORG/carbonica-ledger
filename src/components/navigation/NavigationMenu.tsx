@@ -25,10 +25,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import WalletConnector from "@/components/wallet/walletConnector";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const NavigationMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const { signOut } = useAuth();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -115,9 +116,14 @@ export const NavigationMenu = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-red-500">
-                  <LogOut className="h-4 w-4" />
-                  <span>Log Out</span>
+                <DropdownMenuItem className="">
+                  <button
+                    onClick={signOut}
+                    className="!h-fit flex items-center gap-2 cursor-pointer text-red-500"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Log Out</span>
+                  </button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -2,7 +2,6 @@ import { supabase } from "../lib/supabase";
 import {
   User,
   Project,
-  VerificationRequest,
   VerificationDocument,
   VerificationEvent,
 } from "../types/model";
