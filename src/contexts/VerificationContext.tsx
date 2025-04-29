@@ -105,7 +105,7 @@ export const VerificationProvider = ({ children }: { children: ReactNode }) => {
   }, [toast, isAuthenticated]);
 
   const getVerificationById = (id: string) => {
-    return verificationRequests.find((request) => request.id === id);
+    return verificationRequests.find((request) => request.project_id === id);
   };
 
   const getProjectById = (id: string) => {
