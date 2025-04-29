@@ -25,6 +25,7 @@ export interface Database {
           methodology: string | null;
           verifier_id: string | null;
           verification_date: string | null;
+          txHash: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -42,6 +43,7 @@ export interface Database {
           verification_id?: string | null;
           methodology?: string | null;
           verifier_id?: string | null;
+          txHash?: string | null;
           verification_date?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -61,6 +63,7 @@ export interface Database {
           methodology?: string | null;
           verifier_id?: string | null;
           verification_date?: string | null;
+          txHash?: string | null;
           created_at?: string;
           updated_at?: string;
         };

@@ -65,17 +65,44 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
         totalVotes === 5 || yesVotes >= 3 || noVotes >= 3;
       let Tx: TxSignBuilder | null = null;
 
-      const { error } = await supabase.from("votes").insert([voteToStore]);
-
+      const { data: storedVote, error } = await supabase
+        .from("votes")
+        .insert([voteToStore]).select(`
+            vote_id,
+            verifier_id,
+            signed,
+            vote,
+            witness_set,
+            rejection_reason,
+            created_at,  users (
+            user_id,
+            name,
+            role,
+            address
+            )`);
       if (error) {
         throw new Error(`Failed to update verifiers: ${error.message}`);
       }
       if (shouldUpdateStatus) {
         // creating transaction
         if (yesVotes > noVotes) {
-          Tx = await acceptProject(walletConnection, request);
+          Tx = await acceptProject(
+            walletConnection,
+            [
+              ...request.verification.votes,
+              ...(storedVote as unknown[] as requestVotes[]),
+            ],
+            request.txHash
+          );
         } else {
-          Tx = await rejectProject(walletConnection, request);
+          Tx = await rejectProject(
+            walletConnection,
+            [
+              ...request.verification.votes,
+              ...(storedVote as unknown[] as requestVotes[]),
+            ],
+            request.txHash
+          );
         }
 
         const { error: projectError } = await supabase

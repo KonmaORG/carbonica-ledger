@@ -300,7 +300,7 @@ export default function ProjectRegistrationForm({
         user
       );
       // Cardano Tx Function
-      const txHash = await submitProject(
+      const hash = await submitProject(
         walletconnection,
         documentsHash,
         projectData.type,
@@ -313,7 +313,7 @@ export default function ProjectRegistrationForm({
       if (uploadedFiles.length > 0) {
         const { error: updateError } = await supabase
           .from("projects")
-          .update({ documents: uploadedFiles, txHash })
+          .update({ documents: uploadedFiles, txHash: hash })
           .eq("project_id", projectData.project_id);
 
         if (updateError) {

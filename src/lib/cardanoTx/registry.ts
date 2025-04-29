@@ -37,7 +37,10 @@ import {
 import { Cardano } from "@/contexts/cardanoContext";
 import { KarbonRedeemerMint, KarbonRedeemerSpend } from "@/types/redeemer";
 import { AssetClass, KarbonDatum } from "@/types/datum";
-import { VerificationRequest } from "@/webPages/verification/types/verificationTypes";
+import {
+  requestVotes,
+  VerificationRequest,
+} from "@/webPages/verification/types/verificationTypes";
 
 export async function submit(tx: TxSignBuilder) {
   const signed = await tx.sign.withWallet().complete();
@@ -125,10 +128,10 @@ export async function submitProject(
 
 export async function rejectProject(
   walletConnection: Cardano,
-  data: VerificationRequest
+  votes: requestVotes[],
+  txHash: string
 ) {
-  const txHash = data.txHash;
-  const multiSigner = getMultiSignerAddress(data.verification.votes, "No");
+  const multiSigner = getMultiSignerAddress(votes, "No");
   const { wallet, address, lucid } = walletConnection;
   try {
     if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");
@@ -187,10 +190,10 @@ export async function rejectProject(
 
 export async function acceptProject(
   walletConnection: Cardano,
-  data: VerificationRequest
+  votes: requestVotes[],
+  txHash: string
 ) {
-  const txHash = data.txHash;
-  const multiSigner = getMultiSignerAddress(data.verification.votes, "Yes");
+  const multiSigner = getMultiSignerAddress(votes, "Yes");
   const { wallet, address, lucid } = walletConnection;
   try {
     if (!wallet || !address || !lucid) throw new Error("Wallet Not Connected!");

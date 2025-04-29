@@ -27,7 +27,7 @@ export interface VerificationRequest {
 
 export interface requestVotes {
   vote_id: string;
-  verification_id: string;
+  verification_id?: string;
   verifier_id: string;
   vote: "Yes" | "No";
   signed: boolean;
