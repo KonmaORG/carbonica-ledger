@@ -52,6 +52,7 @@ export async function submitTxMultiTx(
       .assemble(partialSigns)
       .complete();
     const txHash = await txSigned.submit();
+    console.log("Transaction Hash:", txHash);
     return txHash;
   } catch (error) {
     console.log(error);

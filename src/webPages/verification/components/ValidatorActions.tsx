@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { acceptProject } from "@/lib/cardanoTx/registry";
 import { User } from "@supabase/supabase-js";
 import { set } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 interface ValidatorActionsProps {
   request: VerificationRequest;
@@ -49,6 +50,7 @@ export default function ValidatorActions({
         .from("votes")
         .update({
           witness_set,
+          signed: true,
         })
         .eq("vote_id", vote_id);
 
@@ -63,14 +65,32 @@ export default function ValidatorActions({
       const sameVotes = request.verification.votes.filter(
         (vote) => vote.vote === action
       );
-      const isAllSigned = sameVotes.every((vote) => vote.signed === true);
+      const isAllSigned = sameVotes.every((vote) => vote.witness_set !== "");
       if (isAllSigned) {
-        submitTxMultiTx(
+        const txHash = await submitTxMultiTx(
           request.verification.unsignedTx,
           sameVotes,
           walletconnection
         );
+        const { error } = await supabase
+          .from("verification")
+          .update({
+            txHash,
+          })
+          .eq("verification_id", request.verification.verification_id);
+        if (error) {
+          throw new Error(`Failed to Store Transaction: ${error.message}`);
+        }
+        toast({
+          title: "Signed & Submitted Transaction",
+          description: `Transaction has been signed & submitted. \n tx: ${txHash}`,
+        });
+        return;
       }
+      toast({
+        title: "Signed Transaction",
+        description: "Transaction has been signed.",
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -87,7 +107,7 @@ export default function ValidatorActions({
           disabled={request.status === "approved" || submitting}
         >
           <Check className="mr-2 h-4 w-4" />
-          Sign
+          {submitting ? "Signing..." : "Sign"}
         </Button>
       ) : (
         <Button
@@ -97,7 +117,7 @@ export default function ValidatorActions({
           disabled={request.status === "rejected" || submitting}
         >
           <X className="mr-2 h-4 w-4" />
-          Sign
+          {submitting ? "Signing..." : "Sign"}
         </Button>
       )}
     </div>

@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { TxSignBuilder } from "@lucid-evolution/lucid";
 import { acceptProject, rejectProject } from "@/lib/cardanoTx/registry";
 import { useCardano } from "@/contexts/cardanoContext";
+import { toast } from "@/hooks/use-toast";
 
 interface ValidatorVoteProps {
   request: VerificationRequest;
@@ -130,6 +131,10 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
           );
         }
         console.log("Verifier updated successfully");
+        toast({
+          title: `Voted Successfully`,
+          description: `Stored vote as: ${action}`,
+        });
       }
 
       // setConfirmAction("approve");
@@ -148,10 +153,10 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
           variant="outline"
           className="bg-green-50 hover:bg-green-100"
           onClick={() => handleVote("Yes")}
-          disabled={hasVoted || isSubmitting.Yes}
+          disabled={hasVoted || isSubmitting.Yes || isSubmitting.Yes}
         >
           <Check className="mr-2 h-4 w-4" />
-          Yes
+          {isSubmitting.Yes ? "Voting..." : "Yes"}
           <span className="text-sm text-gray-600">({yesVotes})</span>
         </Button>
       </div>
@@ -160,10 +165,10 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
           variant="outline"
           className="bg-red-50 hover:bg-red-100"
           onClick={() => handleVote("No")}
-          disabled={hasVoted || isSubmitting.No}
+          disabled={hasVoted || isSubmitting.No || isSubmitting.Yes}
         >
           <X className="mr-2 h-4 w-4" />
-          No
+          {isSubmitting.No ? "Voting..." : "No"}
           <span className="text-sm text-gray-600">({noVotes})</span>
         </Button>
       </div>
