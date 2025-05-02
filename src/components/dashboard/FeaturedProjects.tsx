@@ -3,7 +3,7 @@ import { ProjectCard, ProjectCardProps } from "../projects/ProjectCard";
 
 const MOCK_PROJECTS: ProjectCardProps[] = [
   {
-    id: "1",
+    project_id: "1",
     title: "Amazon Rainforest Conservation Initiative",
     type: "Forest Conservation",
     location: "Brazil",
@@ -12,7 +12,7 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     emissionsTarget: "125000",
   },
   {
-    id: "2",
+    project_id: "2",
     title: "Serengeti Wildlife Corridor Protection",
     type: "Biodiversity Conservation",
     location: "Tanzania",
@@ -21,7 +21,7 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     emissionsTarget: "85000",
   },
   {
-    id: "3",
+    project_id: "3",
     title: "Solar Farm Development in Rajasthan",
     type: "Renewable Energy",
     location: "India",
@@ -45,7 +45,7 @@ export const FeaturedProjects = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {MOCK_PROJECTS.map((project) => (
-          <ProjectCard key={project.id} {...project} />
+          <ProjectCard key={project.project_id} {...project} />
         ))}
       </div>
     </div>

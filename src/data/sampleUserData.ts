@@ -20,7 +20,7 @@ export const userData: User = {
 // Sample projects
 export const userProjects: ProjectType[] = [
   {
-    id: "1",
+    project_id: "1",
     title: "Amazon Rainforest Conservation",
     type: "Forest Conservation",
     location: "Brazil",
@@ -29,7 +29,7 @@ export const userProjects: ProjectType[] = [
     emissionsTarget: "25000",
   },
   {
-    id: "2",
+    project_id: "2",
     title: "Serengeti Wildlife Corridor",
     type: "Biodiversity Conservation",
     location: "Tanzania",
@@ -38,7 +38,7 @@ export const userProjects: ProjectType[] = [
     emissionsTarget: "18000",
   },
   {
-    id: "3",
+    project_id: "3",
     title: "Wind Power Expansion",
     type: "Renewable Energy",
     location: "United Kingdom",
