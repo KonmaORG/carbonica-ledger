@@ -1,6 +1,6 @@
 // Project-related type definitions
 export interface ProjectType {
-  id: string;
+  project_id: string;
   title: string;
   type: string;
   location: string;

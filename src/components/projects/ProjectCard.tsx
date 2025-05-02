@@ -35,7 +35,7 @@ export type ProjectCardProps = ProjectType;
 // }
 
 export const ProjectCard = ({
-  id,
+  project_id,
   title,
   type,
   location,
@@ -88,7 +88,7 @@ export const ProjectCard = ({
   useEffect(() => {
     setShareContent((prev) => ({
       ...prev,
-      url: `${window.location.origin}/projects/${id}`,
+      url: `${window.location.origin}/projects/${project_id}`,
     }));
   }, []);
 
@@ -138,7 +138,7 @@ export const ProjectCard = ({
         </div>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <Link href={`/projects/${id}`} className="flex-1">
+        <Link href={`/projects/${project_id}`} className="flex-1">
           <Button
             variant="outline"
             className="w-full group hover:bg-carbonica-green-dark hover:text-white transition-colors"
