@@ -64,7 +64,7 @@ const ProjectDetails = () => {
       const { data, error } = await supabase
         .from("projects")
         .select("*") // Select the columns you need
-        .eq("id", projectId) // Filter by the specific ID
+        .eq("project_id", projectId) // Filter by the specific ID
         .single(); // Expect a single record
 
       if (error) throw error;
