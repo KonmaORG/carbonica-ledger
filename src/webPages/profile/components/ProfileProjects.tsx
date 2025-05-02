@@ -21,8 +21,8 @@ export const ProfileProjects = ({ projects }: ProfileProjectsProps) => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <ProjectCard
-            key={project.id}
-            id={project.id}
+            key={project.project_id}
+            project_id={project.project_id}
             title={project.title}
             type={project.type}
             location={project.location}
