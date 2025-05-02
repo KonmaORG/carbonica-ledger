@@ -490,7 +490,7 @@ class SupabaseService {
     dbProject: Database["public"]["Tables"]["projects"]["Row"]
   ): Project {
     return {
-      id: dbProject.id,
+      id: dbProject.project_id,
       title: dbProject.title,
       type: dbProject.type,
       location: dbProject.location,
