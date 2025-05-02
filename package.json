@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blockfrost/blockfrost-js": "^6.0.0",
     "@harmoniclabs/bytestring": "^1.0.0",
     "@harmoniclabs/cbor": "^1.6.6",
     "@harmoniclabs/pair": "^1.0.0",
