@@ -16,17 +16,19 @@ async function bufferRequestBody(request: NextRequest): Promise<string> {
 }
 
 export async function GET(request: NextRequest) {
+  console.log("GET request received at webhook endpoint 🪢");
   return NextResponse.json({ message: "Webhook endpoint is working ✅" });
 }
 
 export async function POST(request: NextRequest) {
+  // console.log("POST request received at webhook endpoint 📮");
+  // console.log("request", request);
   const signatureHeader = request.headers.get("blockfrost-signature");
 
+  console.log("signatureHeader", signatureHeader);
   if (!signatureHeader) {
-    console.log("The request is missing Blockfrost-Signature header");
     return new NextResponse("Missing signature header", { status: 400 });
   }
-  console.log("request", request);
 
   const rawBody = await bufferRequestBody(request);
 
@@ -40,7 +42,6 @@ export async function POST(request: NextRequest) {
 
     const parsedBody = JSON.parse(rawBody);
     const { type, payload } = parsedBody;
-
     switch (type) {
       case "transaction":
         console.log(`Received ${payload.length} transactions`);
