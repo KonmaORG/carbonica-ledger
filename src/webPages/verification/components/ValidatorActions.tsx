@@ -76,6 +76,7 @@ export default function ValidatorActions({
           .from("verification")
           .update({
             txHash,
+            status: "approved",
           })
           .eq("verification_id", request.verification.verification_id);
         if (error) {
