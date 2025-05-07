@@ -7,6 +7,7 @@ import {
 import { tokenFlow } from "./processBody";
 import { supabaseServer } from "./supabase-server";
 import { Payload, WebhookBody } from "./types";
+import { TokenQuantityMismatchError } from "./customClass";
 
 const SECRET_AUTH_TOKEN = process.env.BLOCKFROST_WEBHOOK_SECRET;
 
@@ -41,15 +42,15 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case "transaction":
         const actions = tokenFlow(id, payload);
-        // function needs updation for the case of Burn, Mint.. and the status in the return type
-        const { data, error } = await supabaseServer
-          .from("carbon_offset_actions")
-          .insert(actions);
+        // const { data, error } = await supabaseServer
+        //   .from("carbon_offset_actions")
+        //   .insert(actions);
 
-        if (error) {
-          console.error("Supabase insert error:", error);
-          return new NextResponse("Supabase insert Error", { status: 500 });
-        }
+        // if (error) {
+        //   console.error("Supabase insert error:", error);
+        //   return new NextResponse("Supabase insert Error", { status: 500 });
+        // }
+        return NextResponse.json({ actions });
         break;
 
       case "block":
@@ -68,10 +69,15 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ processed: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     if (error instanceof SignatureVerificationError) {
       return new NextResponse("Signature is not valid!", { status: 400 });
+    }
+    if (error instanceof TokenQuantityMismatchError) {
+      return new NextResponse(error.message || "Token Quantity Mismatch", {
+        status: 400,
+      });
     }
     return new NextResponse("Internal Server Error", { status: 500 });
   }
