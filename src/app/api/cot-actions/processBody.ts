@@ -1,4 +1,10 @@
-import { MergedToken, FlowResult, Payload, TokenFlow } from "./types";
+import {
+  MergedToken,
+  FlowResult,
+  Payload,
+  TokenFlow,
+  StatusType,
+} from "./types";
 import { TokenQuantityMismatchError } from "./customClass";
 
 const policyId = "68d6e7d81446bb1b72ef42759185bba6e686fc3111eeb9e9af6bafbe";
@@ -127,7 +133,12 @@ function tokenFlow(id: string, payload: Payload[]): FlowResult[] {
           receiver_address: f.action_type === "burn" ? null : o.address,
           amount: Number(o.quantity),
           txhash: payload[0].tx.hash,
-          status: "transferred" as const,
+          status:
+            f.action_type === "mint"
+              ? "active"
+              : f.action_type === "burn"
+              ? "retired"
+              : ("transferred" as StatusType),
           action_type: f.action_type,
           bf_id: id,
         }))
@@ -146,7 +157,7 @@ function tokenFlow(id: string, payload: Payload[]): FlowResult[] {
         receiver_address: null,
         amount: Number(f.input_qty - f.return_qty),
         txhash: payload[0].tx.hash,
-        status: "transferred",
+        status: "retired",
         action_type: "burn",
         bf_id: id,
       });
