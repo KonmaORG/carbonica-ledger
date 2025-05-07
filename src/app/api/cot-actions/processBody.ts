@@ -5,7 +5,7 @@ import {
   TokenFlow,
   StatusType,
 } from "./types";
-import { TokenQuantityMismatchError } from "./customClass";
+import { TokenQuantityMismatchError } from "./customError";
 
 const policyId = "68d6e7d81446bb1b72ef42759185bba6e686fc3111eeb9e9af6bafbe";
 
