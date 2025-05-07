@@ -7,10 +7,10 @@ import {
 import { tokenFlow } from "./processBody";
 import { supabaseServer } from "./supabase-server";
 import { Payload, WebhookBody } from "./types";
-import { TokenQuantityMismatchError } from "./customClass";
+import { TokenQuantityMismatchError } from "./customError";
+import { UpdateDB } from "./updateDb";
 
 const SECRET_AUTH_TOKEN = process.env.BLOCKFROST_WEBHOOK_SECRET;
-
 export async function GET(request: NextRequest) {
   return NextResponse.json({ message: "Webhook endpoint is working ✅" });
 }
@@ -42,14 +42,7 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case "transaction":
         const actions = tokenFlow(id, payload);
-        const { data, error } = await supabaseServer
-          .from("carbon_offset_actions")
-          .insert(actions);
-
-        if (error) {
-          console.error("Supabase insert error:", error);
-          return new NextResponse("Supabase insert Error", { status: 500 });
-        }
+        await UpdateDB(actions, payload);
         break;
 
       case "block":
