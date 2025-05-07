@@ -52,14 +52,26 @@ export interface Payload {
   outputs: InputOutput[];
 }
 
+type ActionType = "mint" | "burn" | "transfer";
+export interface TokenFlow {
+  unit: string;
+  input_qty: bigint;
+  input_address: string | null;
+  outputs: {
+    address: string | null;
+    quantity: bigint;
+  }[];
+  return_qty: bigint;
+  action_type: ActionType;
+}
 export interface FlowResult {
   asset_id: string;
-  sender_address: string;
-  receiver_address: string;
+  sender_address: string | null;
+  receiver_address: string | null;
   amount: number;
   txhash: string;
   status: "transferred";
-  action_type: "transfer";
+  action_type: ActionType;
   bf_id: string;
 }
 
