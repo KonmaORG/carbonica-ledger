@@ -53,6 +53,7 @@ export interface Payload {
 }
 
 type ActionType = "mint" | "burn" | "transfer";
+export type StatusType = "active" | "retired" | "transferred";
 export interface TokenFlow {
   unit: string;
   input_qty: bigint;
@@ -70,7 +71,7 @@ export interface FlowResult {
   receiver_address: string | null;
   amount: number;
   txhash: string;
-  status: "transferred";
+  status: StatusType;
   action_type: ActionType;
   bf_id: string;
 }

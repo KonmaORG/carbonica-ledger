@@ -42,15 +42,14 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case "transaction":
         const actions = tokenFlow(id, payload);
-        // const { data, error } = await supabaseServer
-        //   .from("carbon_offset_actions")
-        //   .insert(actions);
+        const { data, error } = await supabaseServer
+          .from("carbon_offset_actions")
+          .insert(actions);
 
-        // if (error) {
-        //   console.error("Supabase insert error:", error);
-        //   return new NextResponse("Supabase insert Error", { status: 500 });
-        // }
-        return NextResponse.json({ actions });
+        if (error) {
+          console.error("Supabase insert error:", error);
+          return new NextResponse("Supabase insert Error", { status: 500 });
+        }
         break;
 
       case "block":
