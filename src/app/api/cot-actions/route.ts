@@ -27,12 +27,12 @@ export async function POST(request: NextRequest) {
 
   const rawBody = await bufferRequestBody(request);
   try {
-    // const event = verifyWebhookSignature(
-    //   rawBody,
-    //   signatureHeader,
-    //   SECRET_AUTH_TOKEN,
-    //   600
-    // );
+    const event = verifyWebhookSignature(
+      rawBody,
+      signatureHeader,
+      SECRET_AUTH_TOKEN,
+      600
+    );
 
     const parsedBody = JSON.parse(rawBody);
     if (!isValidWebhookBody(parsedBody)) {
