@@ -2,5 +2,5 @@
 address should be match with database stored before transaction creation.
 Rejection Reason
 reapply project
-
-disable sign once signed
+show sign and vote only to validator roles
+[x]disable sign once signed
