@@ -12,10 +12,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Leaf } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
+import { SUPABASEANONKEY, SUPABASEURL } from "@/config";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabaseServer = createClient(supabaseUrl, supabaseKey);
+if (!SUPABASEURL || !SUPABASEANONKEY) {
+  throw new Error("Supabase Key Error");
+}
+const supabaseServer = createClient(SUPABASEURL, SUPABASEANONKEY);
 
 export interface CreditEntry {
   id: string;
