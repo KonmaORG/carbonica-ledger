@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,163 +9,161 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, ExternalLink, Leaf, BadgeCheck } from "lucide-react";
-import { CreditEntry } from "../types/registryTypes";
-import Link from "next/link";
+import { Leaf } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
 
-interface CreditLedgerProps {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseServer = createClient(supabaseUrl, supabaseKey);
+
+export interface CreditEntry {
+  id: string;
+  creditId: string;
+  projectId: string;
+  projectName: string;
+  quantity: number;
+  vintage: string;
+  status: "active" | "transferred" | "retired";
+  owner: string;
+  location: string;
+  lastActionDate: string;
+  activeAmount: number;
+  retiredAmount: number;
+  transferAmount: number;
+}
+
+export interface CreditLedgerProps {
   creditEntries: CreditEntry[];
 }
 
-const StatusBadge = ({ status }: { status: CreditEntry["status"] }) => {
-  switch (status) {
-    case "active":
-      return (
+const StatusBadge = ({
+  activeAmount,
+  retiredAmount,
+  transferAmount,
+}: {
+  activeAmount: number;
+  retiredAmount: number;
+  transferAmount: number;
+}) => {
+  return (
+    <div className="flex flex-col gap-1">
+      {activeAmount > 0 && (
         <Badge
           variant="outline"
           className="bg-green-100 text-green-800 border-green-200"
         >
-          Active
+          Active: {activeAmount.toLocaleString()}
         </Badge>
-      );
-    case "transferred":
-      return (
+      )}
+      {transferAmount > 0 && (
         <Badge
           variant="outline"
           className="bg-blue-100 text-blue-800 border-blue-200"
         >
-          Transferred
+          Transferred: {transferAmount.toLocaleString()}
         </Badge>
-      );
-    case "retired":
-      return (
+      )}
+      {retiredAmount > 0 && (
         <Badge
           variant="outline"
           className="bg-purple-100 text-purple-800 border-purple-200"
         >
-          Retired
+          Retired: {retiredAmount.toLocaleString()}
         </Badge>
-      );
-    default:
-      return null;
-  }
+      )}
+    </div>
+  );
 };
 
 export const CreditLedger = ({ creditEntries }: CreditLedgerProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredEntries, setFilteredEntries] =
-    useState<CreditEntry[]>(creditEntries);
-
-  const handleSearch = () => {
-    const filtered = creditEntries.filter(
-      (entry) =>
-        entry.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.creditId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.location.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredEntries(filtered);
-  };
-
-  const resetFilters = () => {
-    setSearchTerm("");
-    setFilteredEntries(creditEntries);
-  };
-
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader>
         <CardTitle className="text-lg flex items-center">
-          <Leaf className="h-5 w-5 mr-2 text-carbonica-green-dark" />
+          <Leaf className="h-5 w-5 mr-2 text-green-600" />
           Carbon Credit Ledger
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-            <Input
-              placeholder="Search by credit ID, project, owner..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <div className="flex space-x-2">
-            <Button onClick={handleSearch}>
-              <Search className="h-4 w-4 mr-2" /> Search
-            </Button>
-            {searchTerm && (
-              <Button variant="outline" onClick={resetFilters}>
-                Clear
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="rounded-md border overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Credit ID</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Vintage</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Owner</TableHead>
-                <TableHead>Last Action</TableHead>
-                <TableHead></TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Credit ID</TableHead>
+              <TableHead>Project</TableHead>
+              <TableHead>Quantity</TableHead>
+              <TableHead>Vintage</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Owner</TableHead>
+              <TableHead>Last Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {creditEntries.map((entry) => (
+              <TableRow key={entry.id}>
+                <TableCell>{entry.creditId}</TableCell>
+                <TableCell>{entry.projectName}</TableCell>
+                <TableCell>{entry.vintage}</TableCell>
+                <TableCell>{entry.owner}</TableCell>
+                <TableCell>{entry.quantity.toLocaleString()}</TableCell>
+                <TableCell>
+                  <StatusBadge
+                    activeAmount={entry.activeAmount}
+                    retiredAmount={entry.retiredAmount}
+                    transferAmount={entry.transferAmount}
+                  />
+                </TableCell>
+                <TableCell>{entry.lastActionDate}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredEntries.map((entry) => (
-                <TableRow key={entry.id}>
-                  <TableCell className="font-medium">
-                    {entry.creditId}
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/projects/${entry.projectId}`}
-                      className="text-carbonica-blue-dark hover:underline flex items-center"
-                    >
-                      {entry.projectName}
-                      <BadgeCheck className="h-4 w-4 ml-1 text-carbonica-green-dark" />
-                    </Link>
-                    <div className="text-xs text-gray-500">
-                      {entry.location}
-                    </div>
-                  </TableCell>
-                  <TableCell>{entry.quantity.toLocaleString()}</TableCell>
-                  <TableCell>{entry.vintage}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={entry.status} />
-                  </TableCell>
-                  <TableCell>{entry.owner}</TableCell>
-                  <TableCell>{entry.lastActionDate}</TableCell>
-                  <TableCell>
-                    <Button variant="ghost" size="sm">
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-          <p>
-            Showing {filteredEntries.length} of {creditEntries.length} entries
-          </p>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export Data
-          </Button>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
 };
+
+export default function RegistryPage() {
+  const [creditEntries, setCreditEntries] = useState<CreditEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchCredits() {
+      try {
+        const { data, error } = await supabaseServer.rpc("get_carbon_credits");
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        const transformedData: CreditEntry[] = data.map((item) => ({
+          id: item.id,
+          creditId: item.creditId,
+          projectId: item.projectId,
+          projectName: item.projectName,
+          quantity: item.quantity,
+          vintage: item.vintage,
+          location: item.location,
+          status: item.status,
+          owner: item.owner,
+          lastActionDate: item.lastActionDate,
+          activeAmount: item.activeAmount,
+          retiredAmount: item.retiredAmount,
+          transferAmount: item.transferAmount,
+        }));
+
+        setCreditEntries(transformedData);
+        setLoading(false);
+      } catch (err) {
+        setError((err as Error).message);
+        setLoading(false);
+      }
+    }
+    fetchCredits();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return <CreditLedger creditEntries={creditEntries} />;
+}
