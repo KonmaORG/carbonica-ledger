@@ -15,10 +15,12 @@ import { BookOpen, Code, Webhook, Leaf } from "lucide-react";
 import { BlockchainVerification } from "./components/BlockchainVerification";
 import { ApiDocumentation } from "@/components/api/ApiDocumentation";
 import { createClient } from "@supabase/supabase-js";
+import { SUPABASEURL, SUPABASEANONKEY } from "@/config";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabaseServer = createClient(supabaseUrl, supabaseKey);
+if (!SUPABASEURL || !SUPABASEANONKEY) {
+  throw new Error("Supabase Key Error");
+}
+const supabaseServer = createClient(SUPABASEURL, SUPABASEANONKEY);
 
 interface CreditEntry {
   id: string;
