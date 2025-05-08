@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Table,
   TableBody,
@@ -11,13 +11,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Leaf } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
-import { SUPABASEANONKEY, SUPABASEURL } from "@/config";
-
-if (!SUPABASEURL || !SUPABASEANONKEY) {
-  throw new Error("Supabase Key Error");
-}
-const supabaseServer = createClient(SUPABASEURL, SUPABASEANONKEY);
 
 export interface CreditEntry {
   id: string;
@@ -124,48 +117,3 @@ export const CreditLedger = ({ creditEntries }: CreditLedgerProps) => {
     </Card>
   );
 };
-
-export default function RegistryPage() {
-  const [creditEntries, setCreditEntries] = useState<CreditEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchCredits() {
-      try {
-        const { data, error } = await supabaseServer.rpc("get_carbon_credits");
-        if (error) {
-          throw new Error(error.message);
-        }
-
-        const transformedData: CreditEntry[] = data.map((item) => ({
-          id: item.id,
-          creditId: item.creditId,
-          projectId: item.projectId,
-          projectName: item.projectName,
-          quantity: item.quantity,
-          vintage: item.vintage,
-          location: item.location,
-          status: item.status,
-          owner: item.owner,
-          lastActionDate: item.lastActionDate,
-          activeAmount: item.activeAmount,
-          retiredAmount: item.retiredAmount,
-          transferAmount: item.transferAmount,
-        }));
-
-        setCreditEntries(transformedData);
-        setLoading(false);
-      } catch (err) {
-        setError((err as Error).message);
-        setLoading(false);
-      }
-    }
-    fetchCredits();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  return <CreditLedger creditEntries={creditEntries} />;
-}
