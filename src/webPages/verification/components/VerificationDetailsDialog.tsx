@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import { useVerification } from "@/contexts/VerificationContext";
 import { useAuth } from "@/contexts/AuthContext";
 import dynamic from "next/dynamic";
 import { VerificationRequest } from "../types/verificationTypes";
+import { supabase } from "@/lib/supabase";
 const ValidatorVote = dynamic(() => import("./ValidatorVote"), {
   ssr: false,
 });
@@ -38,6 +39,7 @@ export const VerificationDetailsDialog = ({
   const { user } = useAuth();
   const { toast } = useToast();
   const { approveVerification, rejectVerification } = useVerification();
+  const [isValidator, setIsValidator] = React.useState(false);
   const [confirmAction, setConfirmAction] = React.useState<
     "approve" | "reject" | null
   >(null);
@@ -82,6 +84,28 @@ export const VerificationDetailsDialog = ({
     }
   };
 
+  useEffect(() => {
+    async function fetchUsers() {
+      if (!user) {
+        return;
+      }
+      let { data: userData, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+      setIsValidator(userData.role === "validator");
+    }
+    fetchUsers();
+  }, []);
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -100,10 +124,12 @@ export const VerificationDetailsDialog = ({
 
           <div className="flex-shrink-0 pt-4 border-t">
             <DialogFooter className="mt-4">
-              {request.status === "pending" && (
+              {/* validator role only */}
+
+              {isValidator && request.status === "pending" && (
                 <ValidatorVote request={request} user={user} />
               )}
-              {request.status === "in_review" && (
+              {isValidator && request.status === "in_review" && (
                 <ValidatorActions request={request} user={user} />
               )}
               <Button variant="outline" onClick={() => onOpenChange(false)}>
