@@ -20,6 +20,7 @@ export type ProjectDocumentUpload = {
   type: string; // MIME type (e.g., "application/pdf")
   url: string; // Client-side URL for preview (from URL.createObjectURL)
   isThumbnail?: boolean;
+  thumbnailName?: string;
 };
 
 export type ProjectDocument = {
