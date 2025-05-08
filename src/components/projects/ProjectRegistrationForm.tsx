@@ -146,7 +146,7 @@ export default function ProjectRegistrationForm({
       if (thumbnail) {
         const file = thumbnail.file;
         const fileExt = file.name.split(".").pop();
-        const fileName = `${user.id}/${projectId}/thumbnail.${fileExt}`;
+        const fileName = `${user.id}/thumbnail/${thumbnail.thumbnailName}.${fileExt}`;
 
         // Upload to project-thumbnails bucket
         const { data, error } = await supabase.storage
@@ -271,7 +271,16 @@ export default function ProjectRegistrationForm({
       setSubmitting(true);
       // Calculate documents hash for Cardano integration
       const documentsHash = await calculateCombinedHash(documents);
-
+      // Cardano Tx Function
+      const hash = await submitProject(
+        walletconnection,
+        documentsHash,
+        data.type,
+        data.title,
+        `${user.id}/thumbnail/${documents[0].thumbnailName}.${documents[0].name
+          .split(".")
+          .pop()}`
+      );
       // Format project data
       const formattedData = {
         ...data,
@@ -280,7 +289,7 @@ export default function ProjectRegistrationForm({
         estimatedCompletion: data.estimatedCompletion
           .toISOString()
           .split("T")[0],
-        txHash: null,
+        txHash: hash,
         documents: [], // Initialize as empty; will be updated after uploads
       };
       // Insert project into `projects` table and retrieve the project ID
@@ -299,21 +308,12 @@ export default function ProjectRegistrationForm({
         documents,
         user
       );
-      // Cardano Tx Function
-      const hash = await submitProject(
-        walletconnection,
-        documentsHash,
-        projectData.type,
-        projectData.title,
-        `${user.id}/${projectData.project_id}/thumbnail.${documents[0].file.name
-          .split(".")
-          .pop()}`
-      );
+
       // Update the project with the documents array if there are uploaded files
       if (uploadedFiles.length > 0) {
         const { error: updateError } = await supabase
           .from("projects")
-          .update({ documents: uploadedFiles, txHash: hash })
+          .update({ documents: uploadedFiles })
           .eq("project_id", projectData.project_id);
 
         if (updateError) {
@@ -382,6 +382,7 @@ export default function ProjectRegistrationForm({
         type: file.type,
         url: URL.createObjectURL(file),
         isThumbnail: true,
+        thumbnailName: Date.now() + "-" + file.name,
       };
 
       // Remove existing thumbnail from documents and add new thumbnail as first item
