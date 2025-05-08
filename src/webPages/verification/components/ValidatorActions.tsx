@@ -25,6 +25,10 @@ export default function ValidatorActions({
   }
   const [walletconnection] = useCardano();
   const [submitting, setSubmitting] = useState(false);
+  const isSigned = request.verification.votes.some(
+    (vote) => vote.verifier_id === user.id && vote.signed
+  );
+
   const yesVotes = request.verification.votes.filter(
     (vote) => vote.vote === "Yes"
   ).length;
@@ -105,7 +109,7 @@ export default function ValidatorActions({
           variant="outline"
           className="bg-green-50 hover:bg-green-100"
           onClick={() => signTx("Yes")}
-          disabled={request.status === "approved" || submitting}
+          disabled={request.status === "approved" || submitting || isSigned}
         >
           <Check className="mr-2 h-4 w-4" />
           {submitting ? "Signing..." : "Sign"}
@@ -115,7 +119,7 @@ export default function ValidatorActions({
           variant="outline"
           className="bg-red-50 hover:bg-red-100"
           onClick={() => signTx("No")}
-          disabled={request.status === "rejected" || submitting}
+          disabled={request.status === "rejected" || submitting || isSigned}
         >
           <X className="mr-2 h-4 w-4" />
           {submitting ? "Signing..." : "Sign"}
