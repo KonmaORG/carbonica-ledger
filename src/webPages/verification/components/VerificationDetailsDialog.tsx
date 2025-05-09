@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { VerificationStatusBadge } from "./VerificationStatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationDetailsContent } from "./VerificationDetailsContent";
-import { ConfirmActionDialog } from "./ConfirmActionDialog";
 import { useVerification } from "@/contexts/VerificationContext";
 // import ValidatorVote from "./ValidatorVote";
 import { useAuth } from "@/contexts/AuthContext";
@@ -140,7 +139,7 @@ export const VerificationDetailsDialog = ({
         </DialogContent>
       </Dialog>
 
-      <ConfirmActionDialog
+      {/* <ConfirmActionDialog
         action={confirmAction}
         isOpen={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
@@ -148,7 +147,7 @@ export const VerificationDetailsDialog = ({
         isSubmitting={isSubmitting}
         rejectionReason={rejectionReason}
         setRejectionReason={setRejectionReason}
-      />
+      /> */}
     </>
   );
 };

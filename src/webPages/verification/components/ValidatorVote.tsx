@@ -9,6 +9,7 @@ import { TxSignBuilder } from "@lucid-evolution/lucid";
 import { acceptProject, rejectProject } from "@/lib/cardanoTx/registry";
 import { useCardano } from "@/contexts/cardanoContext";
 import { toast } from "@/hooks/use-toast";
+import { ConfirmActionDialog } from "./ConfirmActionDialog";
 
 interface ValidatorVoteProps {
   request: VerificationRequest;
@@ -18,6 +19,7 @@ interface ValidatorVoteProps {
 export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
   const [walletConnection] = useCardano();
   const [isSubmitting, setSubmitting] = useState({ Yes: false, No: false });
+  const [rejectionReason, setRejectionReason] = useState<string>("");
   const hasVoted = user?.id
     ? request.verification?.votes?.some(
         (vote) => vote.verifier_id === user.id
@@ -37,7 +39,12 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
       throw new Error("User not authenticated");
     }
     if (!walletConnection.lucid || !walletConnection.wallet) {
-      throw new Error("Wallet not connected");
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet.",
+        variant: "destructive",
+      });
+      return;
     }
     try {
       setSubmitting((prev) => ({ ...prev, [action]: true }));
@@ -47,9 +54,11 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
       const voteToStore = {
         verification_id: verificationId,
         verifier_id: verifierId,
+        rejection_reason: rejectionReason,
         vote: action,
         signed: false,
       };
+      console.log(voteToStore);
 
       // Append the new verifier to the existing array (or start a new array if null)
 
@@ -161,16 +170,14 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
         </Button>
       </div>
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          className="bg-red-50 hover:bg-red-100"
-          onClick={() => handleVote("No")}
-          disabled={hasVoted || isSubmitting.No || isSubmitting.Yes}
-        >
-          <X className="mr-2 h-4 w-4" />
-          {isSubmitting.No ? "Voting..." : "No"}
-          <span className="text-sm text-gray-600">({noVotes})</span>
-        </Button>
+        <ConfirmActionDialog
+          action="reject"
+          onConfirm={handleVote}
+          isSubmitting={isSubmitting}
+          rejectionReason={rejectionReason}
+          setRejectionReason={setRejectionReason}
+          data={{ hasVoted, yesVotes, noVotes }}
+        />
       </div>
     </div>
   );
