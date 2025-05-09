@@ -80,7 +80,7 @@ export default function ValidatorActions({
           .from("verification")
           .update({
             txHash,
-            status: "approved",
+            status: action === "Yes" ? "approved" : "rejected",
           })
           .eq("verification_id", request.verification.verification_id);
         if (error) {
