@@ -22,6 +22,8 @@ interface ConfirmActionDialogProps {
   rejectionReason: string;
   setRejectionReason: (reason: string) => void;
   data: { noVotes: number; yesVotes: number; hasVoted: boolean };
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
 export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
@@ -31,9 +33,9 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
   rejectionReason,
   setRejectionReason,
   data,
+  open,
+  setOpen,
 }) => {
-  const [open, setOpen] = useState(false);
-
   if (!action) return null;
 
   const isRejection = action === "reject";

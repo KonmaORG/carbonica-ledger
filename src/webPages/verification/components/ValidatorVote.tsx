@@ -20,6 +20,8 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
   const [walletConnection] = useCardano();
   const [isSubmitting, setSubmitting] = useState({ Yes: false, No: false });
   const [rejectionReason, setRejectionReason] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const hasVoted = user?.id
     ? request.verification?.votes?.some(
         (vote) => vote.verifier_id === user.id
@@ -58,7 +60,6 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
         vote: action,
         signed: false,
       };
-      console.log(voteToStore);
 
       // Append the new verifier to the existing array (or start a new array if null)
 
@@ -91,7 +92,11 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
             address
             )`);
       if (error) {
-        throw new Error(`Failed to update verifiers: ${error.message}`);
+        if (error.message.includes("unique constraint")) {
+          throw new Error(`Vote Already Present`);
+        } else {
+          throw error;
+        }
       }
       if (shouldUpdateStatus) {
         // creating transaction
@@ -140,18 +145,25 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
           );
         }
         console.log("Verifier updated successfully");
-        toast({
-          title: `Voted Successfully`,
-          description: `Stored vote as: ${action}`,
-        });
       }
+      toast({
+        title: `Voted Successfully`,
+        description: `Stored vote as: ${action}`,
+        variant: "success",
+      });
 
       // setConfirmAction("approve");
       // setIsConfirmOpen(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in handleVote:", error);
+      toast({
+        title: "Failed to vote",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
       setSubmitting((prev) => ({ ...prev, [action]: false }));
+      setDialogOpen(false);
     }
   };
 
@@ -177,6 +189,8 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
           rejectionReason={rejectionReason}
           setRejectionReason={setRejectionReason}
           data={{ hasVoted, yesVotes, noVotes }}
+          open={dialogOpen}
+          setOpen={setDialogOpen}
         />
       </div>
     </div>
