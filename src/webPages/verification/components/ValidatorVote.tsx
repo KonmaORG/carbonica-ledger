@@ -63,22 +63,11 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
 
       // Append the new verifier to the existing array (or start a new array if null)
 
-      let yesVotes = request.verification.votes.filter(
-        (vote) => vote.vote === "Yes"
-      ).length;
-      let noVotes = request.verification.votes.filter(
-        (vote) => vote.vote === "No"
-      ).length;
-      const totalVotes = yesVotes + noVotes + 1; // Include the new vote
-      action === "Yes" ? yesVotes++ : noVotes++;
-      // Determine if status should be updated
-      const shouldUpdateStatus =
-        totalVotes === 5 || yesVotes >= 3 || noVotes >= 3;
-      let Tx: TxSignBuilder | null = null;
-
       const { data: storedVote, error } = await supabase
         .from("votes")
-        .insert([voteToStore]).select(`
+        .insert([voteToStore])
+        .select(
+          `
             vote_id,
             verifier_id,
             signed,
@@ -90,7 +79,9 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
             name,
             role,
             address
-            )`);
+            )`
+        )
+        .single();
       if (error) {
         if (error.message.includes("unique constraint")) {
           throw new Error(`Vote Already Present`);
@@ -98,24 +89,32 @@ export default function ValidatorVote({ request, user }: ValidatorVoteProps) {
           throw error;
         }
       }
+
+      request.verification.votes.push(storedVote as unknown as requestVotes);
+
+      let yesVotes = request.verification.votes.filter(
+        (vote) => vote.vote === "Yes"
+      ).length;
+      let noVotes = request.verification.votes.filter(
+        (vote) => vote.vote === "No"
+      ).length;
+      const totalVotes = yesVotes + noVotes;
+      const shouldUpdateStatus =
+        totalVotes === 5 || yesVotes >= 3 || noVotes >= 3;
+      let Tx: TxSignBuilder | null = null;
+
       if (shouldUpdateStatus) {
         // creating transaction
         if (yesVotes > noVotes) {
           Tx = await acceptProject(
             walletConnection,
-            [
-              ...request.verification.votes,
-              ...(storedVote as unknown[] as requestVotes[]),
-            ],
+            request.verification.votes,
             request.txHash
           );
         } else {
           Tx = await rejectProject(
             walletConnection,
-            [
-              ...request.verification.votes,
-              ...(storedVote as unknown[] as requestVotes[]),
-            ],
+            request.verification.votes,
             request.txHash
           );
         }
