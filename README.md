@@ -1,45 +1,115 @@
-**Use your preferred IDE**
+# Carbonica Ledger
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Carbonica Ledger is a decentralized protocol for managing and verifying carbon offset projects and issuing carbon credits on the Cardano blockchain.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+This repository contains the frontend (Next.js) and backend integration (Supabase + Blockfrost) for:
 
-Follow these steps:
+- Registering offset projects
+- Verifying projects through validator voting
+- Minting and tracking Carbon Offset Tokens (COTs)
+- Logging Carbon Emission Tokens (CETs) and their redemption against COTs
+- Full on-chain and off-chain lifecycle auditing
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🚀 Features
 
-# Step 3: Install the necessary dependencies.
-npm i
+- 🌍 Project registration & validator-based verification
+- 🪙 Token minting (COT) and burning (CET)
+- 🔁 Blockchain events processed via Blockfrost webhooks
+- 📊 Project dashboard, user profile, and token registry
+- 🧾 Full audit trail of token actions (mint/transfer/burn)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+---
+
+## 🧱 Stack
+
+| Layer      | Technology                        |
+| ---------- | --------------------------------- |
+| Frontend   | Next.js + TailwindCSS + ShadCN UI |
+| Database   | Supabase                          |
+| Blockchain | Cardano (via Blockfrost API)      |
+| Hosting    | Netlify (Frontend), Supabase      |
+
+---
+
+## 📦 Project Structure
+
+```
+konmaorg-carbonica-ledger/
+├── README.md
+├── public/
+├── src/
+│   ├── app/ (Routing & Layout)
+│   ├── components/ (UI & logic components)
+│   ├── lib/ (Blockfrost, metadata, utils)
+│   ├── webPages/ (Views for each route)
+│   ├── api/cot-actions/ (Webhook logic)
+│   └── contexts/ (Auth, Cardano, Verification)
+├── .env.example
+├── package.json
+├── tsconfig.json
+└── netlify.toml
+```
+
+---
+
+## 🛠️ Getting Started
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/your-org/konmaorg-carbonica-ledger.git
+cd konmaorg-carbonica-ledger
+```
+
+**2. Install dependencies**
+
+```bash
+npm install
+```
+
+**3. Configure your environment**
+
+- Rename `.env.example` to `.env`
+- Fill in Blockfrost + Supabase keys
+
+**4. Run the development server**
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🌐 Live Deployment
 
-**Use GitHub Codespaces**
+- Frontend: [Netlify](https://netlify.app)
+- Supabase: [Hosted project dashboard](https://app.supabase.io)
+- Blockfrost: [API Dashboard](https://blockfrost.io)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📖 Documentation
 
-This project is built with .
+Documentation lives in the `/docs` folder:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- `schema.md`: Table & field definitions
+- `workflow.md`: Project lifecycle steps
+- `roles.md`: Access permissions
+- `api.md`: API endpoints and webhook integration
+- `glossary.md`: Technical terms and identifiers
+
+---
+
+## 🧠 Contributing
+
+- Pull requests are welcome
+- Use proper commit messages
+- Follow the project's ESLint & TypeScript config
+
+---
+
+## 📜 License
+
+MIT © Konmaorg
