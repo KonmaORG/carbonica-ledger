@@ -41,7 +41,7 @@ export const UserAchievements = ({
       ...prev,
       url: window.location.href,
     }));
-  });
+  }, []);
 
   return (
     <Card>
