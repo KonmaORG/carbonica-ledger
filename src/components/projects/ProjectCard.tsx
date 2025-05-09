@@ -23,17 +23,6 @@ import { ProjectType } from "@/types/project";
 
 export type ProjectCardProps = ProjectType;
 
-// {
-//   id: string;
-//   title: string;
-//   type: string;
-//   location: string;
-//   startDate: string;
-//   status: "pending" | "verified" | "rejected";
-//   emissionsTarget: string;
-//   description?: string;
-// }
-
 export const ProjectCard = ({
   project_id,
   title,
@@ -43,15 +32,32 @@ export const ProjectCard = ({
   status,
   emissionsTarget,
   description,
+  estimatedCompletion,
   documents,
+  developer,
+  verifier,
 }: ProjectCardProps) => {
+  // Format date (e.g., "2025-05-07" → "May 7, 2025")
+  const formatDate = (dateString: string): string => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
   const getStatusBadge = () => {
     switch (status) {
       case "verified":
         return (
           <Badge
             variant="outline"
-            className="verification-badge verification-badge-verified"
+            className="verification-badge verification-badge-verified bg-green-100 text-green-800 border-green-200"
           >
             <BadgeCheck className="h-3 w-3 mr-1" />
             Verified
@@ -61,7 +67,7 @@ export const ProjectCard = ({
         return (
           <Badge
             variant="outline"
-            className="verification-badge verification-badge-pending"
+            className="verification-badge verification-badge-pending bg-yellow-100 text-yellow-800 border-yellow-200"
           >
             Pending Verification
           </Badge>
@@ -70,7 +76,7 @@ export const ProjectCard = ({
         return (
           <Badge
             variant="outline"
-            className="verification-badge verification-badge-rejected"
+            className="verification-badge verification-badge-rejected bg-red-100 text-red-800 border-red-200"
           >
             Verification Failed
           </Badge>
@@ -85,14 +91,19 @@ export const ProjectCard = ({
     description: `Check out this ${type} carbon offset project in ${location} with ${emissionsTarget} verified carbon credits!`,
     url: "",
   });
+
   useEffect(() => {
     setShareContent((prev) => ({
       ...prev,
       url: `${window.location.origin}/projects/${project_id}`,
     }));
-  }, []);
+  }, [project_id]);
 
-  const thumbnailURL = documents?.[0]?.file_path;
+  // Assume documents is an array of objects with file_path
+  const thumbnailURL =
+    Array.isArray(documents) && documents.length > 0
+      ? documents[0]?.file_path
+      : null;
 
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg">
@@ -126,7 +137,7 @@ export const ProjectCard = ({
           </div>
           <div className="flex items-center text-gray-600">
             <Calendar className="h-4 w-4 mr-2 text-carbonica-green-dark" />
-            <span>Started: {startDate}</span>
+            <span>Started: {formatDate(startDate)}</span>
           </div>
         </div>
         <div className="mt-4 flex items-center">
