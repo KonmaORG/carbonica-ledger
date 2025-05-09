@@ -85,8 +85,18 @@ export default function ValidatorActions({
             status: action === "Yes" ? "approved" : "rejected",
           })
           .eq("verification_id", request.verification.verification_id);
-        if (error) {
-          throw new Error(`Failed to Store Transaction: ${error.message}`);
+        const { error: projectError } = await supabase
+          .from("projects")
+          .update({
+            status: action === "Yes" ? "approved" : "rejected",
+          })
+          .eq("project_id", request.project_id);
+        if (error || projectError) {
+          throw new Error(
+            `Failed to Store Transaction: ${
+              error?.message || projectError?.message
+            }`
+          );
         }
         toast({
           title: "Signed & Submitted Transaction",
