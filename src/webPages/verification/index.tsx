@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/components/ui/use-toast";
 import { VerificationRequest } from "./types/verificationTypes";
+import Link from "next/link";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -126,7 +127,9 @@ const Verification = () => {
               Manage carbon offset project verifications
             </p>
           </div>
-          <Button>Submit New Verification</Button>
+          <Link href="/projects/register">
+            <Button>Submit New Verification</Button>
+          </Link>
         </div>
 
         {loading ? (
