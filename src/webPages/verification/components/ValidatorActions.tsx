@@ -64,12 +64,14 @@ export default function ValidatorActions({
       request.verification.votes.forEach((vote) => {
         if (vote.verifier_id === user.id) {
           vote.witness_set = witness_set;
+          vote.signed = true;
         }
       });
       const sameVotes = request.verification.votes.filter(
         (vote) => vote.vote === action
       );
-      const isAllSigned = sameVotes.every((vote) => vote.witness_set !== "");
+
+      const isAllSigned = sameVotes.every((vote) => vote.signed);
       if (isAllSigned) {
         const txHash = await submitTxMultiTx(
           request.verification.unsignedTx,
@@ -96,8 +98,13 @@ export default function ValidatorActions({
         title: "Signed Transaction",
         description: "Transaction has been signed.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast({
+        title: "Error Occurred",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
       setSubmitting(false);
     }

@@ -47,7 +47,7 @@ export function handleError(error: any) {
   // toast(`${failureInfo ?? failureMessage ?? info ?? message ?? error}`, {
   // type: "error",
   // });
-  console.error(failureInfo ?? failureMessage ?? info ?? message ?? error);
+  throw new Error(failureInfo ?? failureMessage ?? info ?? message ?? error);
 }
 
 export function getTimeRemaining(futureTimestamp) {
