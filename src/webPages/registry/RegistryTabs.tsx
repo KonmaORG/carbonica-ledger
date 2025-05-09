@@ -33,6 +33,7 @@ interface CreditEntry {
   location: string | null;
   last_action_date: string;
   quantity: number;
+  amount: number;
 }
 
 interface CreditLedgerProps {
@@ -89,6 +90,7 @@ const transformEntries = (data: any[]): CreditEntry[] => {
       owner: item.owner,
       location: item.location,
       last_action_date: item.last_action_date,
+      amount: item.quantity,
     };
 
     // Create a row for each non-zero status
@@ -161,7 +163,9 @@ const CreditLedger = ({ creditEntries }: CreditLedgerProps) => {
                       entry.status.slice(1)}
                   </Badge>
                 </TableCell>
-                <TableCell>{entry.quantity.toLocaleString()}</TableCell>
+                <TableCell>
+                  {entry.quantity.toLocaleString()}/{entry.amount}
+                </TableCell>
                 <TableCell>{formatDate(entry.last_action_date)}</TableCell>
               </TableRow>
             ))}
@@ -191,6 +195,7 @@ export const RegistryTabs = () => {
         setLoading(false);
       } catch (err) {
         console.error("Supabase error:", err);
+
         setError((err as Error).message);
         setLoading(false);
       }
