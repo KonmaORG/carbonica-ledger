@@ -97,16 +97,7 @@ export const ProfileProjects = ({
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <ProjectCard
-              key={project.project_id}
-              project_id={project.project_id}
-              title={project.title}
-              type={project.type}
-              location={project.location}
-              startDate={project.startDate}
-              status={project.status}
-              emissionsTarget={project.emissionsTarget}
-            />
+            <ProjectCard key={project.project_id} {...project} />
           ))}
         </div>
       )}
