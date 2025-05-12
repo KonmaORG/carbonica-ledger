@@ -3,7 +3,7 @@ import type { Database } from "./database.types";
 import { SUPABASEANONKEY, SUPABASEURL } from "@/config";
 
 // Initialize Supabase client with the environment variables
-// When Supabase is connected through Lovable, these variables are automatically injected
+// When Supabase is connected, these variables are automatically injected
 
 // const SUPABASEURL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 // const SUPABASEANONKEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
