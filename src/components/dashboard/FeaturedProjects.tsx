@@ -10,6 +10,13 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Jan 2023",
     status: "verified",
     emissionsTarget: "125000",
+    documents: [
+      {
+        file_name: "amazon.jpeg",
+        file_path: "/amazon.jpeg",
+        file_type: "image/jpeg",
+      },
+    ],
   },
   {
     project_id: "2",
@@ -19,6 +26,13 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Mar 2023",
     status: "verified",
     emissionsTarget: "85000",
+    documents: [
+      {
+        file_name: "serengeti.jpeg",
+        file_path: "/serengeti.jpeg",
+        file_type: "image/jpeg",
+      },
+    ],
   },
   {
     project_id: "3",
@@ -28,6 +42,13 @@ const MOCK_PROJECTS: ProjectCardProps[] = [
     startDate: "Feb 2023",
     status: "pending",
     emissionsTarget: "62000",
+    documents: [
+      {
+        file_name: "solar.jpeg",
+        file_path: "/solar.jpeg",
+        file_type: "image/jpeg",
+      },
+    ],
   },
 ];
 
