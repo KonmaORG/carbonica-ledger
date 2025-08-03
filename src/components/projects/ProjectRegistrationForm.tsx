@@ -91,8 +91,70 @@ const PROJECT_TYPES = [
   "Sustainable Agriculture",
   "Biodiversity Conservation",
   "Clean Transportation",
+  "Wastewater Management",
   "Other",
 ];
+
+const PROJECT_STANDARDS = {
+  "Forest Conservation": [
+    "13: Climate Action",
+    "15: Life on Land",
+    "6: Clean Water and Sanitation"
+  ],
+  "Renewable Energy": [
+    "7: Affordable and Clean Energy",
+    "13: Climate Action",
+    "9: Industry, Innovation and Infrastructure"
+  ],
+  "Methane Capture": [
+    "7: Affordable and Clean Energy",
+    "9: Industry, Innovation and Infrastructure",
+    "13: Climate Action"
+  ],
+  "Energy Efficiency": [
+    "7: Affordable and Clean Energy",
+    "11: Sustainable Cities and Communities",
+    "13: Climate Action"
+  ],
+  "Reforestation": [
+    "13: Climate Action",
+    "15: Life on Land",
+    "17: Partnerships for the Goals"
+  ],
+  "Wetland Restoration": [
+    "6: Clean Water and Sanitation",
+    "13: Climate Action",
+    "14: Life Below Water",
+    "15: Life on Land"
+  ],
+  "Sustainable Agriculture": [
+    "2: Zero Hunger",
+    "12: Responsible Consumption and Production",
+    "13: Climate Action",
+    "15: Life on Land"
+  ],
+  "Biodiversity Conservation": [
+    "15: Life on Land",
+    "13: Climate Action",
+    "12: Responsible Consumption and Production"
+  ],
+  "Clean Transportation": [
+    "11: Sustainable Cities and Communities",
+    "13: Climate Action",
+    "9: Industry, Innovation and Infrastructure"
+  ],
+  "Wastewater Management": [
+    "6: Clean Water and Sanitation",
+    "9: Industry, Innovation and Infrastructure",
+    "14: Life Below Water",
+    "13: Climate Action"
+  ],
+  "Other": []
+};
+
+export const getProjectStandards = (projectType: string): string[] => {
+  return PROJECT_STANDARDS[projectType as keyof typeof PROJECT_STANDARDS] || [];
+};
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_IMAGE_TYPES = [

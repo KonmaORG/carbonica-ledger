@@ -41,6 +41,7 @@ import {
   requestVotes,
   VerificationRequest,
 } from "@/webPages/verification/types/verificationTypes";
+import { getProjectStandards } from "@/components/projects/ProjectRegistrationForm";
 
 export async function submit(tx: TxSignBuilder) {
   const signed = await tx.sign.withWallet().complete();
@@ -111,6 +112,7 @@ export async function submitProject(
           [projectAssetName]: {
             name: projectAssetName,
             images: thumbnail.split("/"),
+            standards: getProjectStandards(category),
           },
         },
       })
@@ -265,6 +267,7 @@ export async function acceptProject(
             image: "https://avatars.githubusercontent.com/u/106166350",
             category: toText(datum.categories),
             hName: toText(datum.asset_name),
+            standards: getProjectStandards(toText(datum.categories)),
           },
         },
       });
